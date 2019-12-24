@@ -22,7 +22,7 @@ object VotePartyConfigTests
 		"""
 	
 	
-	private val korm = Korm(writer = KormWriter(2, Options.min(Options.LIST_ENTRY_ON_NEW_LINE)))
+	private val korm = Korm()
 	
 	
 	@Test
@@ -57,4 +57,20 @@ object VotePartyConfigTests
 		println(korm.push(config))
 	}
 	
+	@Test
+	internal fun testCommand()
+	{
+		val command0 = VotePartyConfig.Command(10, "say hello")
+		val command1 = VotePartyConfig.Command(20, "say hello")
+		val command2 = VotePartyConfig.Command(50, "say hello")
+		
+		
+		val commands = listOf(
+			command0,
+			command1,
+			command2
+		                     )
+		
+		println(korm.push(commands))
+	}
 }
