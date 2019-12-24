@@ -1,5 +1,6 @@
 package me.clip.voteparty.config
 
+import com.sxtanna.korm.data.custom.KormList
 import org.bukkit.Material
 
 data class VotePartyConfig(var effects: EffectsConfig?,
@@ -24,5 +25,11 @@ data class VotePartyConfig(var effects: EffectsConfig?,
 		}
 		
 	}
+	
+	
+	// [1, "eco give %player_name%"]
+	
+	@KormList(["chance", "command"])
+	data class Command(val chance: Int, val command: String)
 
 }
