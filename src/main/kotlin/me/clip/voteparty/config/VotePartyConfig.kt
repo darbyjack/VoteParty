@@ -5,7 +5,8 @@ import org.bukkit.Material
 
 data class VotePartyConfig(var effects: EffectsConfig?,
                            var crate: CrateConfig?,
-						   var voting: VoteConfig?)
+						   var voting: VoteConfig?,
+						   var party: PartyConfig)
 {
 	
 	
@@ -25,6 +26,17 @@ data class VotePartyConfig(var effects: EffectsConfig?,
 			val globalCommands: GlobalCommands
 	)
 
+	data class PartyConfig(
+			val votesNeeded: Int,
+			val disabledWorlds: List<String>,
+			val offlineVotes: Boolean,
+			val maxRewardsPerPlayer: Int,
+			val startDelay: Int,
+			val rewardCommands: RewardCommands,
+			val prePartyCommands: PrePartyCommands,
+			val partyCommands: PartyCommands
+	)
+
 	data class PerVoteRewards(
 			val enabled: Boolean,
 			val max_possible: Int,
@@ -41,6 +53,21 @@ data class VotePartyConfig(var effects: EffectsConfig?,
 			val commands: List<String>
 	)
 
+	data class RewardCommands(
+			val delay: Int,
+			val commands: List<String>
+	)
+
+	data class PrePartyCommands(
+			val enabled: Boolean,
+			val commands: List<String>
+	)
+
+	data class PartyCommands(
+			val enabled: Boolean,
+			val commands: List<String>
+	)
+
 	// [1, "eco give %player_name%"]
 	
 	@KormList(["chance", "command"])
@@ -53,6 +80,10 @@ data class VotePartyConfig(var effects: EffectsConfig?,
 		val DEF_GUARANTEED_REWARDS = GuaranteedRewards(true, listOf("eco give {player} 10;0", "give {player} steak 8;0"))
 		val DEF_GLOBAL_COMMANDS = GlobalCommands(true, listOf("broadcast Only {votes} more votes until a VoteParty!"))
 		val DEF_VOTE_CONFIG = VoteConfig(DEF_PER_VOTE_REWARDS, DEF_GUARANTEED_REWARDS, DEF_GLOBAL_COMMANDS)
+		val DEF_REWARD_COMMANDS = RewardCommands(1, listOf("eco give {player} 100;0", "give {player} diamond 6;2", "give {player} iron_ingot 12;1"))
+		val DEF_PRE_PARTY_COMMANDS = PrePartyCommands(false, listOf("broadcast Party will start soon!"))
+		val DEF_PARTY_COMMANDS = PartyCommands(false, listOf("broadcast Party Starting!"))
+		val DEF_PARTY_CONFIG = PartyConfig(50, listOf("world_nether"), true, 1, 15, DEF_REWARD_COMMANDS, DEF_PRE_PARTY_COMMANDS, DEF_PARTY_COMMANDS)
 	}
 
 }
