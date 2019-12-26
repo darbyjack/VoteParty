@@ -45,6 +45,11 @@ object VotePartyConfigTests {
             config.voting = VotePartyConfig.DEF_VOTE_CONFIG
         }
 
+        if (config.party == null) {
+            println("party entry not found!")
+            config.party = VotePartyConfig.DEF_PARTY_CONFIG
+        }
+
         println(config)
     }
 
@@ -53,7 +58,8 @@ object VotePartyConfigTests {
         val config = VotePartyConfig(
                 VotePartyConfig.EffectsConfig(true, listOf("flames", "hearts")),
                 VotePartyConfig.CrateConfig(true, Material.TRAPPED_CHEST),
-                VotePartyConfig.VoteConfig(VotePartyConfig.DEF_PER_VOTE_REWARDS, VotePartyConfig.DEF_GUARANTEED_REWARDS, VotePartyConfig.DEF_GLOBAL_COMMANDS)
+                VotePartyConfig.VoteConfig(VotePartyConfig.DEF_PER_VOTE_REWARDS, VotePartyConfig.DEF_GUARANTEED_REWARDS, VotePartyConfig.DEF_GLOBAL_COMMANDS),
+                VotePartyConfig.PartyConfig(50, listOf("world_nether"), true, 1, 15, VotePartyConfig.DEF_REWARD_COMMANDS, VotePartyConfig.DEF_PRE_PARTY_COMMANDS, VotePartyConfig.DEF_PARTY_COMMANDS)
         )
 
         println(korm.push(config))
