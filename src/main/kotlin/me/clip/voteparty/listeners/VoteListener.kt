@@ -1,7 +1,7 @@
 package me.clip.voteparty.listeners
 
 import com.vexsoftware.votifier.model.VotifierEvent
-import me.clip.voteparty.plugin.base.VotePartyListener
+import me.clip.voteparty.plugin.VotePartyListener
 import me.clip.voteparty.plugin.VotePartyPlugin
 import org.bukkit.event.EventHandler
 
