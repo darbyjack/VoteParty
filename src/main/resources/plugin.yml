@@ -1,0 +1,4 @@
+name: VoteParty
+main: me.clip.voteparty.plugin.VotePartyPlugin
+
+version: '1.0'
