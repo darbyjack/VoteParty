@@ -49,6 +49,10 @@ data class VotePartyConfig(var effects: EffectsConfig?,
 	companion object
 	{
 		val DEF_CRATE_CONFIG = CrateConfig(true, Material.CHEST)
+		val DEF_PER_VOTE_REWARDS = PerVoteRewards(true, 1, listOf("eco give {player} 10;0", "give {player} steak 8;0"))
+		val DEF_GUARANTEED_REWARDS = GuaranteedRewards(true, listOf("eco give {player} 10;0", "give {player} steak 8;0"))
+		val DEF_GLOBAL_COMMANDS = GlobalCommands(true, listOf("broadcast Only {votes} more votes until a VoteParty!"))
+		val DEF_VOTE_CONFIG = VoteConfig(DEF_PER_VOTE_REWARDS, DEF_GUARANTEED_REWARDS, DEF_GLOBAL_COMMANDS)
 	}
 
 }
