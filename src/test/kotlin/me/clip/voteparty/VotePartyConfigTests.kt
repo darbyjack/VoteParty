@@ -40,7 +40,7 @@ object VotePartyConfigTests
 		if (config.crate == null)
 		{
 			println("crate entry not found!")
-			config.crate = VotePartyConfig.CrateConfig.DEF
+			config.crate = VotePartyConfig.DEF_CRATE_CONFIG
 		}
 		
 		println(config)
