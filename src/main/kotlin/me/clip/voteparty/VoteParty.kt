@@ -1,8 +1,10 @@
 package me.clip.voteparty
 
+import co.aikar.commands.PaperCommandManager
 import com.google.gson.Gson
 import com.sxtanna.korm.Korm
 import me.clip.voteparty.base.State
+import me.clip.voteparty.cmds.CommandVoteParty
 import me.clip.voteparty.conf.ConfigVoteParty
 import me.clip.voteparty.plugin.VotePartyPlugin
 import me.clip.voteparty.update.UpdateChecker
@@ -11,11 +13,13 @@ class VoteParty internal constructor(private val plugin: VotePartyPlugin) : Stat
 {
 	
 	private var conf = null as? ConfigVoteParty?
+	private val cmds = PaperCommandManager(plugin)
 	
 	
 	override fun load()
 	{
 		loadConfig()
+		loadCommands()
 		
 		UpdateChecker.check(plugin, 987)
 		{
@@ -41,6 +45,13 @@ class VoteParty internal constructor(private val plugin: VotePartyPlugin) : Stat
 		KORM.push(conf, file)
 		
 		this.conf = conf
+	}
+	
+	private fun loadCommands()
+	{
+		cmds.enableUnstableAPI("help")
+		
+		sequenceOf(CommandVoteParty()).forEach(cmds::registerCommand)
 	}
 	
 	
