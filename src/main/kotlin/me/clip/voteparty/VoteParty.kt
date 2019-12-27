@@ -9,7 +9,6 @@ import me.clip.voteparty.conf.ConfigVoteParty
 import me.clip.voteparty.lang.Lang
 import me.clip.voteparty.plugin.VotePartyPlugin
 import me.clip.voteparty.update.UpdateChecker
-import java.io.File
 import java.util.*
 
 class VoteParty internal constructor(private val plugin: VotePartyPlugin) : State
@@ -60,6 +59,8 @@ class VoteParty internal constructor(private val plugin: VotePartyPlugin) : Stat
 
 		cmds.registerCommand(CommandVoteParty())
 	}
+
+	fun conf() = conf ?: ConfigVoteParty.DEF
 
 	private fun registerLanguages() {
 		plugin.dataFolder.resolve("languages").listFiles()?.forEach {
