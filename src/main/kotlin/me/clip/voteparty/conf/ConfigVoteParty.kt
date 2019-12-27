@@ -4,9 +4,13 @@ import com.sxtanna.korm.data.custom.KormList
 import me.clip.voteparty.conf.base.Config
 import org.bukkit.Material
 
-data class ConfigVoteParty(var effects: EffectsConfig?, var crate: CrateConfig?, var voting: VoteConfig?, var party: PartyConfig?) : Config
+data class ConfigVoteParty(var settings: SettingsConfig?, var effects: EffectsConfig?, var crate: CrateConfig?, var voting: VoteConfig?, var party: PartyConfig?) : Config
 {
-	
+
+	data class SettingsConfig(
+			var language: String
+	) : Config
+
 	data class EffectsConfig(
 			var vote: Effects,
 			var party_start: Effects,
@@ -82,9 +86,10 @@ data class ConfigVoteParty(var effects: EffectsConfig?, var crate: CrateConfig?,
 		private val DEF_PARTY_START_EFFECTS = Effects(true, listOf("glyph", "hearts"))
 		private val DEF_PARTY_COMMAND_EXECUTE_EFFECTS = Effects(true, listOf("smoke", "hearts"))
 		private val DEF_EFFECTS_CONFIG = EffectsConfig(DEF_VOTE_EFFECTS, DEF_PARTY_START_EFFECTS, DEF_PARTY_COMMAND_EXECUTE_EFFECTS)
+		private val DEF_SETTINGS_CONFIG = SettingsConfig("en_US")
 		
 		
-		val DEF = ConfigVoteParty(DEF_EFFECTS_CONFIG, DEF_CRATE_CONFIG, DEF_VOTE_CONFIG, DEF_PARTY_CONFIG)
+		val DEF = ConfigVoteParty(DEF_SETTINGS_CONFIG, DEF_EFFECTS_CONFIG, DEF_CRATE_CONFIG, DEF_VOTE_CONFIG, DEF_PARTY_CONFIG)
 		
 	}
 	

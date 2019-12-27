@@ -69,7 +69,7 @@ class VoteParty internal constructor(private val plugin: VotePartyPlugin) : Stat
 			cmds.locales.loadYamlLanguageFile(it, locale)
 		}
 		// Temp for now
-		cmds.locales.defaultLocale = Locale.forLanguageTag("en_US")
+		cmds.locales.defaultLocale = Locale.forLanguageTag(conf?.settings?.language ?: "en_US")
 	}
 
 	companion object
