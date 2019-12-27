@@ -64,8 +64,15 @@ sourceSets {
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
+compileJava {
+	options.compilerArgs += ["-parameters"]
+	options.fork = true
+	options.forkOptions.executable = 'javac'
+}
+
 compileKotlin {
 	kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8
+	kotlinOptions.javaParameters = true
 }
 compileTestKotlin {
 	kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8

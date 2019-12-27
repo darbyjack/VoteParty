@@ -8,6 +8,8 @@ import me.clip.voteparty.cmds.CommandVoteParty
 import me.clip.voteparty.conf.ConfigVoteParty
 import me.clip.voteparty.plugin.VotePartyPlugin
 import me.clip.voteparty.update.UpdateChecker
+import java.io.File
+import java.util.*
 
 class VoteParty internal constructor(private val plugin: VotePartyPlugin) : State
 {
@@ -19,6 +21,7 @@ class VoteParty internal constructor(private val plugin: VotePartyPlugin) : Stat
 	override fun load()
 	{
 		loadConfig()
+		saveLanguage()
 		loadCommands()
 
 		UpdateChecker.check(plugin, 987)
@@ -52,6 +55,16 @@ class VoteParty internal constructor(private val plugin: VotePartyPlugin) : Stat
 		cmds.enableUnstableAPI("help")
 
 		cmds.registerCommand(CommandVoteParty())
+
+		cmds.locales.loadYamlLanguageFile(File(plugin.dataFolder, "en_US.yml"), Locale.ENGLISH)
+	}
+
+	private fun saveLanguage() {
+		val name = "en_US.yml"
+		val file = File(plugin.dataFolder, name)
+		if (!file.exists()) {
+			this.plugin.saveResource(name, false)
+		}
 	}
 
 
