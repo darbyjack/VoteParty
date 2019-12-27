@@ -3,4 +3,4 @@ descriptions:
   set-counter: "Set the amount of votes currently"
   add-vote: "Add to the current amount of votes"
   start-party: "Force start a VoteParty"
-  give-create: "Give a create to someone"
+  give-crate: "Give a create to someone"
