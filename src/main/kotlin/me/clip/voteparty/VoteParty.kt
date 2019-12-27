@@ -4,7 +4,7 @@ import co.aikar.commands.PaperCommandManager
 import com.google.gson.Gson
 import com.sxtanna.korm.Korm
 import me.clip.voteparty.base.State
-import me.clip.voteparty.cmds.CommandVoteParty
+import me.clip.voteparty.cmds.*
 import me.clip.voteparty.conf.ConfigVoteParty
 import me.clip.voteparty.plugin.VotePartyPlugin
 import me.clip.voteparty.update.UpdateChecker
@@ -51,7 +51,7 @@ class VoteParty internal constructor(private val plugin: VotePartyPlugin) : Stat
 	{
 		cmds.enableUnstableAPI("help")
 		
-		sequenceOf(CommandVoteParty()).forEach(cmds::registerCommand)
+		sequenceOf(CommandAddVote(), CommandGiveCrate(), CommandSetCounter(), CommandStartParty(), CommandVoteParty()).forEach(cmds::registerCommand)
 	}
 	
 	
