@@ -1,0 +1,6 @@
+descriptions:
+  help: "Shows the help menu for the plugin"
+  set-counter: "Set the amount of votes currently"
+  add-vote: "Add to the current amount of votes"
+  start-party: "Force start a VoteParty"
+  give-create: "Give a create to someone"
