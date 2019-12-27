@@ -44,7 +44,7 @@ data class ConfigVoteParty(var settings: SettingsConfig?, var effects: EffectsCo
 	data class RewardsPerVote(
 			var enabled: Boolean,
 			var max_possible: Int,
-			var commands: List<String>
+			var commands: List<Command>
 	                         ) : Config
 	
 	
@@ -74,8 +74,8 @@ data class ConfigVoteParty(var settings: SettingsConfig?, var effects: EffectsCo
 	{
 		
 		private val DEF_CRATE_CONFIG = CrateConfig(true, Material.CHEST)
-		private val DEF_PER_VOTE_REWARDS = RewardsPerVote(true, 1, listOf("eco give {player} 10;0", "give {player} steak 8;0"))
-		private val DEF_GUARANTEED_REWARDS = Commands(true, listOf("eco give {player} 10;0", "give {player} steak 8;0"))
+		private val DEF_PER_VOTE_REWARDS = RewardsPerVote(false, 1, listOf(Command(50, "eco give {player} 100"), Command(70, "give {player} steak 10")))
+		private val DEF_GUARANTEED_REWARDS = Commands(true, listOf("eco give {player} 10", "give {player} steak 8"))
 		private val DEF_GLOBAL_COMMANDS = Commands(true, listOf("broadcast Only {votes} more votes until a VoteParty!"))
 		private val DEF_VOTE_CONFIG = VoteConfig(DEF_PER_VOTE_REWARDS, DEF_GUARANTEED_REWARDS, DEF_GLOBAL_COMMANDS)
 		private val DEF_REWARD_COMMANDS = CommandsReward(1, listOf("eco give {player} 100;0", "give {player} diamond 6;2", "give {player} iron_ingot 12;1"))
