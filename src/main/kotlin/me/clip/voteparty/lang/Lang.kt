@@ -22,8 +22,13 @@ class Lang
 		
 		file.parentFile.mkdirs()
 		file.createNewFile()
-		
-		stream.copyTo(file.outputStream()) // save file from jar to disk
+
+		file.outputStream().use()
+		{
+			stream.copyTo(it)
+			stream.close()
+		} // save file from jar to disk
+
 	}
 	
 	

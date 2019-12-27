@@ -21,17 +21,17 @@ class VoteParty internal constructor(private val plugin: VotePartyPlugin) : Stat
 
 	override fun load()
 	{
+		val lang = Lang()
+		lang.save(plugin.dataFolder)
+
 		loadConfig()
-		saveLanguage()
 		loadCommands()
+		registerLanguages()
 
 		UpdateChecker.check(plugin, 987)
 		{
 
 		}
-		
-		val lang = Lang()
-		lang.save(plugin.dataFolder)
 	}
 
 	override fun kill()
@@ -59,18 +59,18 @@ class VoteParty internal constructor(private val plugin: VotePartyPlugin) : Stat
 		cmds.enableUnstableAPI("help")
 
 		cmds.registerCommand(CommandVoteParty())
-
-		cmds.locales.loadYamlLanguageFile(File(plugin.dataFolder, "en_US.yml"), Locale.ENGLISH)
 	}
 
-	private fun saveLanguage() {
-		val name = "en_US.yml"
-		val file = File(plugin.dataFolder, name)
-		if (!file.exists()) {
-			this.plugin.saveResource(name, false)
+	private fun registerLanguages() {
+		plugin.dataFolder.resolve("languages").listFiles()?.forEach {
+			val tag = it.name.replace(".yml", "")
+			val locale = Locale.forLanguageTag(tag)
+			cmds.addSupportedLanguage(locale)
+			cmds.locales.loadYamlLanguageFile(it, locale)
 		}
+		// Temp for now
+		cmds.locales.defaultLocale = Locale.forLanguageTag("en_US")
 	}
-
 
 	companion object
 	{
