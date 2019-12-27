@@ -5,7 +5,7 @@ import com.sxtanna.korm.Korm
 import me.clip.voteparty.base.State
 import me.clip.voteparty.conf.ConfigVoteParty
 import me.clip.voteparty.plugin.VotePartyPlugin
-import me.clip.voteparty.util.UpdateChecker
+import me.clip.voteparty.update.UpdateChecker
 
 class VoteParty internal constructor(private val plugin: VotePartyPlugin) : State
 {
