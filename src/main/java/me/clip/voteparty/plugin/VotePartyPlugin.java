@@ -53,6 +53,13 @@ public final class VotePartyPlugin extends JavaPlugin
 							 .artifactId("Korm")
 							 .version("1.9")
 							 .build());
+
+		LIBRARIES.add(Library.builder()
+							 .groupId("com.konghq")
+							 .artifactId("unirest-java")
+							 .version("3.3.00")
+							 .classifier("standalone")
+							 .build());
 	}
 
 

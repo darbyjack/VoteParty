@@ -34,6 +34,8 @@ dependencies {
 	implementation("net.byteflux:libby-bukkit:0.0.2-SNAPSHOT")
 	
 	compileOnly "com.sxtanna.korm:Korm:+"
+	compileOnly "com.konghq:unirest-java:3.3.00"
+	
 	compileOnly fileTree(dir: 'gradle/depends', include: ['*.jar'])
 	
 	
