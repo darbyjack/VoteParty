@@ -14,55 +14,6 @@ import java.util.logging.Level;
 public final class VotePartyPlugin extends JavaPlugin
 {
 
-	private static final List<Library> LIBRARIES = new ArrayList<>();
-
-	static
-	{
-		LIBRARIES.add(Library.builder()
-							 .groupId("org.jetbrains.kotlin")
-							 .artifactId("kotlin-stdlib")
-							 .version("1.3.61")
-							 .build());
-
-		LIBRARIES.add(Library.builder()
-							 .groupId("org.jetbrains.kotlin")
-							 .artifactId("kotlin-stdlib-jdk8")
-							 .version("1.3.61")
-							 .build());
-
-		LIBRARIES.add(Library.builder()
-							 .groupId("org.jetbrains.kotlin")
-							 .artifactId("kotlin-stdlib-jdk7")
-							 .version("1.3.61")
-							 .build());
-
-		LIBRARIES.add(Library.builder()
-							 .groupId("org.jetbrains.kotlin")
-							 .artifactId("kotlin-stdlib-common")
-							 .version("1.3.61")
-							 .build());
-
-		LIBRARIES.add(Library.builder()
-							 .groupId("org.jetbrains.kotlin")
-							 .artifactId("kotlin-reflect")
-							 .version("1.3.61")
-							 .build());
-
-		LIBRARIES.add(Library.builder()
-							 .groupId("com.sxtanna.korm")
-							 .artifactId("Korm")
-							 .version("1.9")
-							 .build());
-
-		LIBRARIES.add(Library.builder()
-							 .groupId("com.konghq")
-							 .artifactId("unirest-java")
-							 .version("3.3.00")
-							 .classifier("standalone")
-							 .build());
-	}
-
-
 	private final AtomicReference<VoteParty> reference = new AtomicReference<>();
 
 
@@ -112,6 +63,59 @@ public final class VotePartyPlugin extends JavaPlugin
 	public VoteParty getVoteParty()
 	{
 		return reference.get();
+	}
+
+
+	private static final List<Library> LIBRARIES = new ArrayList<>();
+
+	static
+	{
+		// kotlin
+		LIBRARIES.add(Library.builder()
+							 .groupId("org.jetbrains.kotlin")
+							 .artifactId("kotlin-stdlib")
+							 .version("1.3.61")
+							 .build());
+
+		LIBRARIES.add(Library.builder()
+							 .groupId("org.jetbrains.kotlin")
+							 .artifactId("kotlin-stdlib-jdk8")
+							 .version("1.3.61")
+							 .build());
+
+		LIBRARIES.add(Library.builder()
+							 .groupId("org.jetbrains.kotlin")
+							 .artifactId("kotlin-stdlib-jdk7")
+							 .version("1.3.61")
+							 .build());
+
+		LIBRARIES.add(Library.builder()
+							 .groupId("org.jetbrains.kotlin")
+							 .artifactId("kotlin-stdlib-common")
+							 .version("1.3.61")
+							 .build());
+
+		LIBRARIES.add(Library.builder()
+							 .groupId("org.jetbrains.kotlin")
+							 .artifactId("kotlin-reflect")
+							 .version("1.3.61")
+							 .build());
+
+		// korn fields
+		LIBRARIES.add(Library.builder()
+							 .groupId("com.sxtanna.korm")
+							 .artifactId("Korm")
+							 .version("1.9")
+							 .build());
+
+
+		// update checker dependency
+		LIBRARIES.add(Library.builder()
+							 .groupId("com.konghq")
+							 .artifactId("unirest-java")
+							 .version("3.3.00")
+							 .classifier("standalone")
+							 .build());
 	}
 
 }
