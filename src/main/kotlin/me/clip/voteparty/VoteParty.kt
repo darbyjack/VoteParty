@@ -6,6 +6,7 @@ import com.sxtanna.korm.Korm
 import me.clip.voteparty.base.State
 import me.clip.voteparty.cmds.CommandVoteParty
 import me.clip.voteparty.conf.ConfigVoteParty
+import me.clip.voteparty.lang.Lang
 import me.clip.voteparty.plugin.VotePartyPlugin
 import me.clip.voteparty.update.UpdateChecker
 
@@ -25,6 +26,9 @@ class VoteParty internal constructor(private val plugin: VotePartyPlugin) : Stat
 		{
 
 		}
+		
+		val lang = Lang()
+		lang.save(plugin.dataFolder)
 	}
 
 	override fun kill()
