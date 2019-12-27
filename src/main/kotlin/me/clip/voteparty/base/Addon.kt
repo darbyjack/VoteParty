@@ -1,5 +1,6 @@
 package me.clip.voteparty.base
 
+import me.clip.voteparty.VoteParty
 import me.clip.voteparty.plugin.VotePartyPlugin
 import org.bukkit.Server
 
@@ -14,5 +15,12 @@ interface Addon
 	
 	val server: Server
 		get() = plugin.server
+	
+	
+	val party: VoteParty
+		get() = checkNotNull(plugin.voteParty)
+		{
+			"vote party is unavailable"
+		}
 	
 }
