@@ -50,13 +50,18 @@ object VotePartyConfigTests {
             config.party = VotePartyConfig.DEF_PARTY_CONFIG
         }
 
+        if (config.effects == null) {
+            println("effects entry not found")
+            config.effects = VotePartyConfig.DEF_EFFECTS_CONFIG
+        }
+
         println(config)
     }
 
     @Test
     internal fun testConfigO() {
         val config = VotePartyConfig(
-                VotePartyConfig.EffectsConfig(true, listOf("flames", "hearts")),
+                VotePartyConfig.EffectsConfig(VotePartyConfig.DEF_VOTE_EFFECTS, VotePartyConfig.DEF_PARTY_START_EFFECTS, VotePartyConfig.DEF_PARTY_COMMAND_EXECUTE_EFFECTS),
                 VotePartyConfig.CrateConfig(true, Material.TRAPPED_CHEST),
                 VotePartyConfig.VoteConfig(VotePartyConfig.DEF_PER_VOTE_REWARDS, VotePartyConfig.DEF_GUARANTEED_REWARDS, VotePartyConfig.DEF_GLOBAL_COMMANDS),
                 VotePartyConfig.PartyConfig(50, listOf("world_nether"), true, 1, 15, VotePartyConfig.DEF_REWARD_COMMANDS, VotePartyConfig.DEF_PRE_PARTY_COMMANDS, VotePartyConfig.DEF_PARTY_COMMANDS)
