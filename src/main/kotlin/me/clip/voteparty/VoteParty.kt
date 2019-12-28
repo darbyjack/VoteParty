@@ -13,6 +13,7 @@ import me.clip.voteparty.plugin.VotePartyPlugin
 import me.clip.voteparty.plugin.XMaterial
 import me.clip.voteparty.update.UpdateChecker
 import me.clip.voteparty.version.EffectType
+import me.clip.voteparty.version.Version
 import java.util.Locale
 
 class VoteParty internal constructor(private val plugin: VotePartyPlugin) : State
@@ -22,6 +23,7 @@ class VoteParty internal constructor(private val plugin: VotePartyPlugin) : Stat
 	private val cmds = PaperCommandManager(plugin)
 	private val voteListener = VoteListener(plugin)
 	val voteHandler = VoteHandler(plugin)
+	var version = null as? Version?
 	
 	
 	override fun load()
