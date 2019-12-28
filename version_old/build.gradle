@@ -1,0 +1,18 @@
+group 'me.clip'
+version '2.0'
+
+
+repositories {
+	maven {
+		url = "https://repo.inventivetalent.org/content/groups/public/"
+	}
+}
+
+dependencies {
+	implementation project(":version")
+	implementation "org.inventivetalent:particleapi:+"
+	
+	compileOnly("org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT") {
+		force = true
+	}
+}
