@@ -9,6 +9,7 @@ object UpdateChecker
 {
 	
 	private const val URL = "https://api.spiget.org/v2/resources/%d/versions?size=1&sort=-releaseDate"
+	private val LIST_TYPE = object : TypeToken<List<Version>>() {}.type
 	
 	
 	fun check(plugin: Plugin, id: Int, complete: (result: UpdateResult) -> Unit)
@@ -27,23 +28,22 @@ object UpdateChecker
 			Unirest.get(URL.format(id)).header("User-Agent", "CHOCO-update-checker").asString()?.body
 		} catch (ex: Exception)
 		{
-			return complete.invoke(UpdateResult(UpdateReason.EXCEPTIONS, ex.message))
+			return complete.invoke(UpdateResult.EXCEPTIONS(throwable = ex))
 		}
 		
 		
 		val old = version
 		val new = try
 		{
-			checkNotNull(VoteParty.GSON.fromJson<List<Version>>(response, object : TypeToken<List<Version>>()
-			{}.type)?.firstOrNull()?.name)
+			checkNotNull(VoteParty.GSON.fromJson<List<Version>>(response, LIST_TYPE)?.firstOrNull()?.name)
 		} catch (ex: Exception)
 		{
-			return complete.invoke(UpdateResult(UpdateReason.EXCEPTIONS, ex.message))
+			return complete.invoke(UpdateResult.EXCEPTIONS(throwable = ex))
 		}
 		
 		if (old == new)
 		{
-			return complete.invoke(UpdateResult(UpdateReason.UP_TO_DATE, new))
+			return complete.invoke(UpdateResult.UP_TO_DATE)
 		}
 		
 		val oldVersion = old.split('.').mapNotNull(String::toIntOrNull)
@@ -51,7 +51,7 @@ object UpdateChecker
 		
 		if (newVersion.size > oldVersion.size)
 		{
-			return complete.invoke(UpdateResult(UpdateReason.NEW_UPDATE, new))
+			return complete.invoke(UpdateResult.NEW_UPDATE(version = new))
 		}
 		
 		oldVersion.forEachIndexed()
@@ -61,27 +61,36 @@ object UpdateChecker
 				return@forEachIndexed
 			}
 			
-			return complete.invoke(UpdateResult(UpdateReason.NEW_UPDATE, new))
+			return complete.invoke(UpdateResult.NEW_UPDATE(version = new))
 		}
 		
-		return complete.invoke(UpdateResult(UpdateReason.UNRELEASED, new))
+		return complete.invoke(UpdateResult.UNRELEASED)
 	}
 	
 	
 	private data class Version(val name: String?)
 	
-	data class UpdateResult(val reason: UpdateReason, val version: String? = null)
-	
-	enum class UpdateReason(val reason: String)
+	sealed class UpdateResult
 	{
 		
-		UP_TO_DATE("Version is up to date"),
+		abstract val message: String
 		
-		UNRELEASED("You're on a newer version than latest"),
 		
-		NEW_UPDATE("There is an update available"),
+		object UP_TO_DATE : UpdateResult()
+		{
+			override val message = "Version is up to date"
+		}
 		
-		EXCEPTIONS("Failed to check for an update"),
+		object UNRELEASED : UpdateResult()
+		{
+			override val message = "You're on a newer version than latest"
+		}
+		
+		class NEW_UPDATE(override val message: String = "There is an update available", val version: String)
+			: UpdateResult()
+		
+		class EXCEPTIONS(override val message: String = "Failed to check for an update", val throwable: Throwable)
+			: UpdateResult()
 		
 	}
 	
