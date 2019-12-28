@@ -7,14 +7,17 @@ import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import java.util.concurrent.ThreadLocalRandom.current
 
-class VoteHandler(override val plugin: VotePartyPlugin) : Addon {
+class VoteHandler(override val plugin: VotePartyPlugin) : Addon
+{
 
     private val conf: ConfigVoteParty
         get() = party.conf()
 
 
-    fun giveGuaranteedVoteRewards(player: Player) {
-        if (conf.voting?.guaranteedRewards?.enabled == false) {
+    fun giveGuaranteedVoteRewards(player: Player)
+    {
+        if (conf.voting?.guaranteedRewards?.enabled == false)
+        {
             return
         }
 
@@ -25,8 +28,10 @@ class VoteHandler(override val plugin: VotePartyPlugin) : Addon {
         }
     }
 
-    fun giveRandomVoteRewards(player: Player) {
-        if (conf.voting?.perVoteRewards?.enabled == false) {
+    fun giveRandomVoteRewards(player: Player)
+    {
+        if (conf.voting?.perVoteRewards?.enabled == false)
+        {
             return
         }
 
@@ -35,7 +40,8 @@ class VoteHandler(override val plugin: VotePartyPlugin) : Addon {
         repeat(conf.voting?.perVoteRewards?.max_possible ?: 0) {
             val cmd = cmds.random()
 
-            if (cmd.chance <= current().nextInt(100)) {
+            if (cmd.chance <= current().nextInt(100))
+            {
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd.command.replace("{player}", player.name))
             }
         }

@@ -17,81 +17,83 @@ import java.util.*
 class VoteParty internal constructor(private val plugin: VotePartyPlugin) : State
 {
 
-	private var conf = null as? ConfigVoteParty?
-	private val cmds = PaperCommandManager(plugin)
-	private val voteListener = VoteListener(plugin)
-	val voteHandler = VoteHandler(plugin)
+    private var conf = null as? ConfigVoteParty?
+    private val cmds = PaperCommandManager(plugin)
+    private val voteListener = VoteListener(plugin)
+    val voteHandler = VoteHandler(plugin)
 
 
-	override fun load()
-	{
-		val lang = Lang()
-		lang.save(plugin.dataFolder)
+    override fun load()
+    {
+        val lang = Lang()
+        lang.save(plugin.dataFolder)
 
-		loadConfig()
-		loadCommands()
-		registerLanguages()
+        loadConfig()
+        loadCommands()
+        registerLanguages()
 
-		UpdateChecker.check(plugin, 987)
-		{
+        UpdateChecker.check(plugin, 987)
+        {
 
-		}
-		voteListener.load()
-	}
+        }
+        voteListener.load()
+    }
 
-	override fun kill()
-	{
-		voteListener.kill()
-	}
-
-
-	private fun loadConfig()
-	{
-		val file = plugin.dataFolder.resolve("conf.korm")
-
-		val conf = (KORM.pull(file).to() ?: ConfigVoteParty.DEF).apply()
-		{
-			merge(ConfigVoteParty.DEF)
-		}
-
-		KORM.push(conf, file)
-
-		this.conf = conf
-	}
-
-	private fun loadCommands()
-	{
-		cmds.enableUnstableAPI("help")
-
-		cmds.registerCommand(CommandVoteParty())
-	}
-
-	fun conf() = conf ?: ConfigVoteParty.DEF
-
-	private fun registerLanguages() {
-		plugin.dataFolder.resolve("languages").listFiles()?.forEach {
-			val tag = it.name.replace(".yml", "")
-			val locale = Locale.forLanguageTag(tag)
-			cmds.addSupportedLanguage(locale)
-			cmds.locales.loadYamlLanguageFile(it, locale)
-		}
-		// Temp for now
-		cmds.locales.defaultLocale = Locale.forLanguageTag(conf?.settings?.language ?: "en_US")
-	}
-
-	companion object
-	{
-		internal val GSON = Gson()
-		internal val KORM = Korm()
-
-		init {
-		    KORM.pullWith<XMaterial> {reader, types ->
-				types.firstOrNull()?.asBase()?.dataAsString()?.let(XMaterial::matchXMaterial)?.orElse(null)
-			}
-		}
-	}
+    override fun kill()
+    {
+        voteListener.kill()
+    }
 
 
-	// api methods
+    private fun loadConfig()
+    {
+        val file = plugin.dataFolder.resolve("conf.korm")
+
+        val conf = (KORM.pull(file).to() ?: ConfigVoteParty.DEF).apply()
+        {
+            merge(ConfigVoteParty.DEF)
+        }
+
+        KORM.push(conf, file)
+
+        this.conf = conf
+    }
+
+    private fun loadCommands()
+    {
+        cmds.enableUnstableAPI("help")
+
+        cmds.registerCommand(CommandVoteParty())
+    }
+
+    fun conf() = conf ?: ConfigVoteParty.DEF
+
+    private fun registerLanguages()
+    {
+        plugin.dataFolder.resolve("languages").listFiles()?.forEach {
+            val tag = it.name.replace(".yml", "")
+            val locale = Locale.forLanguageTag(tag)
+            cmds.addSupportedLanguage(locale)
+            cmds.locales.loadYamlLanguageFile(it, locale)
+        }
+        // Temp for now
+        cmds.locales.defaultLocale = Locale.forLanguageTag(conf?.settings?.language ?: "en_US")
+    }
+
+    companion object
+    {
+        internal val GSON = Gson()
+        internal val KORM = Korm()
+
+        init
+        {
+            KORM.pullWith<XMaterial> { reader, types ->
+                types.firstOrNull()?.asBase()?.dataAsString()?.let(XMaterial::matchXMaterial)?.orElse(null)
+            }
+        }
+    }
+
+
+    // api methods
 
 }
