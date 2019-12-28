@@ -23,6 +23,6 @@ class VoteListener(override val plugin: VotePartyPlugin) : VotePartyListener
 		
 		party.voteHandler.giveGuaranteedVoteRewards(online)
 		party.voteHandler.giveRandomVoteRewards(online)
-		// Effects at player location
+		party.voteHandler.playerVoteEffects(online)
 	}
 }
