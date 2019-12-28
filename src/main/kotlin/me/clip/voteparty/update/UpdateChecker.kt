@@ -86,10 +86,10 @@ object UpdateChecker
 			override val message = "You're on a newer version than latest"
 		}
 		
-		class NEW_UPDATE(override val message: String = "There is an update available", val version: String)
+		data class NEW_UPDATE(override val message: String = "There is an update available", val version: String)
 			: UpdateResult()
 		
-		class EXCEPTIONS(override val message: String = "Failed to check for an update", val throwable: Throwable)
+		data class EXCEPTIONS(override val message: String = "Failed to check for an update", val throwable: Throwable)
 			: UpdateResult()
 		
 	}
