@@ -3,6 +3,7 @@ package me.clip.voteparty.handler
 import me.clip.voteparty.base.Addon
 import me.clip.voteparty.conf.ConfigVoteParty
 import me.clip.voteparty.plugin.VotePartyPlugin
+import me.clip.voteparty.version.Version
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import java.util.concurrent.ThreadLocalRandom.current
@@ -45,6 +46,17 @@ class VoteHandler(override val plugin: VotePartyPlugin) : Addon
 				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd.command.replace("{player}", player.name))
 			}
 		}
+	}
+	
+	fun playerVoteEffects(player: Player)
+	{
+		if (conf.effects?.vote?.enabled == false)
+		{
+			return
+		}
+		
+		val effects = conf.effects?.vote?.effects?.filterNotNull()?.takeIf { it.isNotEmpty() } ?: return
+		
 	}
 	
 }
