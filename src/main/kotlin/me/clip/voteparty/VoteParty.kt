@@ -10,6 +10,7 @@ import me.clip.voteparty.handler.VoteHandler
 import me.clip.voteparty.lang.Lang
 import me.clip.voteparty.listener.VoteListener
 import me.clip.voteparty.plugin.VotePartyPlugin
+import me.clip.voteparty.plugin.XMaterial
 import me.clip.voteparty.update.UpdateChecker
 import java.util.*
 
@@ -82,6 +83,12 @@ class VoteParty internal constructor(private val plugin: VotePartyPlugin) : Stat
 	{
 		internal val GSON = Gson()
 		internal val KORM = Korm()
+
+		init {
+		    KORM.pullWith<XMaterial> {reader, types ->
+				types.firstOrNull()?.asBase()?.dataAsString()?.let(XMaterial::matchXMaterial)?.orElse(null)
+			}
+		}
 	}
 
 

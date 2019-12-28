@@ -2,6 +2,7 @@ package me.clip.voteparty.conf
 
 import com.sxtanna.korm.data.custom.KormList
 import me.clip.voteparty.conf.base.Config
+import me.clip.voteparty.plugin.XMaterial
 import org.bukkit.Material
 
 data class ConfigVoteParty(var settings: SettingsConfig?, var effects: EffectsConfig?, var crate: CrateConfig?, var voting: VoteConfig?, var party: PartyConfig?) : Config
@@ -20,7 +21,9 @@ data class ConfigVoteParty(var settings: SettingsConfig?, var effects: EffectsCo
 	
 	data class CrateConfig(
 			var enabled: Boolean,
-			var material: Material
+			var material: XMaterial,
+			var name: String,
+			var lore: List<String>
 	                      ) : Config
 	
 	data class VoteConfig(
@@ -73,7 +76,7 @@ data class ConfigVoteParty(var settings: SettingsConfig?, var effects: EffectsCo
 	companion object
 	{
 		
-		private val DEF_CRATE_CONFIG = CrateConfig(true, Material.CHEST)
+		private val DEF_CRATE_CONFIG = CrateConfig(true, XMaterial.CHEST, "&b&lVote&f&lParty &7Crate", listOf("&aPlace me &e:)"))
 		private val DEF_PER_VOTE_REWARDS = RewardsPerVote(false, 1, listOf(Command(50, "eco give %player_name% 100"), Command(70, "give %player_name% steak 10")))
 		private val DEF_GUARANTEED_REWARDS = Commands(true, listOf("eco give %player_name% 10", "give %player_name% steak 8"))
 		private val DEF_GLOBAL_COMMANDS = Commands(true, listOf("broadcast Only %whatever_this_placeholder_is% more votes until a VoteParty!"))
