@@ -68,7 +68,7 @@ object UpdateChecker
 	}
 	
 	
-	data class Version(val name: String?)
+	private data class Version(val name: String?)
 	
 	data class UpdateResult(val reason: UpdateReason, val version: String? = null)
 	
