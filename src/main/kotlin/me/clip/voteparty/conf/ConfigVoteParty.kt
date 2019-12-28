@@ -76,17 +76,17 @@ data class ConfigVoteParty(var settings: SettingsConfig?, var effects: EffectsCo
 	{
 		
 		private val DEF_CRATE_CONFIG = CrateConfig(true, XMaterial.CHEST, "&b&lVote&f&lParty &7Crate", listOf("&aPlace me &e:)"))
-		private val DEF_PER_VOTE_REWARDS = RewardsPerVote(false, 1, listOf(Command(50, "eco give %player_name% 100"), Command(70, "give %player_name% steak 10")))
-		private val DEF_GUARANTEED_REWARDS = Commands(true, listOf("eco give %player_name% 10", "give %player_name% steak 8"))
+		private val DEF_PER_VOTE_REWARDS = RewardsPerVote(false, 1, listOf(Command(50, "eco give %player_name% 100"), Command(70, "give %player_name% STEAK 10")))
+		private val DEF_GUARANTEED_REWARDS = Commands(true, listOf("eco give %player_name% 10", "give %player_name% STEAK 8"))
 		private val DEF_GLOBAL_COMMANDS = Commands(true, listOf("broadcast Only %whatever_this_placeholder_is% more votes until a VoteParty!"))
 		private val DEF_VOTE_CONFIG = VoteConfig(DEF_PER_VOTE_REWARDS, DEF_GUARANTEED_REWARDS, DEF_GLOBAL_COMMANDS)
 		private val DEF_REWARD_COMMANDS = CommandsReward(1, listOf(Command(50, "eco give %player_name% 100"), Command(50, "give %player_name% DIAMOND 6"), Command(50, "give %player_name% IRON_INGOT 12")))
 		private val DEF_PRE_PARTY_COMMANDS = Commands(false, listOf("broadcast Party will start soon!"))
 		private val DEF_PARTY_COMMANDS = Commands(false, listOf("broadcast Party Starting!"))
 		private val DEF_PARTY_CONFIG = PartyConfig(50, listOf("world_nether"), true, 1, 15, DEF_REWARD_COMMANDS, DEF_PRE_PARTY_COMMANDS, DEF_PARTY_COMMANDS)
-		private val DEF_VOTE_EFFECTS = Effects(true, listOf("flames", "hearts"))
-		private val DEF_PARTY_START_EFFECTS = Effects(true, listOf("glyph", "hearts"))
-		private val DEF_PARTY_COMMAND_EXECUTE_EFFECTS = Effects(true, listOf("smoke", "hearts"))
+		private val DEF_VOTE_EFFECTS = Effects(true, listOf("FLAME", "HEART"))
+		private val DEF_PARTY_START_EFFECTS = Effects(true, listOf("SLIME", "HEART"))
+		private val DEF_PARTY_COMMAND_EXECUTE_EFFECTS = Effects(true, listOf("SMOKE_NORMAL", "HEART"))
 		private val DEF_EFFECTS_CONFIG = EffectsConfig(DEF_VOTE_EFFECTS, DEF_PARTY_START_EFFECTS, DEF_PARTY_COMMAND_EXECUTE_EFFECTS)
 		private val DEF_SETTINGS_CONFIG = SettingsConfig("en_US")
 		
