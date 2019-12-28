@@ -3,6 +3,7 @@ package me.clip.voteparty.conf
 import com.sxtanna.korm.data.custom.KormList
 import me.clip.voteparty.conf.base.Config
 import me.clip.voteparty.plugin.XMaterial
+import me.clip.voteparty.version.EffectType
 
 data class ConfigVoteParty(var settings: SettingsConfig?, var effects: EffectsConfig?, var crate: CrateConfig?, var voting: VoteConfig?, var party: PartyConfig?) : Config
 {
@@ -52,7 +53,7 @@ data class ConfigVoteParty(var settings: SettingsConfig?, var effects: EffectsCo
 	
 	data class Effects(
 			var enabled: Boolean,
-			var effects: List<String>
+			var effects: List<EffectType?>?
 	) : Config
 	
 	data class Commands(
@@ -84,9 +85,9 @@ data class ConfigVoteParty(var settings: SettingsConfig?, var effects: EffectsCo
 		private val DEF_PRE_PARTY_COMMANDS = Commands(false, listOf("broadcast Party will start soon!"))
 		private val DEF_PARTY_COMMANDS = Commands(false, listOf("broadcast Party Starting!"))
 		private val DEF_PARTY_CONFIG = PartyConfig(50, listOf("world_nether"), true, 1, 15, DEF_REWARD_COMMANDS, DEF_PRE_PARTY_COMMANDS, DEF_PARTY_COMMANDS)
-		private val DEF_VOTE_EFFECTS = Effects(true, listOf("FLAME", "HEART"))
-		private val DEF_PARTY_START_EFFECTS = Effects(true, listOf("SLIME", "HEART"))
-		private val DEF_PARTY_COMMAND_EXECUTE_EFFECTS = Effects(true, listOf("SMOKE_NORMAL", "HEART"))
+		private val DEF_VOTE_EFFECTS = Effects(true, listOf(EffectType.FLAME, EffectType.HEART))
+		private val DEF_PARTY_START_EFFECTS = Effects(true, listOf(EffectType.SLIME, EffectType.HEART))
+		private val DEF_PARTY_COMMAND_EXECUTE_EFFECTS = Effects(true, listOf(EffectType.SMOKE_NORMAL, EffectType.HEART))
 		private val DEF_EFFECTS_CONFIG = EffectsConfig(DEF_VOTE_EFFECTS, DEF_PARTY_START_EFFECTS, DEF_PARTY_COMMAND_EXECUTE_EFFECTS)
 		private val DEF_SETTINGS_CONFIG = SettingsConfig("en_US")
 		

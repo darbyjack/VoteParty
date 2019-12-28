@@ -12,6 +12,7 @@ import me.clip.voteparty.listener.VoteListener
 import me.clip.voteparty.plugin.VotePartyPlugin
 import me.clip.voteparty.plugin.XMaterial
 import me.clip.voteparty.update.UpdateChecker
+import me.clip.voteparty.version.EffectType
 import java.util.*
 
 class VoteParty internal constructor(private val plugin: VotePartyPlugin) : State
@@ -89,6 +90,10 @@ class VoteParty internal constructor(private val plugin: VotePartyPlugin) : Stat
 		{
 			KORM.pullWith<XMaterial> { reader, types ->
 				types.firstOrNull()?.asBase()?.dataAsString()?.let(XMaterial::matchXMaterial)?.orElse(null)
+			}
+			
+			KORM.pullWith<EffectType> { reader, types ->
+				types.firstOrNull()?.asBase()?.dataAsString()?.let(EffectType.Companion::find)
 			}
 		}
 	}
