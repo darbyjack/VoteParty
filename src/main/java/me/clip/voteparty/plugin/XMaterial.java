@@ -22,6 +22,7 @@ package me.clip.voteparty.plugin;
  * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
  * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
 import com.google.common.base.Enums;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -1619,7 +1620,8 @@ public enum XMaterial {
         Validate.notEmpty(version, "Cannot get exact major minecraft version for null or empty version");
 
         // getBukkitVersion()
-        if (version.contains("-R") || version.endsWith("SNAPSHOT")) version = version.substring(0, version.indexOf('-'));
+        if (version.contains("-R") || version.endsWith("SNAPSHOT"))
+            version = version.substring(0, version.indexOf('-'));
 
         // getVersion()
         int index = version.indexOf("MC:");

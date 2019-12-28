@@ -5,15 +5,15 @@ package me.clip.voteparty.base
  */
 interface State
 {
-
-    /**
-     * Holds logic for when this enables
-     */
-    fun load()
-
-    /**
-     * Holds logic for when this is disabled
-     */
-    fun kill()
-
+	
+	/**
+	 * Holds logic for when this enables
+	 */
+	fun load()
+	
+	/**
+	 * Holds logic for when this is disabled
+	 */
+	fun kill()
+	
 }

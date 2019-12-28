@@ -9,18 +9,18 @@ import org.bukkit.Server
  */
 interface Addon
 {
-
-    val plugin: VotePartyPlugin
-
-
-    val server: Server
-        get() = plugin.server
-
-
-    val party: VoteParty
-        get() = checkNotNull(plugin.voteParty)
-        {
-            "vote party is unavailable"
-        }
-
+	
+	val plugin: VotePartyPlugin
+	
+	
+	val server: Server
+		get() = plugin.server
+	
+	
+	val party: VoteParty
+		get() = checkNotNull(plugin.voteParty)
+		{
+			"vote party is unavailable"
+		}
+	
 }

@@ -10,29 +10,29 @@ import java.nio.file.Path
  */
 object JarFileWalker
 {
-
-    fun walk(path: String, function: (Path, InputStream?) -> Unit)
-    {
-        FileSystems.newFileSystem(javaClass.getResource(path).toURI(), emptyMap<String, Any>()).use()
-        { files ->
-            Files.walk(files.getPath(path)).forEach()
-            { path ->
-                if (Files.isDirectory(path))
-                {
-                    return@forEach // do nothing if this is a directory
-                }
-
-                try
-                {
-                    // attempt to pass the stream for this resource
-                    function.invoke(path, javaClass.classLoader.getResourceAsStream(path.toString().drop(1)))
-                } catch (ex: Exception)
-                {
-                    // fallback to just the path
-                    function.invoke(path, null)
-                }
-            }
-        }
-    }
-
+	
+	fun walk(path: String, function: (Path, InputStream?) -> Unit)
+	{
+		FileSystems.newFileSystem(javaClass.getResource(path).toURI(), emptyMap<String, Any>()).use()
+		{ files ->
+			Files.walk(files.getPath(path)).forEach()
+			{ path ->
+				if (Files.isDirectory(path))
+				{
+					return@forEach // do nothing if this is a directory
+				}
+				
+				try
+				{
+					// attempt to pass the stream for this resource
+					function.invoke(path, javaClass.classLoader.getResourceAsStream(path.toString().drop(1)))
+				} catch (ex: Exception)
+				{
+					// fallback to just the path
+					function.invoke(path, null)
+				}
+			}
+		}
+	}
+	
 }
