@@ -7,15 +7,15 @@ import org.bukkit.event.Listener
 
 interface VotePartyListener : Addon, State, Listener
 {
-	
-	override fun load()
-	{
-		server.pluginManager.registerEvents(this, plugin)
-	}
-	
-	override fun kill()
-	{
-		HandlerList.unregisterAll(this)
-	}
-	
+
+    override fun load()
+    {
+        server.pluginManager.registerEvents(this, plugin)
+    }
+
+    override fun kill()
+    {
+        HandlerList.unregisterAll(this)
+    }
+
 }

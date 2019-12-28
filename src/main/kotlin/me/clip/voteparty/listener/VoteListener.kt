@@ -5,14 +5,17 @@ import me.clip.voteparty.plugin.VotePartyListener
 import me.clip.voteparty.plugin.VotePartyPlugin
 import org.bukkit.event.EventHandler
 
-class VoteListener(override val plugin: VotePartyPlugin) :VotePartyListener {
+class VoteListener(override val plugin: VotePartyPlugin) : VotePartyListener
+{
 
     @EventHandler
-    fun VotifierEvent.onVote() {
+    fun VotifierEvent.onVote()
+    {
 
         val player = server.getOfflinePlayer(vote.username)
 
-        if (!player.isOnline && party.conf().party?.offlineVotes == true) {
+        if (!player.isOnline && party.conf().party?.offlineVotes == true)
+        {
             // Handle adding a vote
         }
 
