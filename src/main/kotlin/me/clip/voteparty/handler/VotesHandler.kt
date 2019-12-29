@@ -4,13 +4,11 @@ import me.clip.placeholderapi.PlaceholderAPI
 import me.clip.voteparty.base.Addon
 import me.clip.voteparty.conf.ConfigVoteParty
 import me.clip.voteparty.plugin.VotePartyPlugin
-import me.clip.voteparty.version.Version
 import org.bukkit.Bukkit
-import org.bukkit.Color
 import org.bukkit.entity.Player
 import java.util.concurrent.ThreadLocalRandom.current
 
-class VoteHandler(override val plugin: VotePartyPlugin) : Addon
+class VotesHandler(override val plugin: VotePartyPlugin) : Addon
 {
 	
 	private val conf: ConfigVoteParty
@@ -62,9 +60,8 @@ class VoteHandler(override val plugin: VotePartyPlugin) : Addon
 		val loc = player.location
 		
 		effects.forEach {
-			party.version?.display(it, loc, null)
+			party.hook().display(it, loc, null)
 		}
-		
 	}
 	
 }

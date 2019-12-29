@@ -7,15 +7,18 @@ import me.clip.voteparty.base.State
 import me.clip.voteparty.cmds.CommandVoteParty
 import me.clip.voteparty.conf.ConfigVoteParty
 import me.clip.voteparty.handler.PartyHandler
-import me.clip.voteparty.handler.VoteHandler
-import me.clip.voteparty.lang.Lang
+import me.clip.voteparty.handler.VotesHandler
 import me.clip.voteparty.listener.VoteListener
-import me.clip.voteparty.placeholders.PlaceholderAPI
+import me.clip.voteparty.placeholders.VotePartyPlaceholders
 import me.clip.voteparty.plugin.VotePartyPlugin
 import me.clip.voteparty.plugin.XMaterial
 import me.clip.voteparty.update.UpdateChecker
+import me.clip.voteparty.util.JarFileWalker
 import me.clip.voteparty.version.EffectType
-import me.clip.voteparty.version.Version
+import me.clip.voteparty.version.VersionHook
+import me.clip.voteparty.version.VersionHookNew
+import me.clip.voteparty.version.VersionHookOld
+import org.bukkit.Bukkit
 import java.util.Locale
 
 class VoteParty internal constructor(private val plugin: VotePartyPlugin) : State
@@ -23,29 +26,30 @@ class VoteParty internal constructor(private val plugin: VotePartyPlugin) : Stat
 	
 	private var conf = null as? ConfigVoteParty?
 	private val cmds = PaperCommandManager(plugin)
+	
 	private val voteListener = VoteListener(plugin)
-	val voteHandler = VoteHandler(plugin)
+	
+	private var hook = null as? VersionHook?
+	private var papi = null as? VotePartyPlaceholders?
+	
+	
+	val votesHandler = VotesHandler(plugin)
 	val partyHandler = PartyHandler(plugin)
-	var version = null as? Version?
-	val placeholderAPI = PlaceholderAPI()
 	
 	
 	override fun load()
 	{
-		val lang = Lang()
-		lang.save(plugin.dataFolder)
-		
-		loadConfig()
-		loadInjections()
-		loadCommands()
-		registerLanguages()
-		
-		placeholderAPI.register()
+		loadConf()
+		loadCmds()
+		loadHook()
+		loadLang()
+		loadPapi()
 		
 		UpdateChecker.check(plugin, 987)
 		{
 		
 		}
+		
 		voteListener.load()
 	}
 	
@@ -55,7 +59,7 @@ class VoteParty internal constructor(private val plugin: VotePartyPlugin) : Stat
 	}
 	
 	
-	private fun loadConfig()
+	private fun loadConf()
 	{
 		val file = plugin.dataFolder.resolve("conf.korm")
 		
@@ -67,34 +71,102 @@ class VoteParty internal constructor(private val plugin: VotePartyPlugin) : Stat
 		KORM.push(conf, file)
 		
 		this.conf = conf
-	}
-	
-	private fun loadCommands()
-	{
-		cmds.enableUnstableAPI("help")
 		
-		cmds.registerCommand(CommandVoteParty())
+		plugin.logger.info("loaded config")
 	}
 	
-	private fun loadInjections()
+	private fun loadLang()
 	{
-		cmds.registerDependency(VoteHandler::class.java, voteHandler)
-		cmds.registerDependency(PartyHandler::class.java, partyHandler)
-	}
-	
-	fun conf() = conf ?: ConfigVoteParty.DEF
-	
-	private fun registerLanguages()
-	{
-		plugin.dataFolder.resolve("languages").listFiles()?.forEach {
-			val tag = it.name.replace(".yml", "")
-			val locale = Locale.forLanguageTag(tag)
+		JarFileWalker.walk("/languages")
+		{ path, stream ->
+			
+			if (stream == null)
+			{
+				return@walk // do nothing if the stream couldn't be opened
+			}
+			
+			val file = plugin.dataFolder.resolve(path.toString().drop(1)).absoluteFile
+			if (file.exists())
+			{
+				return@walk // language file was already created
+			}
+			
+			file.parentFile.mkdirs()
+			file.createNewFile()
+			
+			file.outputStream().use()
+			{
+				stream.copyTo(it)
+				stream.close()
+			}
+		}
+		
+		plugin.dataFolder.resolve("languages").listFiles()?.forEach()
+		{
+			if (!it.extension.equals("yml", true))
+			{
+				return@forEach
+			}
+			
+			val locale = Locale.forLanguageTag(it.nameWithoutExtension)
 			cmds.addSupportedLanguage(locale)
 			cmds.locales.loadYamlLanguageFile(it, locale)
 		}
+		
+		plugin.logger.info("loaded languages")
+	}
+	
+	private fun loadCmds()
+	{
+		@Suppress("DEPRECATION")
+		cmds.enableUnstableAPI("help")
+		
+		cmds.registerCommand(CommandVoteParty())
+		
+		cmds.registerDependency(VotesHandler::class.java, votesHandler)
+		cmds.registerDependency(PartyHandler::class.java, partyHandler)
+		
 		// Temp for now
 		cmds.locales.defaultLocale = Locale.forLanguageTag(conf?.settings?.language ?: "en_US")
+		
+		plugin.logger.info("loaded commands")
 	}
+	
+	private fun loadHook()
+	{
+		val hook = if ("MC: 1.8" in Bukkit.getVersion())
+		{
+			VersionHookOld()
+		}
+		else
+		{
+			VersionHookNew()
+		}
+		
+		this.hook = hook
+		
+		plugin.logger.info("loaded hook: ${hook::class.java.simpleName}")
+	}
+	
+	private fun loadPapi()
+	{
+		val papi = VotePartyPlaceholders()
+		papi.register()
+		
+		this.papi = papi
+	}
+	
+	
+	fun conf(): ConfigVoteParty
+	{
+		return conf ?: ConfigVoteParty.DEF
+	}
+	
+	fun hook(): VersionHook
+	{
+		return checkNotNull(hook)
+	}
+	
 	
 	companion object
 	{
@@ -112,8 +184,5 @@ class VoteParty internal constructor(private val plugin: VotePartyPlugin) : Stat
 			}
 		}
 	}
-	
-	
-	// api methods
 	
 }
