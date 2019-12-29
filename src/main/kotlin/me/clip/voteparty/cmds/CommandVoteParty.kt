@@ -5,8 +5,10 @@ import co.aikar.commands.CommandHelp
 import co.aikar.commands.CommandIssuer
 import co.aikar.commands.annotation.*
 import co.aikar.commands.bukkit.contexts.OnlinePlayer
-import me.clip.voteparty.base.BASE_PERM
+import me.clip.voteparty.base.ADMIN_PERM
 import me.clip.voteparty.handler.PartyHandler
+import me.clip.voteparty.messages.Messages
+import me.clip.voteparty.util.MsgUtils.Companion.sendMessage
 
 @CommandAlias("vp")
 class CommandVoteParty : BaseCommand()
@@ -18,6 +20,7 @@ class CommandVoteParty : BaseCommand()
 	@Subcommand("addvote")
 	@Description("{@@descriptions.add-vote}")
 	@Syntax("<amount>")
+	@CommandPermission(ADMIN_PERM)
 	fun addVote(issuer: CommandIssuer, @Default("1") amount: Int)
 	{
 		// Handle checking to make sure it's a positive amount
@@ -29,6 +32,7 @@ class CommandVoteParty : BaseCommand()
 	@Description("{@@descriptions.give-crate}")
 	@CommandCompletion("@players")
 	@Syntax("<player> <amount>")
+	@CommandPermission(ADMIN_PERM)
 	fun giveCrate(issuer: CommandIssuer, @Values("@players") target: OnlinePlayer, @Default("1") amount: Int)
 	{
 		// Handle giving a crate to a player
@@ -37,6 +41,7 @@ class CommandVoteParty : BaseCommand()
 	@Subcommand("setcounter")
 	@Description("{@@descriptions.set-counter}")
 	@Syntax("<amount>")
+	@CommandPermission(ADMIN_PERM)
 	fun setCounter(issuer: CommandIssuer, amount: Int)
 	{
 		// Check if it's positive number
@@ -46,6 +51,7 @@ class CommandVoteParty : BaseCommand()
 	
 	@Subcommand("startparty")
 	@Description("{@@descriptions.start-party}")
+	@CommandPermission(ADMIN_PERM)
 	fun startParty(issuer: CommandIssuer)
 	{
 		// Start the party
@@ -55,6 +61,7 @@ class CommandVoteParty : BaseCommand()
 	@Description("{@@descriptions.give-party}")
 	@CommandCompletion("@players")
 	@Syntax("<player>")
+	@CommandPermission(ADMIN_PERM)
 	fun giveParty(issuer: CommandIssuer, @Values("@players") target: OnlinePlayer)
 	{
 		partyHandler?.giveRandomPartyRewards(target.player)
@@ -62,10 +69,15 @@ class CommandVoteParty : BaseCommand()
 	
 	@HelpCommand
 	@Description("{@@descriptions.help}")
-	@CommandPermission(BASE_PERM + "help")
-	fun help(help: CommandHelp)
+	fun help(issuer: CommandIssuer, help: CommandHelp)
 	{
-		help.showHelp()
+		if (issuer.hasPermission(ADMIN_PERM))
+		{
+			help.showHelp()
+		} else
+		{
+			sendMessage(currentCommandManager, currentCommandIssuer, Messages.INFO__VOTES_NEEDED)
+		}
 	}
 	
 }

@@ -10,6 +10,7 @@ import me.clip.voteparty.handler.PartyHandler
 import me.clip.voteparty.handler.VoteHandler
 import me.clip.voteparty.lang.Lang
 import me.clip.voteparty.listener.VoteListener
+import me.clip.voteparty.placeholders.PlaceholderAPI
 import me.clip.voteparty.plugin.VotePartyPlugin
 import me.clip.voteparty.plugin.XMaterial
 import me.clip.voteparty.update.UpdateChecker
@@ -26,6 +27,7 @@ class VoteParty internal constructor(private val plugin: VotePartyPlugin) : Stat
 	val voteHandler = VoteHandler(plugin)
 	val partyHandler = PartyHandler(plugin)
 	var version = null as? Version?
+	val placeholderAPI = null as? PlaceholderAPI?
 	
 	
 	override fun load()
@@ -37,6 +39,8 @@ class VoteParty internal constructor(private val plugin: VotePartyPlugin) : Stat
 		loadInjections()
 		loadCommands()
 		registerLanguages()
+		
+		placeholderAPI?.register()
 		
 		UpdateChecker.check(plugin, 987)
 		{

@@ -1,6 +1,9 @@
 descriptions:
-  help: "Shows the help menu for the plugin"
-  set-counter: "Set the amount of votes currently"
-  add-vote: "Add to the current amount of votes"
-  start-party: "Force start a VoteParty"
-  give-crate: "Give a create to someone"
+  help: "Helpful commands for VoteParty."
+  set-counter: "Set the current vote counter."
+  add-vote: "Add vote to the current vote tally."
+  start-party: "Force launch a VoteParty."
+  give-crate: "Supply a player with a Vote crate."
+  give-party: "Host a private Vote Party for a player."
+info:
+  votes-needed: "&8&l[&b&lVote&f&lParty&8&l] &bVotes needed for party: &f%voteparty_counter%"
