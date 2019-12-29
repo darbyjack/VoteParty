@@ -6,6 +6,7 @@ import com.sxtanna.korm.Korm
 import me.clip.voteparty.base.State
 import me.clip.voteparty.cmds.CommandVoteParty
 import me.clip.voteparty.conf.ConfigVoteParty
+import me.clip.voteparty.handler.PartyHandler
 import me.clip.voteparty.handler.VoteHandler
 import me.clip.voteparty.lang.Lang
 import me.clip.voteparty.listener.VoteListener
@@ -13,6 +14,7 @@ import me.clip.voteparty.plugin.VotePartyPlugin
 import me.clip.voteparty.plugin.XMaterial
 import me.clip.voteparty.update.UpdateChecker
 import me.clip.voteparty.version.EffectType
+import me.clip.voteparty.version.Version
 import java.util.Locale
 
 class VoteParty internal constructor(private val plugin: VotePartyPlugin) : State
@@ -22,6 +24,8 @@ class VoteParty internal constructor(private val plugin: VotePartyPlugin) : Stat
 	private val cmds = PaperCommandManager(plugin)
 	private val voteListener = VoteListener(plugin)
 	val voteHandler = VoteHandler(plugin)
+	val partyHandler = PartyHandler(plugin)
+	var version = null as? Version?
 	
 	
 	override fun load()
@@ -30,6 +34,7 @@ class VoteParty internal constructor(private val plugin: VotePartyPlugin) : Stat
 		lang.save(plugin.dataFolder)
 		
 		loadConfig()
+		loadInjections()
 		loadCommands()
 		registerLanguages()
 		
@@ -65,6 +70,12 @@ class VoteParty internal constructor(private val plugin: VotePartyPlugin) : Stat
 		cmds.enableUnstableAPI("help")
 		
 		cmds.registerCommand(CommandVoteParty())
+	}
+	
+	private fun loadInjections()
+	{
+		cmds.registerDependency(VoteHandler::class.java, voteHandler)
+		cmds.registerDependency(PartyHandler::class.java, partyHandler)
 	}
 	
 	fun conf() = conf ?: ConfigVoteParty.DEF
