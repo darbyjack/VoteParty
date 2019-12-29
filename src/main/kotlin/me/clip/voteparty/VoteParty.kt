@@ -27,7 +27,7 @@ class VoteParty internal constructor(private val plugin: VotePartyPlugin) : Stat
 	val voteHandler = VoteHandler(plugin)
 	val partyHandler = PartyHandler(plugin)
 	var version = null as? Version?
-	val placeholderAPI = null as? PlaceholderAPI?
+	val placeholderAPI = PlaceholderAPI()
 	
 	
 	override fun load()
@@ -40,7 +40,7 @@ class VoteParty internal constructor(private val plugin: VotePartyPlugin) : Stat
 		loadCommands()
 		registerLanguages()
 		
-		placeholderAPI?.register()
+		placeholderAPI.register()
 		
 		UpdateChecker.check(plugin, 987)
 		{
