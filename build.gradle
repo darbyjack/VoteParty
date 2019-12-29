@@ -73,6 +73,9 @@ shadowJar {
 dependencies {
 	compileOnly "com.sxtanna.korm:Korm:+"
 	compileOnly "com.konghq:unirest-java:3.3.00"
+	compileOnly("me.clip:placeholderapi:2.10.4") {
+		exclude group: "org.bstats", module: "bstats-bukkit"
+	}
 	
 	compileOnly fileTree(dir: 'gradle/depends', include: ['*.jar'])
 	

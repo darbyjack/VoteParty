@@ -6,6 +6,6 @@ import org.bukkit.Location
 interface Version
 {
 
-	fun display(type: EffectType, location: Location, color: Color)
+	fun display(type: EffectType, location: Location, color: Color?)
 
 }

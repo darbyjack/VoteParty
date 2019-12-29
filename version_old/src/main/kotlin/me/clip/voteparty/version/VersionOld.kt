@@ -6,7 +6,7 @@ import org.bukkit.Location
 class VersionOld : Version
 {
 	
-	override fun display(type: EffectType, location: Location, color: Color)
+	override fun display(type: EffectType, location: Location, color: Color?)
 	{
 	
 	}
