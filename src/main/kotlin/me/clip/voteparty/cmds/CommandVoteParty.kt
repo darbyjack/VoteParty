@@ -3,12 +3,21 @@ package me.clip.voteparty.cmds
 import co.aikar.commands.BaseCommand
 import co.aikar.commands.CommandHelp
 import co.aikar.commands.CommandIssuer
-import co.aikar.commands.annotation.*
+import co.aikar.commands.annotation.CommandAlias
+import co.aikar.commands.annotation.CommandCompletion
+import co.aikar.commands.annotation.CommandPermission
+import co.aikar.commands.annotation.Default
+import co.aikar.commands.annotation.Dependency
+import co.aikar.commands.annotation.Description
+import co.aikar.commands.annotation.HelpCommand
+import co.aikar.commands.annotation.Subcommand
+import co.aikar.commands.annotation.Syntax
+import co.aikar.commands.annotation.Values
 import co.aikar.commands.bukkit.contexts.OnlinePlayer
 import me.clip.voteparty.base.ADMIN_PERM
+import me.clip.voteparty.base.sendMessage
 import me.clip.voteparty.handler.PartyHandler
 import me.clip.voteparty.messages.Messages
-import me.clip.voteparty.util.MsgUtils.Companion.sendMessage
 
 @CommandAlias("vp")
 class CommandVoteParty : BaseCommand()
@@ -76,7 +85,7 @@ class CommandVoteParty : BaseCommand()
 			help.showHelp()
 		} else
 		{
-			sendMessage(currentCommandManager, currentCommandIssuer, Messages.INFO__VOTES_NEEDED)
+			sendMessage(currentCommandIssuer, Messages.INFO__VOTES_NEEDED)
 		}
 	}
 	
