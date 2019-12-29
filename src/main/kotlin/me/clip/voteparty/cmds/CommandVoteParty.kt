@@ -6,13 +6,18 @@ import co.aikar.commands.CommandIssuer
 import co.aikar.commands.annotation.*
 import co.aikar.commands.bukkit.contexts.OnlinePlayer
 import me.clip.voteparty.base.BASE_PERM
+import me.clip.voteparty.handler.PartyHandler
 
 @CommandAlias("vp")
 class CommandVoteParty : BaseCommand()
 {
 	
+	@Dependency
+	var partyHandler = null as? PartyHandler?
+	
 	@Subcommand("addvote")
 	@Description("{@@descriptions.add-vote}")
+	@Syntax("<amount>")
 	fun addVote(issuer: CommandIssuer, @Default("1") amount: Int)
 	{
 		// Handle checking to make sure it's a positive amount
@@ -22,6 +27,8 @@ class CommandVoteParty : BaseCommand()
 	
 	@Subcommand("givecrate")
 	@Description("{@@descriptions.give-crate}")
+	@CommandCompletion("@players")
+	@Syntax("<player> <amount>")
 	fun giveCrate(issuer: CommandIssuer, @Values("@players") target: OnlinePlayer, @Default("1") amount: Int)
 	{
 		// Handle giving a crate to a player
@@ -29,6 +36,7 @@ class CommandVoteParty : BaseCommand()
 	
 	@Subcommand("setcounter")
 	@Description("{@@descriptions.set-counter}")
+	@Syntax("<amount>")
 	fun setCounter(issuer: CommandIssuer, amount: Int)
 	{
 		// Check if it's positive number
@@ -41,6 +49,15 @@ class CommandVoteParty : BaseCommand()
 	fun startParty(issuer: CommandIssuer)
 	{
 		// Start the party
+	}
+	
+	@Subcommand("giveparty")
+	@Description("{@@descriptions.give-party}")
+	@CommandCompletion("@players")
+	@Syntax("<player>")
+	fun giveParty(issuer: CommandIssuer, @Values("@players") target: OnlinePlayer)
+	{
+		partyHandler?.giveRandomPartyRewards(target.player)
 	}
 	
 	@HelpCommand
