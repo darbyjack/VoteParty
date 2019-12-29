@@ -3,6 +3,7 @@ package me.clip.voteparty.plugin;
 import me.clip.voteparty.VoteParty;
 import net.byteflux.libby.BukkitLibraryManager;
 import net.byteflux.libby.Library;
+import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
 
@@ -86,6 +87,8 @@ public final class VotePartyPlugin extends JavaPlugin {
         voteParty.load();
 
         reference.set(voteParty);
+
+        getServer().getServicesManager().register(VoteParty.class, voteParty, this, ServicePriority.Normal);
     }
 
     @Override
@@ -96,6 +99,8 @@ public final class VotePartyPlugin extends JavaPlugin {
         }
 
         voteParty.kill();
+
+        getServer().getServicesManager().unregisterAll(this);
     }
 
     @Nullable
