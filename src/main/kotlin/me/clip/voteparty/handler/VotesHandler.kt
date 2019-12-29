@@ -63,4 +63,18 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon
 		}
 	}
 	
+	fun runGlobalCommands(player: Player)
+	{
+		if (conf.voting?.globalCommands?.enabled == false)
+		{
+			return
+		}
+		
+		val cmds = conf.voting?.globalCommands?.commands ?: return
+		cmds.forEach()
+		{ command ->
+			server.dispatchCommand(server.consoleSender, formMessage(player, command))
+		}
+	}
+	
 }
