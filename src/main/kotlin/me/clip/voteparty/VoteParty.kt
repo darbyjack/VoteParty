@@ -22,7 +22,7 @@ import org.bukkit.Bukkit
 import java.util.Locale
 import java.util.logging.Level
 
-class VoteParty internal constructor(private val plugin: VotePartyPlugin) : State
+class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : State
 {
 	
 	private var conf = null as? ConfigVoteParty?
@@ -140,13 +140,9 @@ class VoteParty internal constructor(private val plugin: VotePartyPlugin) : Stat
 		@Suppress("DEPRECATION")
 		cmds.enableUnstableAPI("help")
 		
-		cmds.registerDependency(VotesHandler::class.java, votesHandler)
-		cmds.registerDependency(PartyHandler::class.java, partyHandler)
-		
-		cmds.registerCommand(CommandVoteParty())
-		
-		// Temp for now
 		cmds.locales.defaultLocale = Locale.forLanguageTag(conf?.settings?.language ?: "en_US")
+		
+		cmds.registerCommand(CommandVoteParty(this))
 		
 		plugin.logger.info("loaded commands")
 	}
