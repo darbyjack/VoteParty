@@ -7,24 +7,24 @@ import co.aikar.commands.annotation.CommandAlias
 import co.aikar.commands.annotation.CommandCompletion
 import co.aikar.commands.annotation.CommandPermission
 import co.aikar.commands.annotation.Default
-import co.aikar.commands.annotation.Dependency
 import co.aikar.commands.annotation.Description
 import co.aikar.commands.annotation.HelpCommand
 import co.aikar.commands.annotation.Subcommand
 import co.aikar.commands.annotation.Syntax
 import co.aikar.commands.annotation.Values
 import co.aikar.commands.bukkit.contexts.OnlinePlayer
+import me.clip.voteparty.VoteParty
 import me.clip.voteparty.base.ADMIN_PERM
+import me.clip.voteparty.base.Addon
 import me.clip.voteparty.base.sendMessage
-import me.clip.voteparty.handler.PartyHandler
 import me.clip.voteparty.messages.Messages
 
 @CommandAlias("vp")
-class CommandVoteParty : BaseCommand()
+data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), Addon
 {
 	
-	@Dependency
-	var partyHandler = null as? PartyHandler?
+	override val plugin = voteParty.plugin
+	
 	
 	@Subcommand("addvote")
 	@Description("{@@descriptions.add-vote}")
@@ -73,7 +73,7 @@ class CommandVoteParty : BaseCommand()
 	@CommandPermission(ADMIN_PERM)
 	fun giveParty(issuer: CommandIssuer, @Values("@players") target: OnlinePlayer)
 	{
-		partyHandler?.giveRandomPartyRewards(target.player)
+		voteParty.partyHandler.giveRandomPartyRewards(target.player)
 	}
 	
 	@HelpCommand
