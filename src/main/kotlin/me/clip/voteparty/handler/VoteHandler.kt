@@ -1,5 +1,6 @@
 package me.clip.voteparty.handler
 
+import me.clip.placeholderapi.PlaceholderAPI
 import me.clip.voteparty.base.Addon
 import me.clip.voteparty.conf.ConfigVoteParty
 import me.clip.voteparty.plugin.VotePartyPlugin
@@ -26,7 +27,7 @@ class VoteHandler(override val plugin: VotePartyPlugin) : Addon
 		val cmds = conf.voting?.guaranteedRewards?.commands ?: return
 		cmds.forEach()
 		{
-			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), it.replace("{player}", player.name))
+			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), PlaceholderAPI.setPlaceholders(player, it))
 		}
 	}
 	
@@ -44,7 +45,7 @@ class VoteHandler(override val plugin: VotePartyPlugin) : Addon
 			
 			if (cmd.chance <= current().nextInt(100))
 			{
-				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd.command.replace("{player}", player.name))
+				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), PlaceholderAPI.setPlaceholders(player, cmd.command))
 			}
 		}
 	}
