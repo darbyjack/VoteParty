@@ -6,7 +6,7 @@ import org.bukkit.Particle
 import org.bukkit.Particle.DustOptions
 
 
-class VersionNew : Version
+class VersionHookNew : VersionHook
 {
 	
 	override fun display(type: EffectType, location: Location, color: Color?)

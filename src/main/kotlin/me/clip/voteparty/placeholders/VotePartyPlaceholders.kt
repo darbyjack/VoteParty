@@ -3,7 +3,7 @@ package me.clip.voteparty.placeholders
 import me.clip.placeholderapi.expansion.PlaceholderExpansion
 import org.bukkit.entity.Player
 
-class PlaceholderAPI : PlaceholderExpansion()
+class VotePartyPlaceholders : PlaceholderExpansion()
 {
 	override fun getIdentifier(): String
 	{
