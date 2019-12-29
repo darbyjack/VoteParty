@@ -34,6 +34,7 @@ class VoteParty internal constructor(private val plugin: VotePartyPlugin) : Stat
 		lang.save(plugin.dataFolder)
 		
 		loadConfig()
+		loadInjections()
 		loadCommands()
 		registerLanguages()
 		
@@ -69,6 +70,12 @@ class VoteParty internal constructor(private val plugin: VotePartyPlugin) : Stat
 		cmds.enableUnstableAPI("help")
 		
 		cmds.registerCommand(CommandVoteParty())
+	}
+	
+	private fun loadInjections()
+	{
+		cmds.registerDependency(VoteHandler::class.java, voteHandler)
+		cmds.registerDependency(PartyHandler::class.java, partyHandler)
 	}
 	
 	fun conf() = conf ?: ConfigVoteParty.DEF

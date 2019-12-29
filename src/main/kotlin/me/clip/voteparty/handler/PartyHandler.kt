@@ -12,7 +12,7 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 	private val conf: ConfigVoteParty
 		get() = party.conf()
 	
-	fun givePartyReward(player: Player)
+	fun giveRandomPartyRewards(player: Player)
 	{
 		val cmds = conf.party?.rewardCommands?.commands?.takeIf { it.isNotEmpty() } ?: return
 		
@@ -26,5 +26,18 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 			}
 		}
 		
+	}
+	
+	fun giveGuaranteedPartyRewards(player: Player)
+	{
+		if (conf.party?.guaranteedRewards?.enabled == false)
+		{
+			return
+		}
+		
+		val cmds = conf.party?.guaranteedRewards?.commands ?: return
+		cmds.forEach {
+			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), it.replace("{player}", player.name))
+		}
 	}
 }
