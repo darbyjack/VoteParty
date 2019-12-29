@@ -1,10 +1,9 @@
 package me.clip.voteparty.handler
 
-import me.clip.placeholderapi.PlaceholderAPI
 import me.clip.voteparty.base.Addon
+import me.clip.voteparty.base.formMessage
 import me.clip.voteparty.conf.ConfigVoteParty
 import me.clip.voteparty.plugin.VotePartyPlugin
-import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import java.util.concurrent.ThreadLocalRandom.current
 
@@ -23,10 +22,9 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 			
 			if (cmd.chance <= current().nextInt(100))
 			{
-				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), PlaceholderAPI.setPlaceholders(player, cmd.command))
+				server.dispatchCommand(server.consoleSender, formMessage(player, cmd.command))
 			}
 		}
-		
 	}
 	
 	fun giveGuaranteedPartyRewards(player: Player)
@@ -37,8 +35,10 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 		}
 		
 		val cmds = conf.party?.guaranteedRewards?.commands ?: return
-		cmds.forEach {
-			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), PlaceholderAPI.setPlaceholders(player, it))
+		
+		cmds.forEach()
+		{ command ->
+			server.dispatchCommand(server.consoleSender, formMessage(player, command))
 		}
 	}
 }
