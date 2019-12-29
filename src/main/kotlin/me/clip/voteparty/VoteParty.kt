@@ -6,6 +6,7 @@ import com.sxtanna.korm.Korm
 import me.clip.voteparty.base.State
 import me.clip.voteparty.cmds.CommandVoteParty
 import me.clip.voteparty.conf.ConfigVoteParty
+import me.clip.voteparty.handler.PartyHandler
 import me.clip.voteparty.handler.VoteHandler
 import me.clip.voteparty.lang.Lang
 import me.clip.voteparty.listener.VoteListener
@@ -23,6 +24,7 @@ class VoteParty internal constructor(private val plugin: VotePartyPlugin) : Stat
 	private val cmds = PaperCommandManager(plugin)
 	private val voteListener = VoteListener(plugin)
 	val voteHandler = VoteHandler(plugin)
+	val partyHandler = PartyHandler(plugin)
 	var version = null as? Version?
 	
 	
