@@ -21,6 +21,7 @@ class VoteListener(override val plugin: VotePartyPlugin) : VotePartyListener
 		
 		val online = player.player ?: return
 		
+		party.votesHandler.runGlobalCommands(online)
 		party.votesHandler.giveGuaranteedVoteRewards(online)
 		party.votesHandler.giveRandomVoteRewards(online)
 		party.votesHandler.playerVoteEffects(online)
