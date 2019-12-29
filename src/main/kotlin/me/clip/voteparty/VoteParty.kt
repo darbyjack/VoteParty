@@ -20,6 +20,7 @@ import me.clip.voteparty.version.VersionHookNew
 import me.clip.voteparty.version.VersionHookOld
 import org.bukkit.Bukkit
 import java.util.Locale
+import java.util.logging.Level
 
 class VoteParty internal constructor(private val plugin: VotePartyPlugin) : State
 {
@@ -47,7 +48,25 @@ class VoteParty internal constructor(private val plugin: VotePartyPlugin) : Stat
 		
 		UpdateChecker.check(plugin, 987)
 		{
-		
+			when (it)
+			{
+				is UpdateChecker.UpdateResult.UP_TO_DATE ->
+				{
+					plugin.logger.info(it.message)
+				}
+				is UpdateChecker.UpdateResult.UNRELEASED ->
+				{
+					plugin.logger.warning(it.message)
+				}
+				is UpdateChecker.UpdateResult.NEW_UPDATE ->
+				{
+					plugin.logger.info("${it.message}: ${it.version}")
+				}
+				is UpdateChecker.UpdateResult.EXCEPTIONS ->
+				{
+					plugin.logger.log(Level.WARNING, it.message, it.throwable)
+				}
+			}
 		}
 		
 		voteListener.load()
