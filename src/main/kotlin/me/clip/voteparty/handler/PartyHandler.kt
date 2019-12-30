@@ -41,4 +41,13 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 			server.dispatchCommand(server.consoleSender, formMessage(player, command))
 		}
 	}
+	
+	fun startParty()
+	{
+		// Will do more with it later
+		server.onlinePlayers.forEach {
+			giveGuaranteedPartyRewards(it)
+			giveRandomPartyRewards(it)
+		}
+	}
 }
