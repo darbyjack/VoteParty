@@ -9,7 +9,8 @@ data class ConfigVoteParty(var settings: SettingsConfig?, var effects: EffectsCo
 {
 	
 	data class SettingsConfig(
-			var language: String
+			var language: String,
+			var prefix: String
 	) : Config
 	
 	data class EffectsConfig(
@@ -90,7 +91,7 @@ data class ConfigVoteParty(var settings: SettingsConfig?, var effects: EffectsCo
 		private val DEF_PARTY_START_EFFECTS = Effects(true, listOf(EffectType.SLIME, EffectType.HEART))
 		private val DEF_PARTY_COMMAND_EXECUTE_EFFECTS = Effects(true, listOf(EffectType.SMOKE_NORMAL, EffectType.HEART))
 		private val DEF_EFFECTS_CONFIG = EffectsConfig(DEF_VOTE_EFFECTS, DEF_PARTY_START_EFFECTS, DEF_PARTY_COMMAND_EXECUTE_EFFECTS)
-		private val DEF_SETTINGS_CONFIG = SettingsConfig("en_US")
+		private val DEF_SETTINGS_CONFIG = SettingsConfig("en_US", "&d&lV&dote&5&lP&5arty &7&l» ")
 		
 		
 		val DEF = ConfigVoteParty(DEF_SETTINGS_CONFIG, DEF_EFFECTS_CONFIG, DEF_CRATE_CONFIG, DEF_VOTE_CONFIG, DEF_PARTY_CONFIG)
