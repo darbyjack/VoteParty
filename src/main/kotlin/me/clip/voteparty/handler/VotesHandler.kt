@@ -6,22 +6,25 @@ import me.clip.voteparty.conf.ConfigVoteParty
 import me.clip.voteparty.plugin.VotePartyPlugin
 import org.bukkit.entity.Player
 import java.util.concurrent.ThreadLocalRandom.current
+import java.util.concurrent.atomic.AtomicInteger
 
-class VotesHandler(override val plugin: VotePartyPlugin, var votesNeeded: Int) : Addon
+class VotesHandler(override val plugin: VotePartyPlugin) : Addon
 {
 	
 	private val conf: ConfigVoteParty
 		get() = party.conf()
 	
-	var votes: Int = 0
+	private val votes = AtomicInteger()
 	
 	fun addVote(amount: Int)
 	{
-		votes += amount
-		if (votes >= votesNeeded) {
-			votes = 0
-			plugin.voteParty?.partyHandler?.startParty()
+		if (votes.addAndGet(amount) < conf.party?.votesNeeded ?: 50)
+		{
+			return
 		}
+		
+		votes.set(0)
+		party.partyHandler.startParty()
 	}
 	
 	fun giveGuaranteedVoteRewards(player: Player)
