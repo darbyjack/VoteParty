@@ -32,9 +32,13 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	@CommandPermission(ADMIN_PERM)
 	fun addVote(issuer: CommandIssuer, @Default("1") amount: Int)
 	{
-		// Handle checking to make sure it's a positive amount
-		// Check if the votes added makes the votes needed enough to start the party
-		// Start the party if enough
+		if (amount <= 0) {
+			// Throw a hissy fit
+		}
+		else {
+			party.votesHandler.addVote(amount)
+			// Send message saying X amount of votes have been added. The total amount of votes is now Y
+		}
 	}
 	
 	@Subcommand("givecrate")
@@ -53,9 +57,13 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	@CommandPermission(ADMIN_PERM)
 	fun setCounter(issuer: CommandIssuer, amount: Int)
 	{
-		// Check if it's positive number
-		// Set the votes needed to what was provided
-		// Send message saying it was updated
+		if (amount <= 0) {
+			// Throw a hissy fit
+		}
+		else {
+			party.votesHandler.votesNeeded = amount
+			// Send message saying the new amount of votes needed is now X
+		}
 	}
 	
 	@Subcommand("startparty")
@@ -63,7 +71,8 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	@CommandPermission(ADMIN_PERM)
 	fun startParty(issuer: CommandIssuer)
 	{
-		// Start the party
+		party.partyHandler.startParty()
+		// Send message saying successfully force started a vote party
 	}
 	
 	@Subcommand("giveparty")

@@ -7,7 +7,7 @@ import me.clip.voteparty.plugin.VotePartyPlugin
 import org.bukkit.entity.Player
 import java.util.concurrent.ThreadLocalRandom.current
 
-class VotesHandler(override val plugin: VotePartyPlugin, val votesNeeded: Int) : Addon
+class VotesHandler(override val plugin: VotePartyPlugin, var votesNeeded: Int) : Addon
 {
 	
 	private val conf: ConfigVoteParty
@@ -15,9 +15,9 @@ class VotesHandler(override val plugin: VotePartyPlugin, val votesNeeded: Int) :
 	
 	var votes: Int = 0
 	
-	fun addVote()
+	fun addVote(amount: Int)
 	{
-		votes += 1
+		votes += amount
 		if (votes >= votesNeeded) {
 			votes = 0
 			plugin.voteParty?.partyHandler?.startParty()
