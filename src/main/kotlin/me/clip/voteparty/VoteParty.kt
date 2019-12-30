@@ -3,6 +3,7 @@ package me.clip.voteparty
 import co.aikar.commands.PaperCommandManager
 import com.google.gson.Gson
 import com.sxtanna.korm.Korm
+import com.vexsoftware.votifier.VoteHandler
 import me.clip.voteparty.base.State
 import me.clip.voteparty.cmds.CommandVoteParty
 import me.clip.voteparty.conf.ConfigVoteParty
@@ -34,7 +35,7 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 	private var papi = null as? VotePartyPlaceholders?
 	
 	
-	val votesHandler = VotesHandler(plugin)
+	lateinit var votesHandler : VotesHandler
 	val partyHandler = PartyHandler(plugin)
 	
 	
@@ -45,6 +46,8 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 		loadHook()
 		loadLang()
 		loadPapi()
+		
+		votesHandler = VotesHandler(plugin, conf?.party?.votesNeeded?: 50)
 		
 		UpdateChecker.check(plugin, 987)
 		{
