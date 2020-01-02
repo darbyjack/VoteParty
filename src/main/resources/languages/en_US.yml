@@ -14,3 +14,5 @@ party:
 votes:
   votes-needed-updated: "&fNew votes required set! You now need %voteparty_votes_till_party% for a Vote Party!"
   vote-counter-updated: "&fCurrent votes updated! You now have a total of %voteparty_votes% votes!"
+  private-party-given: "&fYou've given a private Vote Party to %player_name%!"
+  private-party-received: "&fYou've received a private Vote Party!"
