@@ -18,3 +18,8 @@ fun BaseCommand.sendMessage(prefix: String, issuer: CommandIssuer, key: MessageK
 {
 	issuer.sendMessage(formMessage(Bukkit.getOfflinePlayer(issuer.uniqueId), prefix + currentCommandManager.getLocales().getMessage(issuer, key.messageKey)))
 }
+
+fun BaseCommand.sendMessage(prefix: String, issuer: CommandIssuer, key: MessageKeyProvider, target: OfflinePlayer)
+{
+	issuer.sendMessage(formMessage(Bukkit.getOfflinePlayer(target.uniqueId), prefix + currentCommandManager.getLocales().getMessage(issuer, key.messageKey)))
+}
