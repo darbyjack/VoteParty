@@ -14,7 +14,7 @@ fun formMessage(player: OfflinePlayer, message: String): String
 	return ChatColor.translateAlternateColorCodes('&', PlaceholderAPI.setPlaceholders(player, message))
 }
 
-fun BaseCommand.sendMessage(issuer: CommandIssuer, key: MessageKeyProvider)
+fun BaseCommand.sendMessage(prefix: String, issuer: CommandIssuer, key: MessageKeyProvider)
 {
-	issuer.sendMessage(formMessage(Bukkit.getOfflinePlayer(issuer.uniqueId), currentCommandManager.getLocales().getMessage(issuer, key.messageKey)))
+	issuer.sendMessage(formMessage(Bukkit.getOfflinePlayer(issuer.uniqueId), prefix + currentCommandManager.getLocales().getMessage(issuer, key.messageKey)))
 }

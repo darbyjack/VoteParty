@@ -14,7 +14,7 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon
 	private val conf: ConfigVoteParty
 		get() = party.conf()
 	
-	private val votes = AtomicInteger()
+	val votes = AtomicInteger()
 	
 	fun addVote(amount: Int)
 	{
