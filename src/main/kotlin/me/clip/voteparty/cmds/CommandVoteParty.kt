@@ -84,6 +84,7 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	@CommandPermission(ADMIN_PERM)
 	fun giveParty(issuer: CommandIssuer, @Values("@players") target: OnlinePlayer)
 	{
+		voteParty.partyHandler.giveGuaranteedPartyRewards(target.player)
 		voteParty.partyHandler.giveRandomPartyRewards(target.player)
 	}
 	
