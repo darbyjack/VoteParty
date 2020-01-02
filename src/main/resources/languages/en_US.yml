@@ -6,4 +6,6 @@ descriptions:
   give-crate: "Supply a player with a Vote crate."
   give-party: "Host a private Vote Party for a player."
 info:
-  votes-needed: "&8&l[&b&lVote&f&lParty&8&l] &bVotes needed for party: &f%voteparty_counter%"
+  votes-needed: "&bVotes needed for party: &f%voteparty_counter%"
+party:
+  force-start-successful: "&fYou have successfully force started a Vote Party for all players online!"
