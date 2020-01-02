@@ -33,12 +33,12 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	fun addVote(issuer: CommandIssuer, @Default("1") amount: Int)
 	{
 		if (amount <= 0) {
-			sendMessage(issuer, Messages.ERROR__INVALID_NUMBER)
+			sendMessage(prefix, issuer, Messages.ERROR__INVALID_NUMBER)
 			return
 		}
 		else {
 			party.votesHandler.addVote(amount)
-			sendMessage(issuer, Messages.VOTES__VOTE_COUNTER_UPDATED)
+			sendMessage(prefix, issuer, Messages.VOTES__VOTE_COUNTER_UPDATED)
 		}
 	}
 	
@@ -59,12 +59,12 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	fun setCounter(issuer: CommandIssuer, amount: Int)
 	{
 		if (amount <= 0) {
-			sendMessage(issuer, Messages.ERROR__INVALID_NUMBER)
+			sendMessage(prefix, issuer, Messages.ERROR__INVALID_NUMBER)
 			return
 		}
 		else {
 			party.conf().party?.votesNeeded = amount
-			sendMessage(issuer, Messages.VOTES__VOTES_NEEDED_UPDATED)
+			sendMessage(prefix, issuer, Messages.VOTES__VOTES_NEEDED_UPDATED)
 		}
 	}
 	
@@ -74,7 +74,7 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	fun startParty(issuer: CommandIssuer)
 	{
 		party.partyHandler.startParty()
-		sendMessage(issuer, Messages.PARTY__FORCE_START_SUCCESSFUL)
+		sendMessage(prefix, issuer, Messages.PARTY__FORCE_START_SUCCESSFUL)
 	}
 	
 	@Subcommand("giveparty")
@@ -96,7 +96,7 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 			help.showHelp()
 		} else
 		{
-			sendMessage(currentCommandIssuer, Messages.INFO__VOTES_NEEDED)
+			sendMessage(prefix, currentCommandIssuer, Messages.INFO__VOTES_NEEDED)
 		}
 	}
 	

@@ -1,9 +1,10 @@
 package me.clip.voteparty.placeholders
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion
+import me.clip.voteparty.VoteParty
 import org.bukkit.entity.Player
 
-class VotePartyPlaceholders : PlaceholderExpansion()
+class VotePartyPlaceholders(private val voteParty: VoteParty) : PlaceholderExpansion()
 {
 	override fun getIdentifier(): String
 	{
@@ -30,7 +31,9 @@ class VotePartyPlaceholders : PlaceholderExpansion()
 		
 		return when (arg.toLowerCase())
 		{
-			"counter" -> "125"
+			"votes" -> voteParty.getVotes().toString()
+			"votes_till_party" -> voteParty.getVotesNeeded().minus(voteParty.getVotes()).toString()
+			"votes_required_total" -> voteParty.getVotesNeeded().toString()
 			else -> ""
 		}
 	}

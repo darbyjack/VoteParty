@@ -164,7 +164,7 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 	
 	private fun loadPapi()
 	{
-		val papi = VotePartyPlaceholders()
+		val papi = VotePartyPlaceholders(this)
 		papi.register()
 		
 		this.papi = papi
@@ -179,6 +179,16 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 	fun hook(): VersionHook
 	{
 		return checkNotNull(hook)
+	}
+	
+	fun getVotes() : Int
+	{
+		return votesHandler.votes.get()
+	}
+	
+	fun getVotesNeeded() : Int
+	{
+		return conf().party?.votesNeeded ?: 50
 	}
 	
 	
