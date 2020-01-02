@@ -9,7 +9,9 @@ enum class Messages : MessageKeyProvider
 	
 	INFO__VOTES_NEEDED,
 	
-	PARTY__FORCE_START_SUCCESSFUL, PARTY__UPDATED_VOTES_NEEDED;
+	PARTY__FORCE_START_SUCCESSFUL,
+	
+	VOTES__VOTES_NEEDED_UPDATED, VOTES__VOTE_COUNTER_UPDATED;
 	
 	private val key = MessageKey.of(name.toLowerCase().replace("__", ".").replace("_", "-"))
 	
