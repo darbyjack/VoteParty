@@ -5,7 +5,10 @@ descriptions:
   start-party: "Force launch a VoteParty."
   give-crate: "Supply a player with a Vote crate."
   give-party: "Host a private Vote Party for a player."
+error:
+  invalid-number: "&fSorry, but this number must be postive in order to work correctly!"
 info:
   votes-needed: "&bVotes needed for party: &f%voteparty_counter%"
 party:
   force-start-successful: "&fYou have successfully force started a Vote Party for all players online!"
+  updated-votes-needed: "&fNew votes required set! You now need %voteparty_votes_needed% for a Vote Party!"

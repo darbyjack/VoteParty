@@ -33,7 +33,8 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	fun addVote(issuer: CommandIssuer, @Default("1") amount: Int)
 	{
 		if (amount <= 0) {
-			// Throw a hissy fit
+			sendMessage(issuer, Messages.ERROR__INVALID_NUMBER)
+			return
 		}
 		else {
 			party.votesHandler.addVote(amount)
@@ -58,11 +59,12 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	fun setCounter(issuer: CommandIssuer, amount: Int)
 	{
 		if (amount <= 0) {
-			// Throw a hissy fit
+			sendMessage(issuer, Messages.ERROR__INVALID_NUMBER)
+			return
 		}
 		else {
 			party.conf().party?.votesNeeded = amount
-			// Send message saying the new amount of votes needed is now X
+			sendMessage(issuer, Messages.PARTY__UPDATED_VOTES_NEEDED)
 		}
 	}
 	
