@@ -23,6 +23,7 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 			if (cmd.chance <= current().nextInt(100))
 			{
 				server.dispatchCommand(server.consoleSender, formMessage(player, cmd.command))
+				runPartyCommandEffects(player)
 			}
 		}
 	}
@@ -72,6 +73,39 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 		}
 	}
 	
+	fun runPartyStartEffects()
+	{
+		if (conf.effects?.party_start?.enabled == false)
+		{
+			return
+		}
+		
+		val effects = conf.effects?.party_start?.effects?.filterNotNull()?.takeIf { it.isNotEmpty() } ?: return
+		
+		server.onlinePlayers.forEach()
+		{ player ->
+			effects.forEach()
+			{ effect ->
+				party.hook().display(effect, player.location, null)
+			}
+		}
+	}
+	
+	fun runPartyCommandEffects(player: Player)
+	{
+		if (conf.effects?.party_command_execute?.enabled == false)
+		{
+			return
+		}
+		
+		val effects = conf.effects?.party_command_execute?.effects?.filterNotNull()?.takeIf { it.isNotEmpty() } ?: return
+		
+		effects.forEach()
+		{ effect ->
+			party.hook().display(effect, player.location, null)
+		}
+	}
+	
 	fun startParty()
 	{
 		runPrePartyCommands()
@@ -79,6 +113,7 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 		server.scheduler.runTaskLater(plugin, Runnable {
 			
 			runPartyCommands()
+			runPartyStartEffects()
 			
 			server.onlinePlayers.forEach()
 			{
