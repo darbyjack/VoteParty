@@ -61,7 +61,7 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 			// Throw a hissy fit
 		}
 		else {
-			party.votesHandler.votesNeeded = amount
+			party.conf().party?.votesNeeded = amount
 			// Send message saying the new amount of votes needed is now X
 		}
 	}
