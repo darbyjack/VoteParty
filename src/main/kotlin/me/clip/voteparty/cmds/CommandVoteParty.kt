@@ -86,7 +86,7 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	{
 		voteParty.partyHandler.giveGuaranteedPartyRewards(target.player)
 		voteParty.partyHandler.giveRandomPartyRewards(target.player)
-		// Todo allow player argument in something to get target placeholders
+		sendMessage(prefix, issuer, Messages.VOTES__PRIVATE_PARTY_GIVEN, target.player)
 		sendMessage(prefix, currentCommandManager.getCommandIssuer(target.player), Messages.VOTES__PRIVATE_PARTY_RECEIVED)
 	}
 	
