@@ -42,12 +42,50 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 		}
 	}
 	
+	fun runPrePartyCommands()
+	{
+		if (conf.party?.prePartyCommands?.enabled == false)
+		{
+			return
+		}
+		
+		val cmds = conf.party?.prePartyCommands?.commands ?: return
+		
+		cmds.forEach()
+		{ command ->
+			server.dispatchCommand(server.consoleSender, command)
+		}
+	}
+	
+	fun runPartyCommands()
+	{
+		if (conf.party?.partyCommands?.enabled == false)
+		{
+			return
+		}
+		
+		val cmds = conf.party?.partyCommands?.commands ?: return
+		
+		cmds.forEach()
+		{ command ->
+			server.dispatchCommand(server.consoleSender, command)
+		}
+	}
+	
 	fun startParty()
 	{
-		// Will do more with it later
-		server.onlinePlayers.forEach {
-			giveGuaranteedPartyRewards(it)
-			giveRandomPartyRewards(it)
-		}
+		runPrePartyCommands()
+		
+		server.scheduler.runTaskLater(plugin, Runnable {
+			
+			runPartyCommands()
+			
+			server.onlinePlayers.forEach()
+			{
+				giveGuaranteedPartyRewards(it)
+				giveRandomPartyRewards(it)
+			}
+			
+		}, (conf.party?.startDelay ?: 10) * 20)
 	}
 }

@@ -72,7 +72,7 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	fun startParty(issuer: CommandIssuer)
 	{
 		party.partyHandler.startParty()
-		// Send message saying successfully force started a vote party
+		sendMessage(issuer, Messages.PARTY__FORCE_START_SUCCESSFUL)
 	}
 	
 	@Subcommand("giveparty")

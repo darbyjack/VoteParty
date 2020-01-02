@@ -5,7 +5,9 @@ import co.aikar.locales.MessageKeyProvider
 
 enum class Messages : MessageKeyProvider
 {
-	INFO__VOTES_NEEDED;
+	INFO__VOTES_NEEDED,
+	
+	PARTY__FORCE_START_SUCCESSFUL;
 	
 	private val key = MessageKey.of(name.toLowerCase().replace("__", ".").replace("_", "-"))
 	

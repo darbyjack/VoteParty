@@ -39,7 +39,7 @@ data class ConfigVoteParty(var settings: SettingsConfig?, var effects: EffectsCo
 			var disabledWorlds: List<String>,
 			var offlineVotes: Boolean,
 			var maxRewardsPerPlayer: Int,
-			var startDelay: Int,
+			var startDelay: Long,
 			var rewardCommands: CommandsReward,
 			var guaranteedRewards: Commands,
 			var prePartyCommands: Commands,
