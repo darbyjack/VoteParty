@@ -38,7 +38,7 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 		}
 		else {
 			party.votesHandler.addVote(amount)
-			// Send message saying X amount of votes have been added. The total amount of votes is now Y
+			sendMessage(issuer, Messages.VOTES__VOTE_COUNTER_UPDATED)
 		}
 	}
 	
@@ -64,7 +64,7 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 		}
 		else {
 			party.conf().party?.votesNeeded = amount
-			sendMessage(issuer, Messages.PARTY__UPDATED_VOTES_NEEDED)
+			sendMessage(issuer, Messages.VOTES__VOTES_NEEDED_UPDATED)
 		}
 	}
 	

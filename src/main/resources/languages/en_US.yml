@@ -11,4 +11,6 @@ info:
   votes-needed: "&bVotes needed for party: &f%voteparty_counter%"
 party:
   force-start-successful: "&fYou have successfully force started a Vote Party for all players online!"
-  updated-votes-needed: "&fNew votes required set! You now need %voteparty_votes_needed% for a Vote Party!"
+votes:
+  votes-needed-updated: "&fNew votes required set! You now need %voteparty_votes_needed% for a Vote Party!"
+  vote-counter-updated: "&fCurrent votes updated! You now have a total of %voteparty_vote% votes!"
