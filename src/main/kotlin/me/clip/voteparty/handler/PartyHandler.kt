@@ -7,6 +7,7 @@ import me.clip.voteparty.base.reduce
 import me.clip.voteparty.base.runTaskTimer
 import me.clip.voteparty.conf.ConfigVoteParty
 import me.clip.voteparty.plugin.VotePartyPlugin
+import me.clip.voteparty.version.EffectType
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -56,36 +57,18 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 	
 	fun runPartyStartEffects()
 	{
-		if (conf.effects?.party_start?.enabled == false)
-		{
-			return
-		}
-		
-		val effects = conf.effects?.party_start?.effects?.filterNotNull()?.takeIf { it.isNotEmpty() } ?: return
-		
-		server.onlinePlayers.forEach()
-		{ player ->
-			effects.forEach()
-			{ effect ->
-				party.hook().display(effect, player.location, null)
-			}
-		}
+		executeEffects(conf.effects?.party_start?.enabled,
+		               conf.effects?.party_start?.effects,
+		               server.onlinePlayers)
 	}
 	
 	fun runPartyCommandEffects(player: Player)
 	{
-		if (conf.effects?.party_command_execute?.enabled == false)
-		{
-			return
-		}
-		
-		val effects = conf.effects?.party_command_execute?.effects?.filterNotNull()?.takeIf { it.isNotEmpty() } ?: return
-		
-		effects.forEach()
-		{ effect ->
-			party.hook().display(effect, player.location, null)
-		}
+		executeEffects(conf.effects?.party_command_execute?.enabled,
+		               conf.effects?.party_command_execute?.effects,
+		               listOf(player))
 	}
+	
 	
 	fun buildCrate(amount: Int): ItemStack
 	{
@@ -131,4 +114,22 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 			server.dispatchCommand(server.consoleSender, if (player == null) it else formMessage(player, it))
 		}
 	}
+	
+	
+	private fun executeEffects(enabled: Boolean?, effects: Collection<EffectType?>?, players: Collection<Player>)
+	{
+		if (enabled == false)
+		{
+			return
+		}
+		
+		effects?.filterNotNull()?.forEach()
+		{ effect ->
+			players.forEach()
+			{ player ->
+				party.hook().display(effect, player.location, null)
+			}
+		}
+	}
+	
 }
