@@ -16,3 +16,6 @@ votes:
   vote-counter-updated: "&fCurrent votes updated! You now have a total of %voteparty_votes% votes!"
   private-party-given: "&fYou've given a private Vote Party to %player_name%!"
   private-party-received: "&fYou've received a private Vote Party!"
+crate:
+  crate-given: "&fYou've given %player_name% vote crate(s)!"
+  crate-received: "&fYou've received a vote crate!"

@@ -1,10 +1,13 @@
 package me.clip.voteparty.handler
 
 import me.clip.voteparty.base.Addon
+import me.clip.voteparty.base.color
 import me.clip.voteparty.base.formMessage
 import me.clip.voteparty.conf.ConfigVoteParty
 import me.clip.voteparty.plugin.VotePartyPlugin
+import org.bukkit.Material
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
 import java.util.concurrent.ThreadLocalRandom.current
 
 class PartyHandler(override val plugin: VotePartyPlugin) : Addon
@@ -103,6 +106,18 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 		effects.forEach()
 		{ effect ->
 			party.hook().display(effect, player.location, null)
+		}
+	}
+	
+	fun buildCrate(amount: Int): ItemStack
+	{
+		return ItemStack(conf.crate?.material?.parseMaterial() ?: Material.CHEST, amount).apply()
+		{
+			itemMeta = itemMeta?.apply()
+			{
+				setDisplayName(color(conf.crate?.name ?: "Vote Party Crate"))
+				lore = conf.crate?.lore?.map(::color)
+			}
 		}
 	}
 	
