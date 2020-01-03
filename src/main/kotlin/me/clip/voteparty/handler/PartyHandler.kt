@@ -111,6 +111,11 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 			return
 		}
 		
+		if (player != null && (player.world in conf.party?.disabledWorlds ?: emptySet()))
+		{
+			return
+		}
+		
 		cmds?.forEach()
 		{
 			server.dispatchCommand(server.consoleSender, if (player == null) it else formMessage(player, it))
@@ -125,9 +130,14 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 			return
 		}
 		
+		val targets = players.filter()
+		{
+			it.world !in conf.party?.disabledWorlds ?: emptySet()
+		}
+		
 		effects?.filterNotNull()?.forEach()
 		{ effect ->
-			players.forEach()
+			targets.forEach()
 			{ player ->
 				party.hook().display(effect, player.location, null)
 			}
