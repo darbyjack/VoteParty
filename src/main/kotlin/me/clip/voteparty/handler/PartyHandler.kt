@@ -3,7 +3,10 @@ package me.clip.voteparty.handler
 import me.clip.voteparty.base.Addon
 import me.clip.voteparty.base.color
 import me.clip.voteparty.base.formMessage
+import me.clip.voteparty.base.item
+import me.clip.voteparty.base.name
 import me.clip.voteparty.base.reduce
+import me.clip.voteparty.base.runTaskLater
 import me.clip.voteparty.base.runTaskTimer
 import me.clip.voteparty.conf.ConfigVoteParty
 import me.clip.voteparty.plugin.VotePartyPlugin
@@ -25,7 +28,7 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 		
 		val iter = cmds.reduce(take).iterator()
 		
-		plugin.runTaskTimer(conf.party?.rewardCommands?.delay ?: 1)
+		plugin.runTaskTimer(conf.party?.rewardCommands?.delay ?: 1L)
 		{
 			if (!iter.hasNext())
 			{
@@ -72,13 +75,10 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 	
 	fun buildCrate(amount: Int): ItemStack
 	{
-		return ItemStack(conf.crate?.material?.parseMaterial() ?: Material.CHEST, amount).apply()
+		return item(conf.crate?.material?.parseMaterial() ?: Material.CHEST, amount)
 		{
-			itemMeta = itemMeta?.apply()
-			{
-				setDisplayName(color(conf.crate?.name ?: "Vote Party Crate"))
-				lore = conf.crate?.lore?.map(::color)
-			}
+			name = conf.crate?.name ?: "Vote Party Crate"
+			lore = conf.crate?.lore?.map(::color)
 		}
 	}
 	
@@ -86,8 +86,8 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 	{
 		runPrePartyCommands()
 		
-		server.scheduler.runTaskLater(plugin, Runnable {
-			
+		plugin.runTaskLater((conf.party?.startDelay ?: 10L) * 20L)
+		{
 			runPartyCommands()
 			runPartyStartEffects()
 			
@@ -96,8 +96,7 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 				giveGuaranteedPartyRewards(it)
 				giveRandomPartyRewards(it)
 			}
-			
-		}, (conf.party?.startDelay ?: 10) * 20)
+		}
 	}
 	
 	
