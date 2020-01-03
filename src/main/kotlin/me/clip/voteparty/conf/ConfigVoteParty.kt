@@ -4,6 +4,7 @@ import com.sxtanna.korm.data.custom.KormList
 import me.clip.voteparty.conf.base.Config
 import me.clip.voteparty.plugin.XMaterial
 import me.clip.voteparty.version.EffectType
+import java.util.concurrent.ThreadLocalRandom
 
 data class ConfigVoteParty(var settings: SettingsConfig?, var effects: EffectsConfig?, var crate: CrateConfig?, var voting: VoteConfig?, var party: PartyConfig?) : Config
 {
@@ -73,6 +74,14 @@ data class ConfigVoteParty(var settings: SettingsConfig?, var effects: EffectsCo
 	
 	@KormList(["chance", "command"])
 	data class Command(var chance: Int, var command: String)
+	{
+		
+		fun randomChance(): Boolean
+		{
+			return chance <= ThreadLocalRandom.current().nextInt(100)
+		}
+		
+	}
 	
 	
 	companion object

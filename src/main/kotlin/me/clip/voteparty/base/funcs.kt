@@ -7,6 +7,8 @@ import me.clip.placeholderapi.PlaceholderAPI
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.OfflinePlayer
+import org.bukkit.plugin.Plugin
+import org.bukkit.scheduler.BukkitRunnable
 
 
 fun color(message: String): String
@@ -22,4 +24,17 @@ fun formMessage(player: OfflinePlayer, message: String): String
 fun BaseCommand.sendMessage(prefix: String, issuer: CommandIssuer, key: MessageKeyProvider, target: OfflinePlayer? = null)
 {
 	issuer.sendMessage(formMessage(Bukkit.getOfflinePlayer(target?.uniqueId ?: issuer.uniqueId), prefix + currentCommandManager.getLocales().getMessage(issuer, key.messageKey)))
+}
+
+
+
+fun Plugin.runTaskTimer(period: Int, task: BukkitRunnable.() -> Unit)
+{
+	object : BukkitRunnable()
+	{
+		override fun run()
+		{
+			task.invoke(this)
+		}
+	}.runTaskTimer(this, 0L, period.toLong())
 }
