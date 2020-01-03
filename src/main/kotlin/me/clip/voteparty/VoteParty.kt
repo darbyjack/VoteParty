@@ -19,6 +19,7 @@ import me.clip.voteparty.version.VersionHook
 import me.clip.voteparty.version.VersionHookNew
 import me.clip.voteparty.version.VersionHookOld
 import org.bukkit.Bukkit
+import org.bukkit.entity.Player
 import java.util.Locale
 import java.util.logging.Level
 
@@ -141,6 +142,11 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 		
 		cmds.locales.defaultLocale = Locale.forLanguageTag(conf?.settings?.language ?: "en_US")
 		
+		cmds.commandCompletions.registerCompletion("online")
+		{
+			plugin.server.onlinePlayers.map(Player::getName)
+		}
+		
 		cmds.registerCommand(CommandVoteParty(this))
 		
 		plugin.logger.info("loaded commands")
@@ -151,8 +157,7 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 		val hook = if ("MC: 1.8" in Bukkit.getVersion())
 		{
 			VersionHookOld()
-		}
-		else
+		} else
 		{
 			VersionHookNew()
 		}
@@ -181,12 +186,12 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 		return checkNotNull(hook)
 	}
 	
-	fun getVotes() : Int
+	fun getVotes(): Int
 	{
 		return votesHandler.votes.get()
 	}
 	
-	fun getVotesNeeded() : Int
+	fun getVotesNeeded(): Int
 	{
 		return conf().party?.votesNeeded ?: 50
 	}
