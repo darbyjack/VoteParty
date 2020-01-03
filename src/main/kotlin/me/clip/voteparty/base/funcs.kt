@@ -9,22 +9,17 @@ import org.bukkit.ChatColor
 import org.bukkit.OfflinePlayer
 
 
-fun formMessage(player: OfflinePlayer, message: String): String
-{
-	return ChatColor.translateAlternateColorCodes('&', PlaceholderAPI.setPlaceholders(player, message))
-}
-
 fun color(message: String): String
 {
 	return ChatColor.translateAlternateColorCodes('&', message)
 }
 
-fun BaseCommand.sendMessage(prefix: String, issuer: CommandIssuer, key: MessageKeyProvider)
+fun formMessage(player: OfflinePlayer, message: String): String
 {
-	issuer.sendMessage(formMessage(Bukkit.getOfflinePlayer(issuer.uniqueId), prefix + currentCommandManager.getLocales().getMessage(issuer, key.messageKey)))
+	return color(PlaceholderAPI.setPlaceholders(player, message))
 }
 
-fun BaseCommand.sendMessage(prefix: String, issuer: CommandIssuer, key: MessageKeyProvider, target: OfflinePlayer)
+fun BaseCommand.sendMessage(prefix: String, issuer: CommandIssuer, key: MessageKeyProvider, target: OfflinePlayer? = null)
 {
-	issuer.sendMessage(formMessage(Bukkit.getOfflinePlayer(target.uniqueId), prefix + currentCommandManager.getLocales().getMessage(issuer, key.messageKey)))
+	issuer.sendMessage(formMessage(Bukkit.getOfflinePlayer(target?.uniqueId ?: issuer.uniqueId), prefix + currentCommandManager.getLocales().getMessage(issuer, key.messageKey)))
 }
