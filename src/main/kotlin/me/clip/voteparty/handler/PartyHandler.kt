@@ -3,12 +3,12 @@ package me.clip.voteparty.handler
 import me.clip.voteparty.base.Addon
 import me.clip.voteparty.base.color
 import me.clip.voteparty.base.formMessage
+import me.clip.voteparty.base.runTaskTimer
 import me.clip.voteparty.conf.ConfigVoteParty
 import me.clip.voteparty.plugin.VotePartyPlugin
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import java.util.concurrent.ThreadLocalRandom.current
 
 class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 {
@@ -17,17 +17,19 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 	
 	fun giveRandomPartyRewards(player: Player)
 	{
+		val take = conf.party?.maxRewardsPerPlayer?.takeIf { it > 0 } ?: return
 		val cmds = conf.party?.rewardCommands?.commands?.takeIf { it.isNotEmpty() } ?: return
 		
-		repeat(conf.party?.maxRewardsPerPlayer ?: 0)
+		val iter = cmds.filter { it.randomChance() }.shuffled().take(take).iterator()
+		
+		plugin.runTaskTimer(conf.party?.rewardCommands?.delay ?: 1)
 		{
-			val cmd = cmds.random()
-			
-			if (cmd.chance <= current().nextInt(100))
+			if (!iter.hasNext())
 			{
-				server.dispatchCommand(server.consoleSender, formMessage(player, cmd.command))
-				runPartyCommandEffects(player)
+				return@runTaskTimer cancel()
 			}
+			
+			server.dispatchCommand(server.consoleSender, formMessage(player, iter.next().command))
 		}
 	}
 	
