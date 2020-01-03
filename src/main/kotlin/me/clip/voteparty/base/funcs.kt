@@ -7,7 +7,10 @@ import me.clip.placeholderapi.PlaceholderAPI
 import me.clip.voteparty.conf.ConfigVoteParty
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
+import org.bukkit.Material
 import org.bukkit.OfflinePlayer
+import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.plugin.Plugin
 import org.bukkit.scheduler.BukkitRunnable
 
@@ -28,8 +31,7 @@ fun BaseCommand.sendMessage(prefix: String, issuer: CommandIssuer, key: MessageK
 }
 
 
-
-fun Plugin.runTaskTimer(period: Int, task: BukkitRunnable.() -> Unit)
+fun Plugin.runTaskTimer(period: Long, task: BukkitRunnable.() -> Unit)
 {
 	object : BukkitRunnable()
 	{
@@ -37,7 +39,12 @@ fun Plugin.runTaskTimer(period: Int, task: BukkitRunnable.() -> Unit)
 		{
 			task.invoke(this)
 		}
-	}.runTaskTimer(this, 0L, period.toLong())
+	}.runTaskTimer(this, 0L, period)
+}
+
+fun Plugin.runTaskLater(delay: Long, task: () -> Unit)
+{
+	server.scheduler.runTaskLater(this, task, delay)
 }
 
 
@@ -45,3 +52,22 @@ fun Collection<ConfigVoteParty.Command>.reduce(take: Int): Collection<ConfigVote
 {
 	return filter { it.randomChance() }.shuffled().take(take)
 }
+
+
+fun item(type: Material, amount: Int, function: ItemMeta.() -> Unit): ItemStack
+{
+	val item = ItemStack(type, amount)
+	val meta = item.itemMeta
+	
+	item.itemMeta = meta?.apply(function)
+	
+	return item
+}
+
+
+var ItemMeta.name: String
+	get() = displayName
+	set(value)
+	{
+		setDisplayName(color(value))
+	}

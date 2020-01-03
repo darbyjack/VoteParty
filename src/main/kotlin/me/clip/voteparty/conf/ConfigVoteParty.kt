@@ -65,7 +65,7 @@ data class ConfigVoteParty(var settings: SettingsConfig?, var effects: EffectsCo
 	) : Config
 	
 	data class CommandsReward(
-			var delay: Int,
+			var delay: Long,
 			var commands: List<Command>
 	) : Config
 	
