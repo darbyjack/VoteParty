@@ -3,6 +3,7 @@ package me.clip.voteparty.handler
 import me.clip.voteparty.base.Addon
 import me.clip.voteparty.base.color
 import me.clip.voteparty.base.formMessage
+import me.clip.voteparty.base.reduce
 import me.clip.voteparty.base.runTaskTimer
 import me.clip.voteparty.conf.ConfigVoteParty
 import me.clip.voteparty.plugin.VotePartyPlugin
@@ -15,12 +16,13 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 	private val conf: ConfigVoteParty
 		get() = party.conf()
 	
+	
 	fun giveRandomPartyRewards(player: Player)
 	{
 		val take = conf.party?.maxRewardsPerPlayer?.takeIf { it > 0 } ?: return
 		val cmds = conf.party?.rewardCommands?.commands?.takeIf { it.isNotEmpty() } ?: return
 		
-		val iter = cmds.filter { it.randomChance() }.shuffled().take(take).iterator()
+		val iter = cmds.reduce(take).iterator()
 		
 		plugin.runTaskTimer(conf.party?.rewardCommands?.delay ?: 1)
 		{
@@ -35,47 +37,21 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 	
 	fun giveGuaranteedPartyRewards(player: Player)
 	{
-		if (conf.party?.guaranteedRewards?.enabled == false)
-		{
-			return
-		}
-		
-		val cmds = conf.party?.guaranteedRewards?.commands ?: return
-		
-		cmds.forEach()
-		{ command ->
-			server.dispatchCommand(server.consoleSender, formMessage(player, command))
-		}
+		executeCommands(conf.party?.guaranteedRewards?.enabled,
+		                conf.party?.guaranteedRewards?.commands,
+		                player)
 	}
 	
 	fun runPrePartyCommands()
 	{
-		if (conf.party?.prePartyCommands?.enabled == false)
-		{
-			return
-		}
-		
-		val cmds = conf.party?.prePartyCommands?.commands ?: return
-		
-		cmds.forEach()
-		{ command ->
-			server.dispatchCommand(server.consoleSender, command)
-		}
+		executeCommands(conf.party?.prePartyCommands?.enabled,
+		                conf.party?.prePartyCommands?.commands)
 	}
 	
 	fun runPartyCommands()
 	{
-		if (conf.party?.partyCommands?.enabled == false)
-		{
-			return
-		}
-		
-		val cmds = conf.party?.partyCommands?.commands ?: return
-		
-		cmds.forEach()
-		{ command ->
-			server.dispatchCommand(server.consoleSender, command)
-		}
+		executeCommands(conf.party?.partyCommands?.enabled,
+		                conf.party?.partyCommands?.commands)
 	}
 	
 	fun runPartyStartEffects()
@@ -139,5 +115,20 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 			}
 			
 		}, (conf.party?.startDelay ?: 10) * 20)
+	}
+	
+	
+	
+	private fun executeCommands(enabled: Boolean?, cmds: Collection<String>?, player: Player? = null)
+	{
+		if (enabled == false)
+		{
+			return
+		}
+		
+		cmds?.forEach()
+		{
+			server.dispatchCommand(server.consoleSender, if (player == null) it else formMessage(player, it))
+		}
 	}
 }
