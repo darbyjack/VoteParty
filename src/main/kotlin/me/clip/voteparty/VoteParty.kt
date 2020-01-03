@@ -213,12 +213,8 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 				types.firstOrNull()?.asBase()?.dataAsString()?.let(EffectType.Companion::find)
 			}
 			
-			KORM.pullWith<World> { _, types ->
-				types.firstOrNull()?.asBase()?.dataAsString()?.let(Bukkit::getWorld)
-			}
-			
-			KORM.pushWith<World> { writer, data ->
-				writer.writeBase(data?.name ?: "")
+			KORM.codecBy<World, String>(Bukkit::getWorld) {
+				it?.name
 			}
 		}
 	}
