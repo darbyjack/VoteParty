@@ -2,10 +2,10 @@ package me.clip.voteparty.handler
 
 import me.clip.voteparty.base.Addon
 import me.clip.voteparty.base.formMessage
+import me.clip.voteparty.base.reduce
 import me.clip.voteparty.conf.ConfigVoteParty
 import me.clip.voteparty.plugin.VotePartyPlugin
 import org.bukkit.entity.Player
-import java.util.concurrent.ThreadLocalRandom.current
 import java.util.concurrent.atomic.AtomicInteger
 
 class VotesHandler(override val plugin: VotePartyPlugin) : Addon
@@ -48,15 +48,12 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon
 			return
 		}
 		
+		val take = conf.voting?.perVoteRewards?.max_possible?.takeIf { it > 0 } ?: return
 		val cmds = conf.voting?.perVoteRewards?.commands?.takeIf { it.isNotEmpty() } ?: return
 		
-		repeat(conf.voting?.perVoteRewards?.max_possible ?: 0) {
-			val cmd = cmds.random()
-			
-			if (cmd.chance <= current().nextInt(100))
-			{
-				server.dispatchCommand(server.consoleSender, formMessage(player, cmd.command))
-			}
+		cmds.reduce(take).forEach()
+		{
+			server.dispatchCommand(server.consoleSender, formMessage(player, it.command))
 		}
 	}
 	

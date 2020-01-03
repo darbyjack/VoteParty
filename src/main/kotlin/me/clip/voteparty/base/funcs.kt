@@ -4,6 +4,7 @@ import co.aikar.commands.BaseCommand
 import co.aikar.commands.CommandIssuer
 import co.aikar.locales.MessageKeyProvider
 import me.clip.placeholderapi.PlaceholderAPI
+import me.clip.voteparty.conf.ConfigVoteParty
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.OfflinePlayer
@@ -37,4 +38,10 @@ fun Plugin.runTaskTimer(period: Int, task: BukkitRunnable.() -> Unit)
 			task.invoke(this)
 		}
 	}.runTaskTimer(this, 0L, period.toLong())
+}
+
+
+fun Collection<ConfigVoteParty.Command>.reduce(take: Int): Collection<ConfigVoteParty.Command>
+{
+	return filter { it.randomChance() }.shuffled().take(take)
 }
