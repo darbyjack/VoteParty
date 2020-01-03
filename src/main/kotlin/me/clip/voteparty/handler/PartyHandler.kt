@@ -3,7 +3,7 @@ package me.clip.voteparty.handler
 import me.clip.voteparty.base.Addon
 import me.clip.voteparty.base.color
 import me.clip.voteparty.base.formMessage
-import me.clip.voteparty.base.item
+import me.clip.voteparty.base.meta
 import me.clip.voteparty.base.name
 import me.clip.voteparty.base.reduce
 import me.clip.voteparty.base.runTaskLater
@@ -75,7 +75,10 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 	
 	fun buildCrate(amount: Int): ItemStack
 	{
-		return item(conf.crate?.material?.parseMaterial() ?: Material.CHEST, amount)
+		val item = conf.crate?.material?.parseItem(true) ?: ItemStack(Material.CHEST, 1)
+		item.amount = amount
+		
+		return item.meta()
 		{
 			name = conf.crate?.name ?: "Vote Party Crate"
 			lore = conf.crate?.lore?.map(::color)
