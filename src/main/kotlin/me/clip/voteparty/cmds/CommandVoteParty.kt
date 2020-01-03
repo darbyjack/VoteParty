@@ -3,7 +3,15 @@ package me.clip.voteparty.cmds
 import co.aikar.commands.BaseCommand
 import co.aikar.commands.CommandHelp
 import co.aikar.commands.CommandIssuer
-import co.aikar.commands.annotation.*
+import co.aikar.commands.annotation.CommandAlias
+import co.aikar.commands.annotation.CommandCompletion
+import co.aikar.commands.annotation.CommandPermission
+import co.aikar.commands.annotation.Default
+import co.aikar.commands.annotation.Description
+import co.aikar.commands.annotation.HelpCommand
+import co.aikar.commands.annotation.Subcommand
+import co.aikar.commands.annotation.Syntax
+import co.aikar.commands.annotation.Values
 import co.aikar.commands.bukkit.contexts.OnlinePlayer
 import me.clip.voteparty.VoteParty
 import me.clip.voteparty.base.ADMIN_PERM
@@ -36,10 +44,10 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	
 	@Subcommand("givecrate")
 	@Description("{@@descriptions.give-crate}")
-	@CommandCompletion("@players")
+	@CommandCompletion("@online")
 	@Syntax("<player> <amount>")
 	@CommandPermission(ADMIN_PERM)
-	fun giveCrate(issuer: CommandIssuer, @Values("@players") @Single target: OnlinePlayer, @Default("1") amount: Int)
+	fun giveCrate(issuer: CommandIssuer, @Values("@online") target: OnlinePlayer, @Default("1") amount: Int)
 	{
 		sendMessage(prefix, issuer, Messages.CRATE__CRATE_GIVEN, target.player)
 		target.player.inventory.addItem(party.partyHandler.buildCrate(amount))
