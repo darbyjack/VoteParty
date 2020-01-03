@@ -24,6 +24,6 @@ interface Addon
 		}
 	
 	val prefix: String
-		get() = party.conf().settings?.prefix ?: "&d&lV&dote&5&lP&5arty &7&l» "
+		get() = party.conf().settings?.prefix ?: PREFIX
 	
 }

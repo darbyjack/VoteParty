@@ -54,14 +54,16 @@ fun Collection<ConfigVoteParty.Command>.reduce(take: Int): Collection<ConfigVote
 }
 
 
-fun item(type: Material, amount: Int, function: ItemMeta.() -> Unit): ItemStack
+fun item(type: Material, amount: Int, function: ItemMeta.() -> Unit = {}): ItemStack
 {
-	val item = ItemStack(type, amount)
-	val meta = item.itemMeta
+	return ItemStack(type, amount).meta(function)
+}
+
+fun ItemStack.meta(function: ItemMeta.() -> Unit): ItemStack
+{
+	itemMeta = itemMeta?.apply(function)
 	
-	item.itemMeta = meta?.apply(function)
-	
-	return item
+	return this
 }
 
 
