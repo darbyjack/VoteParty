@@ -4,6 +4,8 @@ import com.sxtanna.korm.data.custom.KormList
 import me.clip.voteparty.conf.base.Config
 import me.clip.voteparty.plugin.XMaterial
 import me.clip.voteparty.version.EffectType
+import org.bukkit.Bukkit
+import org.bukkit.World
 import java.util.concurrent.ThreadLocalRandom
 
 data class ConfigVoteParty(var settings: SettingsConfig?, var effects: EffectsConfig?, var crate: CrateConfig?, var voting: VoteConfig?, var party: PartyConfig?) : Config
@@ -37,7 +39,7 @@ data class ConfigVoteParty(var settings: SettingsConfig?, var effects: EffectsCo
 	
 	data class PartyConfig(
 			var votesNeeded: Int,
-			var disabledWorlds: List<String>,
+			var disabledWorlds: List<World>,
 			var offlineVotes: Boolean,
 			var maxRewardsPerPlayer: Int,
 			var startDelay: Long,
@@ -95,7 +97,7 @@ data class ConfigVoteParty(var settings: SettingsConfig?, var effects: EffectsCo
 		private val DEF_REWARD_COMMANDS = CommandsReward(1, listOf(Command(50, "eco give %player_name% 100"), Command(50, "give %player_name% DIAMOND 6"), Command(50, "give %player_name% IRON_INGOT 12")))
 		private val DEF_PRE_PARTY_COMMANDS = Commands(false, listOf("broadcast Party will start soon!"))
 		private val DEF_PARTY_COMMANDS = Commands(false, listOf("broadcast Party Starting!"))
-		private val DEF_PARTY_CONFIG = PartyConfig(50, listOf("world_nether"), true, 1, 15, DEF_REWARD_COMMANDS, DEF_GUARANTEED_REWARDS, DEF_PRE_PARTY_COMMANDS, DEF_PARTY_COMMANDS)
+		private val DEF_PARTY_CONFIG = PartyConfig(50, listOf(), true, 1, 15, DEF_REWARD_COMMANDS, DEF_GUARANTEED_REWARDS, DEF_PRE_PARTY_COMMANDS, DEF_PARTY_COMMANDS)
 		private val DEF_VOTE_EFFECTS = Effects(true, listOf(EffectType.FLAME, EffectType.HEART))
 		private val DEF_PARTY_START_EFFECTS = Effects(true, listOf(EffectType.SLIME, EffectType.HEART))
 		private val DEF_PARTY_COMMAND_EXECUTE_EFFECTS = Effects(true, listOf(EffectType.SMOKE_NORMAL, EffectType.HEART))

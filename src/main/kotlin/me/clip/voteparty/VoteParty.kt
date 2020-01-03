@@ -19,6 +19,7 @@ import me.clip.voteparty.version.VersionHook
 import me.clip.voteparty.version.VersionHookNew
 import me.clip.voteparty.version.VersionHookOld
 import org.bukkit.Bukkit
+import org.bukkit.World
 import org.bukkit.entity.Player
 import java.util.Locale
 import java.util.logging.Level
@@ -210,6 +211,14 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 			
 			KORM.pullWith<EffectType> { _, types ->
 				types.firstOrNull()?.asBase()?.dataAsString()?.let(EffectType.Companion::find)
+			}
+			
+			KORM.pullWith<World> { _, types ->
+				types.firstOrNull()?.asBase()?.dataAsString()?.let(Bukkit::getWorld)
+			}
+			
+			KORM.pushWith<World> { writer, data ->
+				writer.writeBase(data?.name ?: "")
 			}
 		}
 	}
