@@ -5,7 +5,7 @@ import co.aikar.locales.MessageKeyProvider
 
 enum class Messages : MessageKeyProvider
 {
-	ERROR__INVALID_NUMBER,
+	ERROR__INVALID_NUMBER, ERROR__DISABLED_WORLD,
 	
 	INFO__VOTES_NEEDED,
 	
