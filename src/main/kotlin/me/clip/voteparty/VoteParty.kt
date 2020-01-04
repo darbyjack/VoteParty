@@ -83,7 +83,7 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 	}
 	
 	
-	private fun loadConf()
+	fun loadConf()
 	{
 		val file = plugin.dataFolder.resolve("conf.korm")
 		

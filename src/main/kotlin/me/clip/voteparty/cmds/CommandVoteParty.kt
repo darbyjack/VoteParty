@@ -97,6 +97,15 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 		sendMessage(prefix, currentCommandManager.getCommandIssuer(target.player), Messages.VOTES__PRIVATE_PARTY_RECEIVED)
 	}
 	
+	@Subcommand("reload")
+	@Description("{@@descriptions.reload}")
+	@CommandPermission(ADMIN_PERM)
+	fun reload (issuer: CommandIssuer)
+	{
+		voteParty.loadConf()
+		sendMessage(prefix, issuer, Messages.INFO__RELOADED)
+	}
+	
 	@HelpCommand
 	@Description("{@@descriptions.help}")
 	fun help(issuer: CommandIssuer, help: CommandHelp)
