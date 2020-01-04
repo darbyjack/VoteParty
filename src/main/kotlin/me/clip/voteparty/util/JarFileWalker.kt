@@ -26,7 +26,8 @@ object JarFileWalker
 				{
 					// attempt to pass the stream for this resource
 					function.invoke(path, javaClass.classLoader.getResourceAsStream(path.toString().drop(1)))
-				} catch (ex: Exception)
+				}
+				catch (ex: Exception)
 				{
 					// fallback to just the path
 					function.invoke(path, null)
