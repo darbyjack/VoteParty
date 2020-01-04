@@ -1,7 +1,7 @@
 descriptions:
   help: "Helpful commands for VoteParty."
   set-counter: "Set the current vote counter."
-  add-vote: "Add vote to the current vote tally."
+  add-vote: "Add votes to the current vote tally."
   start-party: "Force launch a VoteParty."
   give-crate: "Supply a player with a Vote crate."
   give-party: "Host a private Vote Party for a player."
