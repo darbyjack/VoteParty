@@ -9,11 +9,61 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
 public final class VotePartyPlugin extends JavaPlugin
 {
+
+	private VoteParty voteParty;
+
+
+	@Override
+	public void onLoad()
+	{
+		try
+		{
+			final BukkitLibraryManager library = new BukkitLibraryManager(this);
+			library.addMavenCentral();
+			library.addRepository("https://repo.glaremasters.me/repository/public/");
+
+			LIBRARIES.forEach(library::loadLibrary);
+		}
+		catch (final Exception ex)
+		{
+			getLogger().log(Level.SEVERE, "Failed to load runtime libraries: ", ex);
+			getServer().getPluginManager().disablePlugin(this);
+		}
+	}
+
+	@Override
+	public void onEnable()
+	{
+		this.voteParty = new VoteParty(this);
+		this.voteParty.load();
+
+		getServer().getServicesManager().register(VoteParty.class, this.voteParty, this, ServicePriority.Normal);
+	}
+
+	@Override
+	public void onDisable()
+	{
+		if (this.voteParty != null)
+		{
+			this.voteParty.kill();
+		}
+
+		this.voteParty = null;
+
+		getServer().getServicesManager().unregisterAll(this);
+	}
+
+
+	@Nullable
+	public VoteParty getVoteParty()
+	{
+		return this.voteParty;
+	}
+
 
 	private static final List<Library> LIBRARIES = new ArrayList<>();
 
@@ -65,59 +115,6 @@ public final class VotePartyPlugin extends JavaPlugin
 							 .version("3.3.00")
 							 .classifier("standalone")
 							 .build());
-	}
-
-	private final AtomicReference<VoteParty> reference = new AtomicReference<>();
-
-	@Override
-	public void onLoad()
-	{
-		try
-		{
-			final BukkitLibraryManager library = new BukkitLibraryManager(this);
-			library.addMavenCentral();
-			library.addRepository("https://repo.glaremasters.me/repository/public/");
-
-			LIBRARIES.forEach(library::loadLibrary);
-		}
-		catch (final Exception ex)
-		{
-			getLogger().log(Level.SEVERE, "Failed to load runtime libraries: ", ex);
-			getServer().getPluginManager().disablePlugin(this);
-		}
-	}
-
-	@Override
-	public void onEnable()
-	{
-		final VoteParty voteParty = new VoteParty(this);
-		voteParty.load();
-
-		reference.set(voteParty);
-
-		getServer().getServicesManager().register(VoteParty.class, voteParty, this, ServicePriority.Normal);
-	}
-
-	@Override
-	public void onDisable()
-	{
-		final VoteParty voteParty = reference.getAndSet(null);
-		if (voteParty == null)
-		{
-			return;
-		}
-
-		voteParty.kill();
-
-		getServer().getServicesManager().unregisterAll(this);
-
-
-	}
-
-	@Nullable
-	public VoteParty getVoteParty()
-	{
-		return reference.get();
 	}
 
 }
