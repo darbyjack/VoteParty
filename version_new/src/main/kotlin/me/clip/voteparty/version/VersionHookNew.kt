@@ -17,7 +17,8 @@ class VersionHookNew : VersionHook
 			if (color == null)
 			{
 				location.world?.spawnParticle(particle, location, 1, DustOptions(Color.RED, 0.8F)) // constant new Particle.DustOptions(Color.RED, 0.8F);
-			} else
+			}
+			else
 			{
 				location.world?.spawnParticle(particle, location, 1, DustOptions(color, 0.8F)) // cached new Particle.DustOptions(color, 0.8F)
 			}

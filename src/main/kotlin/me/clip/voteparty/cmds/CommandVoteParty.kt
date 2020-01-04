@@ -32,11 +32,13 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	@CommandPermission(ADMIN_PERM)
 	fun addVote(issuer: CommandIssuer, @Default("1") amount: Int)
 	{
-		if (amount <= 0) {
+		if (amount <= 0)
+		{
 			sendMessage(prefix, issuer, Messages.ERROR__INVALID_NUMBER)
 			return
 		}
-		else {
+		else
+		{
 			party.votesHandler.addVote(amount)
 			sendMessage(prefix, issuer, Messages.VOTES__VOTE_COUNTER_UPDATED)
 		}
@@ -60,11 +62,13 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	@CommandPermission(ADMIN_PERM)
 	fun setCounter(issuer: CommandIssuer, amount: Int)
 	{
-		if (amount <= 0) {
+		if (amount <= 0)
+		{
 			sendMessage(prefix, issuer, Messages.ERROR__INVALID_NUMBER)
 			return
 		}
-		else {
+		else
+		{
 			party.conf().party?.votesNeeded = amount
 			sendMessage(prefix, issuer, Messages.VOTES__VOTES_NEEDED_UPDATED)
 		}
@@ -86,7 +90,8 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	@CommandPermission(ADMIN_PERM)
 	fun giveParty(issuer: CommandIssuer, @Values("@players") target: OnlinePlayer)
 	{
-		if (target.player.world in party.conf().party?.disabledWorlds ?: emptySet()) {
+		if (target.player.world in party.conf().party?.disabledWorlds ?: emptySet())
+		{
 			sendMessage(prefix, issuer, Messages.ERROR__DISABLED_WORLD)
 			return
 		}
@@ -100,7 +105,7 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	@Subcommand("reload")
 	@Description("{@@descriptions.reload}")
 	@CommandPermission(ADMIN_PERM)
-	fun reload (issuer: CommandIssuer)
+	fun reload(issuer: CommandIssuer)
 	{
 		voteParty.loadConf()
 		sendMessage(prefix, issuer, Messages.INFO__RELOADED)
@@ -113,7 +118,8 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 		if (issuer.hasPermission(ADMIN_PERM))
 		{
 			help.showHelp()
-		} else
+		}
+		else
 		{
 			sendMessage(prefix, currentCommandIssuer, Messages.INFO__VOTES_NEEDED)
 		}

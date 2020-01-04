@@ -26,7 +26,8 @@ object UpdateChecker
 		val response = try
 		{
 			Unirest.get(URL.format(id)).header("User-Agent", "CHOCO-update-checker").asString()?.body
-		} catch (ex: Exception)
+		}
+		catch (ex: Exception)
 		{
 			return complete.invoke(UpdateResult.EXCEPTIONS(throwable = ex))
 		}
@@ -36,7 +37,8 @@ object UpdateChecker
 		val new = try
 		{
 			checkNotNull(VoteParty.GSON.fromJson<List<Version>>(response, LIST_TYPE)?.firstOrNull()?.name)
-		} catch (ex: Exception)
+		}
+		catch (ex: Exception)
 		{
 			return complete.invoke(UpdateResult.EXCEPTIONS(throwable = ex))
 		}

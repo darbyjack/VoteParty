@@ -40,7 +40,8 @@ class CrateListener(override val plugin: VotePartyPlugin) : VotePartyListener
 		if (hand.amount == 1)
 		{
 			player.inventory.removeItem(hand)
-		} else
+		}
+		else
 		{
 			player.inventory.itemInHand.amount = hand.amount - 1
 		}

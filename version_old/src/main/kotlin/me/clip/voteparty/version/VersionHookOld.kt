@@ -14,7 +14,8 @@ class VersionHookOld : VersionHook
 		if (color != null && effect.hasFeature(ParticleEffect.Feature.COLOR))
 		{
 			effect.sendColor(location.world.players, location, color)
-		} else
+		}
+		else
 		{
 			effect.send(location.world.players, location, 0.0, 0.0, 0.0, 0.0, 1)
 		}

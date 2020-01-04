@@ -162,7 +162,8 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 		val hook = if ("MC: 1.8" in Bukkit.getVersion())
 		{
 			VersionHookOld()
-		} else
+		}
+		else
 		{
 			VersionHookNew()
 		}
