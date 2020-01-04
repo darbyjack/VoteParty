@@ -18,7 +18,7 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon
 	
 	fun addVote(amount: Int)
 	{
-		if (votes.addAndGet(amount) < conf.party?.votesNeeded ?: 50)
+		if (votes.addAndGet(amount) < conf.party?.votes_needed ?: 50)
 		{
 			return
 		}
@@ -29,12 +29,12 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon
 	
 	fun giveGuaranteedVoteRewards(player: Player)
 	{
-		if (conf.voting?.guaranteedRewards?.enabled == false)
+		if (conf.voting?.guaranteed_rewards?.enabled == false)
 		{
 			return
 		}
 		
-		val cmds = conf.voting?.guaranteedRewards?.commands ?: return
+		val cmds = conf.voting?.guaranteed_rewards?.commands ?: return
 		cmds.forEach()
 		{ command ->
 			server.dispatchCommand(server.consoleSender, formMessage(player, command))
@@ -43,13 +43,13 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon
 	
 	fun giveRandomVoteRewards(player: Player)
 	{
-		if (conf.voting?.perVoteRewards?.enabled == false)
+		if (conf.voting?.per_vote_rewards?.enabled == false)
 		{
 			return
 		}
 		
-		val take = conf.voting?.perVoteRewards?.max_possible?.takeIf { it > 0 } ?: return
-		val cmds = conf.voting?.perVoteRewards?.commands?.takeIf { it.isNotEmpty() } ?: return
+		val take = conf.voting?.per_vote_rewards?.max_possible?.takeIf { it > 0 } ?: return
+		val cmds = conf.voting?.per_vote_rewards?.commands?.takeIf { it.isNotEmpty() } ?: return
 		
 		cmds.reduce(take).forEach()
 		{
@@ -75,12 +75,12 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon
 	
 	fun runGlobalCommands(player: Player)
 	{
-		if (conf.voting?.globalCommands?.enabled == false)
+		if (conf.voting?.global_commands?.enabled == false)
 		{
 			return
 		}
 		
-		val cmds = conf.voting?.globalCommands?.commands ?: return
+		val cmds = conf.voting?.global_commands?.commands ?: return
 		cmds.forEach()
 		{ command ->
 			server.dispatchCommand(server.consoleSender, formMessage(player, command))

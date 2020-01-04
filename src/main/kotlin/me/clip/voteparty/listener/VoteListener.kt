@@ -14,7 +14,7 @@ class VoteListener(override val plugin: VotePartyPlugin) : VotePartyListener
 		
 		val player = server.getOfflinePlayer(vote.username)
 		
-		if (!player.isOnline && party.conf().party?.offlineVotes == true)
+		if (!player.isOnline && party.conf().party?.offline_votes == true)
 		{
 			plugin.voteParty?.votesHandler?.addVote(1)
 			return

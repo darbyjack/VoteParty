@@ -69,7 +69,7 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 		}
 		else
 		{
-			party.conf().party?.votesNeeded = amount
+			party.conf().party?.votes_needed = amount
 			sendMessage(prefix, issuer, Messages.VOTES__VOTES_NEEDED_UPDATED)
 		}
 	}
@@ -90,7 +90,7 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	@CommandPermission(ADMIN_PERM)
 	fun giveParty(issuer: CommandIssuer, @Values("@players") target: OnlinePlayer)
 	{
-		if (target.player.world in party.conf().party?.disabledWorlds ?: emptySet())
+		if (target.player.world in party.conf().party?.disabled_worlds ?: emptySet())
 		{
 			sendMessage(prefix, issuer, Messages.ERROR__DISABLED_WORLD)
 			return
