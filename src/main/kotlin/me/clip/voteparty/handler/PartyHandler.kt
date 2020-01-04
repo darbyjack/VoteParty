@@ -26,12 +26,12 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 	
 	fun giveRandomPartyRewards(player: Player)
 	{
-		val take = conf.party?.maxRewardsPerPlayer?.takeIf { it > 0 } ?: return
-		val cmds = conf.party?.rewardCommands?.commands?.takeIf { it.isNotEmpty() } ?: return
+		val take = conf.party?.max_rewards_per_player?.takeIf { it > 0 } ?: return
+		val cmds = conf.party?.reward_commands?.commands?.takeIf { it.isNotEmpty() } ?: return
 		
 		val iter = cmds.reduce(take).iterator()
 		
-		plugin.runTaskTimer(conf.party?.rewardCommands?.delay ?: 1L)
+		plugin.runTaskTimer(conf.party?.reward_commands?.delay ?: 1L)
 		{
 			if (!iter.hasNext())
 			{
@@ -44,21 +44,21 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 	
 	fun giveGuaranteedPartyRewards(player: Player)
 	{
-		executeCommands(conf.party?.guaranteedRewards?.enabled,
-		                conf.party?.guaranteedRewards?.commands,
+		executeCommands(conf.party?.guaranteed_rewards?.enabled,
+		                conf.party?.guaranteed_rewards?.commands,
 		                player)
 	}
 	
 	fun runPrePartyCommands()
 	{
-		executeCommands(conf.party?.prePartyCommands?.enabled,
-		                conf.party?.prePartyCommands?.commands)
+		executeCommands(conf.party?.pre_party_commands?.enabled,
+		                conf.party?.pre_party_commands?.commands)
 	}
 	
 	fun runPartyCommands()
 	{
-		executeCommands(conf.party?.partyCommands?.enabled,
-		                conf.party?.partyCommands?.commands)
+		executeCommands(conf.party?.party_commands?.enabled,
+		                conf.party?.party_commands?.commands)
 	}
 	
 	fun runPartyStartEffects()
@@ -92,7 +92,7 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 	{
 		runPrePartyCommands()
 		
-		plugin.runTaskLater((conf.party?.startDelay ?: 10L) * 20L)
+		plugin.runTaskLater((conf.party?.start_delay ?: 10L) * 20L)
 		{
 			runPartyCommands()
 			runPartyStartEffects()
@@ -113,7 +113,7 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 			return
 		}
 		
-		if (player != null && (player.world in conf.party?.disabledWorlds ?: emptySet()))
+		if (player != null && (player.world in conf.party?.disabled_worlds ?: emptySet()))
 		{
 			return
 		}
@@ -134,7 +134,7 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 		
 		val targets = players.filter()
 		{
-			it.world !in conf.party?.disabledWorlds ?: emptySet()
+			it.world !in conf.party?.disabled_worlds ?: emptySet()
 		}
 		
 		effects?.filterNotNull()?.forEach()

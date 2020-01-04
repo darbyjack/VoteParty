@@ -199,7 +199,7 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 	
 	fun getVotesNeeded(): Int
 	{
-		return conf().party?.votesNeeded ?: 50
+		return conf().party?.votes_needed ?: 50
 	}
 	
 	

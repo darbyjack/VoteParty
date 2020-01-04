@@ -60,36 +60,36 @@ data class ConfigVoteParty(
 	data class VoteConfig(
 			@KormComment("Random commands to try and execute on players", "Format is [Chance Percentage, \"Command\"]",
 			             "Refer to example in party for how to add more")
-			var perVoteRewards: RewardsPerVote,
+			var per_vote_rewards: RewardsPerVote,
 			@KormComment("Guaranteed commands you want to execute on the player that voted")
-			var guaranteedRewards: Commands,
+			var guaranteed_rewards: Commands,
 			@KormComment("Configuration for the voting part of the plugin", "", "Global commands to run when a player votes")
-			var globalCommands: Commands
+			var global_commands: Commands
 	                     ) : Config
 	
 	
 	data class PartyConfig(
 			@KormComment("The amount of votes needed to start the party")
-			var votesNeeded: Int,
+			var votes_needed: Int,
 			@KormComment("Configuration for the vote party", "", "Input worlds you would like to disable the party in"
 			             , "For example, disabledWorlds: [\"world_nether\"]", "would disable parties in the nether")
-			var disabledWorlds: Set<World>,
+			var disabled_worlds: Set<World>,
 			@KormComment("Allow offline votes to count towards party")
-			var offlineVotes: Boolean,
+			var offline_votes: Boolean,
 			@KormComment("Max random rewards from the list below")
-			var maxRewardsPerPlayer: Int,
+			var max_rewards_per_player: Int,
 			@KormComment("How long to wait to start party after reaching votes needed")
-			var startDelay: Long,
+			var start_delay: Long,
 			@KormComment("Random commands to try and execute on players", "Format is [Chance Percentage, \"Command\"]",
 			             "For example, if I wanted to give a player", "\$100 from Essentials, with a 90% chance,",
 			             "I would do the following:", "[90, \"eco give %player_name% 100\"]")
-			var rewardCommands: CommandsReward,
+			var reward_commands: CommandsReward,
 			@KormComment("Configure the commands you want to guarantee the player will get", "In other words, players will ALWAYS get ALL of these")
-			var guaranteedRewards: Commands,
+			var guaranteed_rewards: Commands,
 			@KormComment("Commands to execute at the beginning of the start delay")
-			var prePartyCommands: Commands,
+			var pre_party_commands: Commands,
 			@KormComment("Commands to execute when a party is starting")
-			var partyCommands: Commands
+			var party_commands: Commands
 	                      ) : Config
 	
 	data class RewardsPerVote(

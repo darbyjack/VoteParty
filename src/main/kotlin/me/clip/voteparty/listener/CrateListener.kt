@@ -30,7 +30,7 @@ class CrateListener(override val plugin: VotePartyPlugin) : VotePartyListener
 			return
 		}
 		
-		if (player.world in plugin.voteParty?.conf()?.party?.disabledWorlds ?: emptySet())
+		if (player.world in plugin.voteParty?.conf()?.party?.disabled_worlds ?: emptySet())
 		{
 			return
 		}
