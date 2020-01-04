@@ -5,7 +5,7 @@ import org.bukkit.Location
 
 interface VersionHook
 {
-
+	
 	fun display(type: EffectType, location: Location, color: Color?)
-
+	
 }
