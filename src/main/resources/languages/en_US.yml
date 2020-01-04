@@ -5,11 +5,13 @@ descriptions:
   start-party: "Force launch a VoteParty."
   give-crate: "Supply a player with a Vote crate."
   give-party: "Host a private Vote Party for a player."
+  reload: "Reload the config file."
 error:
   invalid-number: "&fSorry, but this number must be positive in order to work correctly!"
   disabled-world: "&fSorry, but this player is currently in a disabled world!"
 info:
   votes-needed: "&bVotes needed for party: &f%voteparty_votes_required_party%"
+  reloaded: "&fThe config has been reloaded!"
 party:
   force-start-successful: "&fYou have successfully force started a Vote Party for all players online!"
 votes:
