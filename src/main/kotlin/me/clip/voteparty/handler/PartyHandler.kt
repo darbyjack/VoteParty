@@ -45,34 +45,34 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 	fun giveGuaranteedPartyRewards(player: Player)
 	{
 		executeCommands(conf.party?.guaranteedRewards?.enabled,
-				conf.party?.guaranteedRewards?.commands,
-				player)
+		                conf.party?.guaranteedRewards?.commands,
+		                player)
 	}
 	
 	fun runPrePartyCommands()
 	{
 		executeCommands(conf.party?.prePartyCommands?.enabled,
-				conf.party?.prePartyCommands?.commands)
+		                conf.party?.prePartyCommands?.commands)
 	}
 	
 	fun runPartyCommands()
 	{
 		executeCommands(conf.party?.partyCommands?.enabled,
-				conf.party?.partyCommands?.commands)
+		                conf.party?.partyCommands?.commands)
 	}
 	
 	fun runPartyStartEffects()
 	{
 		executeEffects(conf.effects?.party_start?.enabled,
-				conf.effects?.party_start?.effects,
-				server.onlinePlayers)
+		               conf.effects?.party_start?.effects,
+		               server.onlinePlayers)
 	}
 	
 	fun runPartyCommandEffects(player: Player)
 	{
 		executeEffects(conf.effects?.party_command_execute?.enabled,
-				conf.effects?.party_command_execute?.effects,
-				listOf(player))
+		               conf.effects?.party_command_execute?.effects,
+		               listOf(player))
 	}
 	
 	
