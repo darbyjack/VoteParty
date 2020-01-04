@@ -31,10 +31,10 @@ class VotePartyPlaceholders(private val voteParty: VoteParty) : PlaceholderExpan
 		
 		return when (arg.toLowerCase())
 		{
-			"votes_recorded" -> voteParty.getVotes().toString()
+			"votes_recorded"       -> voteParty.getVotes().toString()
 			"votes_required_party" -> voteParty.getVotesNeeded().minus(voteParty.getVotes()).toString()
 			"votes_required_total" -> voteParty.getVotesNeeded().toString()
-			else -> ""
+			else                   -> ""
 		}
 	}
 }

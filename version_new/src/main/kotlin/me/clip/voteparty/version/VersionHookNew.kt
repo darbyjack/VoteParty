@@ -31,8 +31,8 @@ class VersionHookNew : VersionHook
 			Particle.CLOUD, Particle.DRAGON_BREATH, Particle.END_ROD,
 			Particle.DAMAGE_INDICATOR, Particle.TOTEM, Particle.SPIT,
 			Particle.SQUID_INK, Particle.BUBBLE_POP, Particle.BUBBLE_COLUMN_UP,
-			Particle.NAUTILUS -> location.world?.spawnParticle(particle, location, 1)
-			Particle.NOTE ->
+			Particle.NAUTILUS                              -> location.world?.spawnParticle(particle, location, 1)
+			Particle.NOTE                                  ->
 			{
 				val note = color?.red?.div(24.0) ?: 0.0
 				location.world?.spawnParticle(particle, location, 0, note, 0.0, 0.0, 1)
@@ -44,7 +44,7 @@ class VersionHookNew : VersionHook
 				val b = color?.blue?.div(255.0) ?: 0.0
 				location.world?.spawnParticle(particle, location, 0, r, g, b, 1)
 			}
-			else -> location.world?.spawnParticle(particle, location, 1, 0.0, 0.0, 0.0, 0.001)
+			else                                           -> location.world?.spawnParticle(particle, location, 1, 0.0, 0.0, 0.0, 0.001)
 		}
 	}
 	
