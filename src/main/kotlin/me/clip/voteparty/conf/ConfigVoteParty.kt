@@ -4,7 +4,6 @@ import com.sxtanna.korm.data.custom.KormList
 import me.clip.voteparty.conf.base.Config
 import me.clip.voteparty.plugin.XMaterial
 import me.clip.voteparty.version.EffectType
-import org.bukkit.Bukkit
 import org.bukkit.World
 import java.util.concurrent.ThreadLocalRandom
 
