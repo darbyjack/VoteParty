@@ -8,19 +8,24 @@ import me.clip.voteparty.version.EffectType
 import org.bukkit.World
 import java.util.concurrent.ThreadLocalRandom
 
-data class ConfigVoteParty(var settings: SettingsConfig?, var effects: EffectsConfig?, var crate: CrateConfig?, var voting: VoteConfig?, var party: PartyConfig?) : Config
+data class ConfigVoteParty(var settings: SettingsConfig?,
+                           var effects: EffectsConfig?,
+                           var crate: CrateConfig?,
+                           var voting: VoteConfig?,
+                           var party: PartyConfig?
+                          ) : Config
 {
 	
 	data class SettingsConfig(
 			var language: String,
 			var prefix: String
-	) : Config
+	                         ) : Config
 	
 	data class EffectsConfig(
 			var vote: Effects,
 			var party_start: Effects,
 			var party_command_execute: Effects
-	) : Config
+	                        ) : Config
 	
 	
 	data class CrateConfig(
@@ -28,13 +33,13 @@ data class ConfigVoteParty(var settings: SettingsConfig?, var effects: EffectsCo
 			var material: XMaterial,
 			var name: String,
 			var lore: List<String>
-	) : Config
+	                      ) : Config
 	
 	data class VoteConfig(
 			var perVoteRewards: RewardsPerVote,
 			var guaranteedRewards: Commands,
 			var globalCommands: Commands
-	) : Config
+	                     ) : Config
 	
 	
 	data class PartyConfig(
@@ -47,29 +52,29 @@ data class ConfigVoteParty(var settings: SettingsConfig?, var effects: EffectsCo
 			var guaranteedRewards: Commands,
 			var prePartyCommands: Commands,
 			var partyCommands: Commands
-	) : Config
+	                      ) : Config
 	
 	data class RewardsPerVote(
 			var enabled: Boolean,
 			var max_possible: Int,
 			var commands: List<Command>
-	) : Config
+	                         ) : Config
 	
 	
 	data class Effects(
 			var enabled: Boolean,
 			var effects: List<EffectType?>?
-	) : Config
+	                  ) : Config
 	
 	data class Commands(
 			var enabled: Boolean,
 			var commands: List<String>
-	) : Config
+	                   ) : Config
 	
 	data class CommandsReward(
 			var delay: Long,
 			var commands: List<Command>
-	) : Config
+	                         ) : Config
 	
 	
 	// [1, "eco give %player_name%"]
