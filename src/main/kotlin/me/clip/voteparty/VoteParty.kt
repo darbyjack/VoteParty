@@ -85,7 +85,7 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 	
 	fun loadConf()
 	{
-		val file = plugin.dataFolder.resolve("config.yml")
+		val file = plugin.dataFolder.resolve("conf.yml")
 		
 		val conf = (KORM.pull(file).to() ?: ConfigVoteParty.DEF).apply()
 		{
