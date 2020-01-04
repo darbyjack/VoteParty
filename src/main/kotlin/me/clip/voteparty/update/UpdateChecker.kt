@@ -14,10 +14,10 @@ object UpdateChecker
 	
 	fun check(plugin: Plugin, id: Int, complete: (result: UpdateResult) -> Unit)
 	{
-		plugin.server.scheduler.runTaskAsynchronously(plugin)
-		{ _ ->
+		plugin.server.scheduler.runTaskAsynchronously(plugin, Runnable
+		{
 			check(plugin.description.version, id, complete)
-		}
+		})
 	}
 	
 	@Suppress("FoldInitializerAndIfToElvis")
