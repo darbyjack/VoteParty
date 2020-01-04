@@ -9,11 +9,20 @@ import me.clip.voteparty.version.EffectType
 import org.bukkit.World
 import java.util.concurrent.ThreadLocalRandom
 
-data class ConfigVoteParty(var settings: SettingsConfig?,
-                           var effects: EffectsConfig?,
-                           var crate: CrateConfig?,
-                           var voting: VoteConfig?,
-                           var party: PartyConfig?
+data class ConfigVoteParty(
+		
+		var settings: SettingsConfig?,
+		var effects: EffectsConfig?,
+		@KormComment("Configuration for the crate that can be given to players.",
+		             "Here, you can utilize a few different options for customization.",
+		             "First off, you can enable / disable the entire crate.",
+		             "This will determine if they can be given out in game & if they can be placed down to receive rewards.",
+		             "Then, you can customize the lore to your choosing!",
+		             "Next, you get to choose the material. The default is a chest, since it is a crate after all.",
+		             "Finally, you get to customize the name of the crate to your liking!")
+		var crate: CrateConfig?,
+		var voting: VoteConfig?,
+		var party: PartyConfig?
                           ) : Config
 {
 	
@@ -36,10 +45,15 @@ data class ConfigVoteParty(var settings: SettingsConfig?,
 	
 	
 	data class CrateConfig(
-			@KormComment("Determines if the crate can be used.", "This is checked in multiple places such as placing the crate, and giving crates.")
 			var enabled: Boolean,
 			var material: XMaterial,
+			@KormComment("You may modify this to whatever your liking it.", "This supports color codes!")
 			var name: String,
+			@KormComment("Modifying the default lore of the crate is super simple!",
+			             "Example: I want to make my config have two lines. I want the first line to say \"Place Me\"",
+			             "I want the second line to say \"For Awesome Rewards!\"",
+			             "In order to do that, I would set the lore to the following:",
+			             "[\"Place Me\", \"For Awesome Rewards!\"]")
 			var lore: List<String>
 	                      ) : Config
 	
