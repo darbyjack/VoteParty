@@ -1,5 +1,6 @@
 package me.clip.voteparty.conf
 
+import com.sxtanna.korm.data.custom.KormComment
 import com.sxtanna.korm.data.custom.KormList
 import me.clip.voteparty.base.PREFIX
 import me.clip.voteparty.conf.base.Config
@@ -17,18 +18,25 @@ data class ConfigVoteParty(var settings: SettingsConfig?,
 {
 	
 	data class SettingsConfig(
+			@KormComment("The default language of the plugin")
 			var language: String,
+			@KormComment("The prefix of all the messages in the plugin")
 			var prefix: String
 	                         ) : Config
 	
 	data class EffectsConfig(
+			@KormComment("Configuration for particles when a player votes")
 			var vote: Effects,
+			@KormComment("Configuration for particles when a party starts")
 			var party_start: Effects,
+			@KormComment("Configuration for particle effects you can play",
+			             "throughout different parts of the plugin", "", "Configuration for particles when party", "commands are being executed")
 			var party_command_execute: Effects
 	                        ) : Config
 	
 	
 	data class CrateConfig(
+			@KormComment("Determines if the crate can be used.", "This is checked in multiple places such as placing the crate, and giving crates.")
 			var enabled: Boolean,
 			var material: XMaterial,
 			var name: String,
@@ -36,26 +44,43 @@ data class ConfigVoteParty(var settings: SettingsConfig?,
 	                      ) : Config
 	
 	data class VoteConfig(
+			@KormComment("Random commands to try and execute on players", "Format is [Chance Percentage, \"Command\"]",
+			             "Refer to example in party for how to add more")
 			var perVoteRewards: RewardsPerVote,
+			@KormComment("Guaranteed commands you want to execute on the player that voted")
 			var guaranteedRewards: Commands,
+			@KormComment("Configuration for the voting part of the plugin", "", "Global commands to run when a player votes")
 			var globalCommands: Commands
 	                     ) : Config
 	
 	
 	data class PartyConfig(
+			@KormComment("The amount of votes needed to start the party")
 			var votesNeeded: Int,
+			@KormComment("Configuration for the vote party", "", "Input worlds you would like to disable the party in"
+			             , "For example, disabledWorlds: [\"world_nether\"]", "would disable parties in the nether")
 			var disabledWorlds: Set<World>,
+			@KormComment("Allow offline votes to count towards party")
 			var offlineVotes: Boolean,
+			@KormComment("Max random rewards from the list below")
 			var maxRewardsPerPlayer: Int,
+			@KormComment("How long to wait to start party after reaching votes needed")
 			var startDelay: Long,
+			@KormComment("Random commands to try and execute on players", "Format is [Chance Percentage, \"Command\"]",
+			             "For example, if I wanted to give a player", "\$100 from Essentials, with a 90% chance,",
+			             "I would do the following:", "[90, \"eco give %player_name% 100\"]")
 			var rewardCommands: CommandsReward,
+			@KormComment("Configure the commands you want to guarantee the player will get", "In other words, players will ALWAYS get ALL of these")
 			var guaranteedRewards: Commands,
+			@KormComment("Commands to execute at the beginning of the start delay")
 			var prePartyCommands: Commands,
+			@KormComment("Commands to execute when a party is starting")
 			var partyCommands: Commands
 	                      ) : Config
 	
 	data class RewardsPerVote(
 			var enabled: Boolean,
+			@KormComment("Max possible commands that will execute from the list above")
 			var max_possible: Int,
 			var commands: List<Command>
 	                         ) : Config
@@ -72,6 +97,7 @@ data class ConfigVoteParty(var settings: SettingsConfig?,
 	                   ) : Config
 	
 	data class CommandsReward(
+			@KormComment("How long should the plugin wait", "inbetween each command being executed")
 			var delay: Long,
 			var commands: List<Command>
 	                         ) : Config
