@@ -101,6 +101,8 @@ public final class VotePartyPlugin extends JavaPlugin {
         voteParty.kill();
 
         getServer().getServicesManager().unregisterAll(this);
+
+
     }
 
     @Nullable
