@@ -67,7 +67,9 @@ apply plugin: 'com.github.johnrengelman.shadow'
 shadowJar {
 	minimize()
 	relocate("co.aikar.commands", "me.clip.voteparty.libs.acf")
+	archiveFileName = "VoteParty-${project.version}.jar"
 }
+
 
 dependencies {
 	compileOnly "com.sxtanna.korm:Korm:+"
