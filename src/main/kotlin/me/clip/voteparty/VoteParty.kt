@@ -8,6 +8,7 @@ import me.clip.voteparty.cmds.CommandVoteParty
 import me.clip.voteparty.conf.ConfigVoteParty
 import me.clip.voteparty.handler.PartyHandler
 import me.clip.voteparty.handler.VotesHandler
+import me.clip.voteparty.listener.CrateListener
 import me.clip.voteparty.listener.VoteListener
 import me.clip.voteparty.placeholders.VotePartyPlaceholders
 import me.clip.voteparty.plugin.VotePartyPlugin
@@ -31,6 +32,7 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 	private val cmds = PaperCommandManager(plugin)
 	
 	private val voteListener = VoteListener(plugin)
+	private val crateListener = CrateListener(plugin)
 	
 	private var hook = null as? VersionHook?
 	private var papi = null as? VotePartyPlaceholders?
@@ -71,11 +73,13 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 		}
 		
 		voteListener.load()
+		crateListener.load()
 	}
 	
 	override fun kill()
 	{
 		voteListener.kill()
+		crateListener.kill()
 	}
 	
 	
