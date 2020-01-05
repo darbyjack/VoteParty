@@ -29,11 +29,11 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 	
 	fun giveRandomPartyRewards(player: Player)
 	{
-		val take = conf.getProperty(PartySettings.MAX_REWARDS_PER_PLAYER)?.takeIf { it > 0 } ?: return
+		val take = conf.getProperty(PartySettings.REWARD_COMMANDS).max_possible?.takeIf { it > 0 } ?: return
 		val cmds = conf.getProperty(PartySettings.REWARD_COMMANDS).commands.takeIf { it.isNotEmpty() } ?: return
 		
 		val iter = cmds.reduce(take).iterator()
-		plugin.runTaskTimer(conf.getProperty(PartySettings.REWARD_COMMANDS).delay)
+		plugin.runTaskTimer(conf.getProperty(PartySettings.COMMAND_DELAY).toLong())
 		{
 			if (!iter.hasNext())
 			{
