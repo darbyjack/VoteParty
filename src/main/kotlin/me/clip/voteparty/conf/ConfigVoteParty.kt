@@ -117,9 +117,6 @@ data class ConfigVoteParty(
 	                         ) : Config
 	
 	
-	// [1, "eco give %player_name%"]
-	
-	@KormList(["chance", "command"])
 	data class Command(var chance: Int, var command: String)
 	{
 		

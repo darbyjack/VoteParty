@@ -3,6 +3,8 @@ package me.clip.voteparty
 import co.aikar.commands.PaperCommandManager
 import com.google.gson.Gson
 import com.sxtanna.korm.Korm
+import com.sxtanna.korm.writer.KormWriter
+import com.sxtanna.korm.writer.base.Options
 import me.clip.voteparty.base.State
 import me.clip.voteparty.cmds.CommandVoteParty
 import me.clip.voteparty.conf.ConfigVoteParty
@@ -206,7 +208,7 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 	companion object
 	{
 		internal val GSON = Gson()
-		internal val KORM = Korm()
+		internal val KORM = Korm(writer = KormWriter(2, Options.min(Options.LIST_ENTRY_ON_NEW_LINE)))
 		
 		init
 		{
