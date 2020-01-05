@@ -1,6 +1,7 @@
 package me.clip.voteparty.listener
 
 import com.vexsoftware.votifier.model.VotifierEvent
+import me.clip.voteparty.config.sections.PartySettings
 import me.clip.voteparty.plugin.VotePartyListener
 import me.clip.voteparty.plugin.VotePartyPlugin
 import org.bukkit.event.EventHandler
@@ -14,7 +15,7 @@ class VoteListener(override val plugin: VotePartyPlugin) : VotePartyListener
 		
 		val player = server.getOfflinePlayer(vote.username)
 		
-		if (!player.isOnline && party.conf().party?.offline_votes == true)
+		if (!player.isOnline && party.conf().getProperty(PartySettings.OFFLINE_VOTES) == true)
 		{
 			plugin.voteParty?.votesHandler?.addVote(1)
 			return
