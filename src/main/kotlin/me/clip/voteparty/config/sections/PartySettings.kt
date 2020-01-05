@@ -7,7 +7,7 @@ import ch.jalu.configme.properties.PropertyInitializer.newListProperty
 import ch.jalu.configme.properties.PropertyInitializer.newProperty
 import me.clip.voteparty.config.objects.Command
 import me.clip.voteparty.config.objects.Commands
-import me.clip.voteparty.config.objects.CommandsReward
+import me.clip.voteparty.config.objects.RewardsPerEvent
 
 object PartySettings : SettingsHolder
 {
@@ -21,13 +21,13 @@ object PartySettings : SettingsHolder
 	val OFFLINE_VOTES = newProperty("party.offline_votes", true)
 	
 	@JvmField
-	val MAX_REWARDS_PER_PLAYER = newProperty("party.max_rewards_per_player", 1)
-	
-	@JvmField
 	val START_DELAY = newProperty("party.start_delay", 15)
 	
 	@JvmField
-	val REWARD_COMMANDS: Property<CommandsReward> = newBeanProperty(CommandsReward::class.java, "party.reward_commands", CommandsReward(1, listOf(Command(50, "eco give %player_name% 100"), Command(50, "give %player_name% DIAMOND 6"), Command(50, "give %player_name% IRON_INGOT 12"))))
+	val COMMAND_DELAY = newProperty("party.command_delay", 1)
+	
+	@JvmField
+	val REWARD_COMMANDS: Property<RewardsPerEvent> = newBeanProperty(RewardsPerEvent::class.java, "party.reward_commands", RewardsPerEvent(true, 1, listOf(Command(50, "eco give %player_name% 100"), Command(50, "give %player_name% DIAMOND 6"), Command(50, "give %player_name% IRON_INGOT 12"))))
 	
 	@JvmField
 	val GUARANTEED_REWARDS: Property<Commands> = newBeanProperty(Commands::class.java, "party.guaranteed_rewards", Commands(true, listOf("eco give %player_name% 10", "give %player_name% STEAK 8")))
