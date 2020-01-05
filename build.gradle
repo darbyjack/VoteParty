@@ -22,10 +22,8 @@ allprojects {
 	
 	dependencies {
 		// kotlin
-		compileOnly "org.jetbrains.kotlin:kotlin-reflect"
-		compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-		
-		
+		implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+
 		// spigot
 		compileOnly "org.spigotmc:spigot-api:+"
 		
@@ -72,8 +70,8 @@ shadowJar {
 
 
 dependencies {
-	compileOnly "com.sxtanna.korm:Korm:+"
-	compileOnly "com.konghq:unirest-java:3.3.00"
+	implementation "com.sxtanna.korm:Korm:+"
+	implementation "com.konghq:unirest-java:3.3.00"
 	compileOnly("me.clip:placeholderapi:2.10.4") {
 		exclude group: "org.bstats", module: "bstats-bukkit"
 	}
@@ -81,7 +79,6 @@ dependencies {
 	compileOnly fileTree(dir: 'gradle/depends', include: ['*.jar'])
 	
 	implementation "co.aikar:acf-paper:0.5.0-SNAPSHOT"
-	implementation "net.byteflux:libby-bukkit:0.0.2-SNAPSHOT"
 	
 	implementation project(":version")
 	implementation project(":version_old")
