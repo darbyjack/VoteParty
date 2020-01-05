@@ -91,7 +91,7 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 		
 		val conf = (KORM.pull(file).to() ?: ConfigVoteParty.DEF).apply()
 		{
-			merge(ConfigVoteParty.DEF)
+			mergeJ(ConfigVoteParty.DEF)
 		}
 		
 		KORM.push(conf, file)
