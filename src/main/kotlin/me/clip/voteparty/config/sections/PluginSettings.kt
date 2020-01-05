@@ -9,7 +9,7 @@ object PluginSettings : SettingsHolder
 {
 	@JvmField
 	@Comment("The default language of the plugin")
-	val LANGUAGE = newProperty("settings.language", "en-US")
+	val LANGUAGE = newProperty("settings.language", "en_US")
 	
 	@JvmField
 	@Comment("The prefix of all the messages in the plugin")
