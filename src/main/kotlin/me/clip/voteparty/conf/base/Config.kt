@@ -1,13 +1,52 @@
 package me.clip.voteparty.conf.base
 
-import kotlin.reflect.KMutableProperty1
-import kotlin.reflect.full.declaredMemberProperties
-import kotlin.reflect.jvm.isAccessible
+import java.lang.reflect.Modifier
 
 interface Config
 {
 	
-	fun merge(inst: Config)
+	fun mergeJ(inst: Config)
+	{
+		val thisClazz = this::class.java
+		val instClazz = inst::class.java
+		
+		if (thisClazz != instClazz)
+		{
+			return // diff classes
+		}
+		
+		val fields = thisClazz.declaredFields.associateBy({ field -> field }, { field -> instClazz.declaredFields.find { it.name == field.name } })
+		
+		
+		for ((thisField, instField) in fields)
+		{
+			instField ?: continue
+			
+			thisField.isAccessible = true
+			instField.isAccessible = true
+			
+			if (Modifier.isFinal(thisField.modifiers))
+			{
+				continue
+			}
+			
+			val value = thisField.get(this)
+			
+			if (value == null)
+			{
+				thisField.set(this, instField.get(inst))
+				continue
+			}
+			
+			if (value is Config)
+			{
+				value.mergeJ(instField.get(inst) as? Config ?: continue)
+			}
+		}
+	}
+	
+	
+	/*fun mergeK(inst: Config)
 	{
 		val thisClazz = this::class
 		val instClazz = inst::class
@@ -45,9 +84,9 @@ interface Config
 			if (value is Config)
 			{
 				val def = instProp.getter.call(inst) as? Config ?: continue
-				value.merge(def)
+				value.mergeK(def)
 			}
 		}
-	}
+	}*/
 	
 }
