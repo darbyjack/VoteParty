@@ -65,19 +65,26 @@ apply plugin: 'com.github.johnrengelman.shadow'
 shadowJar {
 	minimize()
 	relocate("co.aikar.commands", "me.clip.voteparty.libs.acf")
+	relocate("ch.jalu.configme", "me.clip.voteparty.libs.configme")
 	archiveFileName = "VoteParty-${project.version}.jar"
 }
 
 
 dependencies {
-	implementation "com.sxtanna.korm:Korm:+"
+	// update checker
 	implementation "com.konghq:unirest-java:3.3.00"
+
+	// config
+	implementation "ch.jalu:configme:1.2.0"
+
+	// placeholderapi
 	compileOnly("me.clip:placeholderapi:2.10.4") {
 		exclude group: "org.bstats", module: "bstats-bukkit"
 	}
 	
 	compileOnly fileTree(dir: 'gradle/depends', include: ['*.jar'])
-	
+
+	// command handler
 	implementation "co.aikar:acf-paper:0.5.0-SNAPSHOT"
 	
 	implementation project(":version")

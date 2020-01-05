@@ -1,9 +1,12 @@
 package me.clip.voteparty.handler
 
+import ch.jalu.configme.SettingsManager
 import me.clip.voteparty.base.Addon
 import me.clip.voteparty.base.formMessage
 import me.clip.voteparty.base.reduce
-import me.clip.voteparty.conf.ConfigVoteParty
+import me.clip.voteparty.config.sections.EffectsSettings
+import me.clip.voteparty.config.sections.PartySettings
+import me.clip.voteparty.config.sections.VoteSettings
 import me.clip.voteparty.plugin.VotePartyPlugin
 import org.bukkit.entity.Player
 import java.util.concurrent.atomic.AtomicInteger
@@ -11,14 +14,15 @@ import java.util.concurrent.atomic.AtomicInteger
 class VotesHandler(override val plugin: VotePartyPlugin) : Addon
 {
 	
-	private val conf: ConfigVoteParty
+	private val conf: SettingsManager
 		get() = party.conf()
 	
 	val votes = AtomicInteger()
 	
 	fun addVote(amount: Int)
 	{
-		if (votes.addAndGet(amount) < conf.party?.votes_needed ?: 50)
+		
+		if (votes.addAndGet(amount) < conf.getProperty(PartySettings.VOTES_NEEDED))
 		{
 			return
 		}
@@ -29,12 +33,13 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon
 	
 	fun giveGuaranteedVoteRewards(player: Player)
 	{
-		if (conf.voting?.guaranteed_rewards?.enabled == false)
+		
+		if (!conf.getProperty(VoteSettings.GUARANTEED_REWARDS).enabled)
 		{
 			return
 		}
 		
-		val cmds = conf.voting?.guaranteed_rewards?.commands ?: return
+		val cmds = conf.getProperty(VoteSettings.GUARANTEED_REWARDS).commands
 		cmds.forEach()
 		{ command ->
 			server.dispatchCommand(server.consoleSender, formMessage(player, command))
@@ -43,13 +48,12 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon
 	
 	fun giveRandomVoteRewards(player: Player)
 	{
-		if (conf.voting?.per_vote_rewards?.enabled == false)
+		if (!conf.getProperty(VoteSettings.PER_VOTE_REWARDS).enabled)
 		{
 			return
 		}
-		
-		val take = conf.voting?.per_vote_rewards?.max_possible?.takeIf { it > 0 } ?: return
-		val cmds = conf.voting?.per_vote_rewards?.commands?.takeIf { it.isNotEmpty() } ?: return
+		val take = conf.getProperty(VoteSettings.PER_VOTE_REWARDS).max_possible.takeIf { it > 0 } ?: return
+		val cmds = conf.getProperty(VoteSettings.PER_VOTE_REWARDS).commands.takeIf { it.isNotEmpty() } ?: return
 		
 		cmds.reduce(take).forEach()
 		{
@@ -59,12 +63,11 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon
 	
 	fun playerVoteEffects(player: Player)
 	{
-		if (conf.effects?.vote?.enabled == false)
+		if (!conf.getProperty(EffectsSettings.VOTE).enable)
 		{
 			return
 		}
-		
-		val effects = conf.effects?.vote?.effects?.filterNotNull()?.takeIf { it.isNotEmpty() } ?: return
+		val effects = conf.getProperty(EffectsSettings.VOTE).effects.filterNotNull()?.takeIf { it.isNotEmpty() } ?: return
 		
 		val loc = player.location
 		
@@ -75,12 +78,12 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon
 	
 	fun runGlobalCommands(player: Player)
 	{
-		if (conf.voting?.global_commands?.enabled == false)
+		if (!conf.getProperty(VoteSettings.GLOBAL_COMMANDS).enabled)
 		{
 			return
 		}
 		
-		val cmds = conf.voting?.global_commands?.commands ?: return
+		val cmds = conf.getProperty(VoteSettings.GLOBAL_COMMANDS).commands
 		cmds.forEach()
 		{ command ->
 			server.dispatchCommand(server.consoleSender, formMessage(player, command))

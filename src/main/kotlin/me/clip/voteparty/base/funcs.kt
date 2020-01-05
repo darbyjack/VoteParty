@@ -4,7 +4,7 @@ import co.aikar.commands.BaseCommand
 import co.aikar.commands.CommandIssuer
 import co.aikar.locales.MessageKeyProvider
 import me.clip.placeholderapi.PlaceholderAPI
-import me.clip.voteparty.conf.ConfigVoteParty
+import me.clip.voteparty.config.objects.Command
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Material
@@ -48,7 +48,7 @@ fun Plugin.runTaskLater(delay: Long, task: () -> Unit)
 }
 
 
-fun Collection<ConfigVoteParty.Command>.reduce(take: Int): Collection<ConfigVoteParty.Command>
+fun Collection<Command>.reduce(take: Int): Collection<Command>
 {
 	return filter { it.randomChance() }.shuffled().take(take)
 }
@@ -65,7 +65,6 @@ fun ItemStack.meta(function: ItemMeta.() -> Unit): ItemStack
 	
 	return this
 }
-
 
 var ItemMeta.name: String
 	get() = displayName

@@ -1,6 +1,7 @@
 package me.clip.voteparty.base
 
 import me.clip.voteparty.VoteParty
+import me.clip.voteparty.config.sections.PluginSettings
 import me.clip.voteparty.plugin.VotePartyPlugin
 import org.bukkit.Server
 
@@ -24,6 +25,6 @@ interface Addon
 		}
 	
 	val prefix: String
-		get() = party.conf().settings?.prefix ?: PREFIX
+		get() = party.conf().getProperty(PluginSettings.PREFIX) ?: PREFIX
 	
 }

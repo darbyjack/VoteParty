@@ -17,6 +17,7 @@ import me.clip.voteparty.VoteParty
 import me.clip.voteparty.base.ADMIN_PERM
 import me.clip.voteparty.base.Addon
 import me.clip.voteparty.base.sendMessage
+import me.clip.voteparty.config.sections.PartySettings
 import me.clip.voteparty.messages.Messages
 
 @CommandAlias("vp")
@@ -69,7 +70,7 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 		}
 		else
 		{
-			party.conf().party?.votes_needed = amount
+			party.conf().setProperty(PartySettings.VOTES_NEEDED, amount)
 			sendMessage(prefix, issuer, Messages.VOTES__VOTES_NEEDED_UPDATED)
 		}
 	}
@@ -90,7 +91,7 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	@CommandPermission(ADMIN_PERM)
 	fun giveParty(issuer: CommandIssuer, @Values("@players") target: OnlinePlayer)
 	{
-		if (target.player.world in party.conf().party?.disabled_worlds ?: emptySet())
+		if (target.player.world.name in party.conf().getProperty(PartySettings.DISABLED_WORLDS))
 		{
 			sendMessage(prefix, issuer, Messages.ERROR__DISABLED_WORLD)
 			return
@@ -107,7 +108,7 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	@CommandPermission(ADMIN_PERM)
 	fun reload(issuer: CommandIssuer)
 	{
-		voteParty.loadConf()
+		voteParty.conf().reload()
 		sendMessage(prefix, issuer, Messages.INFO__RELOADED)
 	}
 	

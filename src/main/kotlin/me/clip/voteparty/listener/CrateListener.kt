@@ -1,5 +1,7 @@
 package me.clip.voteparty.listener
 
+import me.clip.voteparty.config.sections.CrateSettings
+import me.clip.voteparty.config.sections.PartySettings
 import me.clip.voteparty.plugin.VotePartyListener
 import me.clip.voteparty.plugin.VotePartyPlugin
 import org.bukkit.event.EventHandler
@@ -12,7 +14,7 @@ class CrateListener(override val plugin: VotePartyPlugin) : VotePartyListener
 	@EventHandler
 	fun PlayerInteractEvent.onInteract()
 	{
-		if (plugin.voteParty?.conf()?.crate?.enabled == false)
+		if (plugin.voteParty?.conf()?.getProperty(CrateSettings.ENABLED) == false)
 		{
 			return
 		}
@@ -30,7 +32,7 @@ class CrateListener(override val plugin: VotePartyPlugin) : VotePartyListener
 			return
 		}
 		
-		if (player.world in plugin.voteParty?.conf()?.party?.disabled_worlds ?: emptySet())
+		if (player.world.name in party.conf().getProperty(PartySettings.DISABLED_WORLDS))
 		{
 			return
 		}
@@ -40,8 +42,7 @@ class CrateListener(override val plugin: VotePartyPlugin) : VotePartyListener
 		if (hand.amount == 1)
 		{
 			player.inventory.removeItem(hand)
-		}
-		else
+		} else
 		{
 			player.inventory.itemInHand.amount = hand.amount - 1
 		}

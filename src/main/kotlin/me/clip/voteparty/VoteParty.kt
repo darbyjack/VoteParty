@@ -1,36 +1,34 @@
 package me.clip.voteparty
 
+import ch.jalu.configme.SettingsManager
 import co.aikar.commands.PaperCommandManager
 import com.google.gson.Gson
-import com.sxtanna.korm.Korm
-import com.sxtanna.korm.writer.KormWriter
-import com.sxtanna.korm.writer.base.Options
 import me.clip.voteparty.base.State
 import me.clip.voteparty.cmds.CommandVoteParty
-import me.clip.voteparty.conf.ConfigVoteParty
+import me.clip.voteparty.config.ConfigBuilder
+import me.clip.voteparty.config.sections.PartySettings
+import me.clip.voteparty.config.sections.PluginSettings
 import me.clip.voteparty.handler.PartyHandler
 import me.clip.voteparty.handler.VotesHandler
 import me.clip.voteparty.listener.CrateListener
 import me.clip.voteparty.listener.VoteListener
 import me.clip.voteparty.placeholders.VotePartyPlaceholders
 import me.clip.voteparty.plugin.VotePartyPlugin
-import me.clip.voteparty.plugin.XMaterial
 import me.clip.voteparty.update.UpdateChecker
 import me.clip.voteparty.util.JarFileWalker
-import me.clip.voteparty.version.EffectType
 import me.clip.voteparty.version.VersionHook
 import me.clip.voteparty.version.VersionHookNew
 import me.clip.voteparty.version.VersionHookOld
 import org.bukkit.Bukkit
-import org.bukkit.World
 import org.bukkit.entity.Player
+import java.io.File
+import java.nio.file.Files
 import java.util.Locale
 import java.util.logging.Level
 
 class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : State
 {
-	
-	private var conf = null as? ConfigVoteParty?
+	private var conf = null as? SettingsManager?
 	private val cmds = PaperCommandManager(plugin)
 	
 	private val voteListener = VoteListener(plugin)
@@ -41,7 +39,6 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 	
 	val votesHandler = VotesHandler(plugin)
 	val partyHandler = PartyHandler(plugin)
-	
 	
 	override fun load()
 	{
@@ -84,21 +81,13 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 		crateListener.kill()
 	}
 	
-	
-	fun loadConf()
+	private fun loadConf()
 	{
-		val file = plugin.dataFolder.resolve("conf.yml")
-		
-		val conf = (KORM.pull(file).to() ?: ConfigVoteParty.DEF).apply()
+		if (!Files.exists(File(plugin.dataFolder, "config.yml").toPath()))
 		{
-			mergeJ(ConfigVoteParty.DEF)
+			plugin.saveResource("config.yml", false)
 		}
-		
-		KORM.push(conf, file)
-		
-		this.conf = conf
-		
-		plugin.logger.info("loaded config")
+		this.conf = ConfigBuilder.create(File(plugin.dataFolder, "config.yml"))
 	}
 	
 	private fun loadLang()
@@ -146,8 +135,7 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 	{
 		@Suppress("DEPRECATION")
 		cmds.enableUnstableAPI("help")
-		
-		cmds.locales.defaultLocale = Locale.forLanguageTag(conf?.settings?.language ?: "en_US")
+		cmds.locales.defaultLocale = Locale.forLanguageTag(conf?.getProperty(PluginSettings.LANGUAGE) ?: "en_US")
 		
 		cmds.commandCompletions.registerCompletion("online")
 		{
@@ -164,8 +152,7 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 		val hook = if ("MC: 1.8" in Bukkit.getVersion())
 		{
 			VersionHookOld()
-		}
-		else
+		} else
 		{
 			VersionHookNew()
 		}
@@ -184,9 +171,9 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 	}
 	
 	
-	fun conf(): ConfigVoteParty
+	fun conf(): SettingsManager
 	{
-		return conf ?: ConfigVoteParty.DEF
+		return checkNotNull(conf)
 	}
 	
 	fun hook(): VersionHook
@@ -201,29 +188,13 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 	
 	fun getVotesNeeded(): Int
 	{
-		return conf().party?.votes_needed ?: 50
+		return conf().getProperty(PartySettings.VOTES_NEEDED) ?: 50
 	}
 	
 	
 	companion object
 	{
 		internal val GSON = Gson()
-		internal val KORM = Korm(writer = KormWriter(2, Options.min(Options.LIST_ENTRY_ON_NEW_LINE)))
-		
-		init
-		{
-			KORM.pullWith<XMaterial> { _, types ->
-				types.firstOrNull()?.asBase()?.dataAsString()?.let(XMaterial::matchXMaterial)?.orElse(null)
-			}
-			
-			KORM.pullWith<EffectType> { _, types ->
-				types.firstOrNull()?.asBase()?.dataAsString()?.let(EffectType.Companion::find)
-			}
-			
-			KORM.codecBy<World, String>(Bukkit::getWorld) {
-				it?.name
-			}
-		}
 	}
 	
 }
