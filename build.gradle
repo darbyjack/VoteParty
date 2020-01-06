@@ -16,6 +16,9 @@ allprojects {
 			url = "https://papermc.io/repo/repository/maven-public/"
 		}
 		maven {
+			url = "https://dl.bintray.com/ichbinjoe/public/"
+		}
+		maven {
 			url = "https://repo.glaremasters.me/repository/public/"
 		}
 	}
@@ -80,7 +83,7 @@ dependencies {
 		exclude group: "org.bstats", module: "bstats-bukkit"
 	}
 	
-	compileOnly fileTree(dir: 'gradle/depends', include: ['*.jar'])
+	compileOnly "com.vexsoftware:nuvotifier-universal:2.6.0"
 
 	// command handler
 	implementation "co.aikar:acf-paper:0.5.0-SNAPSHOT"
