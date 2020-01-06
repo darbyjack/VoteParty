@@ -9,6 +9,7 @@ import co.aikar.commands.annotation.CommandPermission
 import co.aikar.commands.annotation.Default
 import co.aikar.commands.annotation.Description
 import co.aikar.commands.annotation.HelpCommand
+import co.aikar.commands.annotation.Private
 import co.aikar.commands.annotation.Subcommand
 import co.aikar.commands.annotation.Syntax
 import co.aikar.commands.annotation.Values
@@ -112,18 +113,18 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 		sendMessage(prefix, issuer, Messages.INFO__RELOADED)
 	}
 	
-	@HelpCommand
+	@Subcommand("help")
 	@Description("{@@descriptions.help}")
 	fun help(issuer: CommandIssuer, help: CommandHelp)
 	{
-		if (issuer.hasPermission(ADMIN_PERM))
-		{
-			help.showHelp()
-		}
-		else
-		{
-			sendMessage(prefix, currentCommandIssuer, Messages.INFO__VOTES_NEEDED)
-		}
+		help.showHelp()
+	}
+	
+	@Private
+	@Default
+	fun default(issuer: CommandIssuer)
+	{
+		sendMessage(prefix, currentCommandIssuer, Messages.INFO__VOTES_NEEDED)
 	}
 	
 }
