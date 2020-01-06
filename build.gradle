@@ -71,8 +71,6 @@ shadowJar {
 
 
 dependencies {
-	// update checker
-	implementation "com.konghq:unirest-java:3.3.00:standalone"
 
 	// config
 	implementation "ch.jalu:configme:1.2.0-SNAPSHOT"
