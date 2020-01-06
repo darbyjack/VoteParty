@@ -6,22 +6,21 @@ import ch.jalu.configme.configurationdata.CommentsConfiguration
 import ch.jalu.configme.properties.Property
 import ch.jalu.configme.properties.PropertyInitializer.newBeanProperty
 import me.clip.voteparty.config.objects.Effects
-import me.clip.voteparty.version.EffectType
 
 
 object EffectsSettings : SettingsHolder
 {
 	@JvmField
 	@Comment("Configuration for particles when party commands are being executed")
-	val PARTY_COMMAND_EXECUTE: Property<Effects> = newBeanProperty(Effects::class.java, "effects.party_commands_execute", Effects(true, listOf(EffectType.SMOKE_NORMAL, EffectType.HEART)))
-	
+	val PARTY_COMMAND_EXECUTE: Property<Effects>? = newBeanProperty(Effects::class.java, "effects.party_commands_execute", Effects(true, listOf("SMOKE_NORMAL", "HEART")))
+
 	@JvmField
 	@Comment("Configuration for particles when a party starts")
-	val PARTY_START: Property<Effects> = newBeanProperty(Effects::class.java, "effects.party_start", Effects(true, listOf(EffectType.SLIME, EffectType.HEART)))
+	val PARTY_START: Property<Effects>? = newBeanProperty(Effects::class.java, "effects.party_start", Effects(true, listOf("SMOKE_NORMAL", "HEART")))
 	
 	@JvmField
 	@Comment("Configuration for particles when a player votes")
-	val VOTE: Property<Effects> = newBeanProperty(Effects::class.java, "effects.vote", Effects(true, listOf(EffectType.FLAME, EffectType.HEART)))
+	val VOTE: Property<Effects>? = newBeanProperty(Effects::class.java, "effects.vote", Effects(true, listOf("SMOKE_NORMAL", "HEART")))
 	
 	override fun registerComments(conf: CommentsConfiguration)
 	{

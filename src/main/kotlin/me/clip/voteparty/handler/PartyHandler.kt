@@ -127,7 +127,7 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 	}
 	
 	
-	private fun executeEffects(enabled: Boolean?, effects: Collection<EffectType?>?, players: Collection<Player>)
+	private fun executeEffects(enabled: Boolean?, effects: Collection<String>, players: Collection<Player>)
 	{
 		if (enabled == false)
 		{
@@ -139,11 +139,11 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 			it.world.name !in conf.getProperty(PartySettings.DISABLED_WORLDS)
 		}
 		
-		effects?.filterNotNull()?.forEach()
+		effects.forEach()
 		{ effect ->
 			targets.forEach()
 			{ player ->
-				party.hook().display(effect, player.location, null)
+				party.hook().display(EffectType.valueOf(effect), player.location, null)
 			}
 		}
 	}
