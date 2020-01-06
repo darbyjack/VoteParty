@@ -8,6 +8,7 @@ import me.clip.voteparty.config.sections.EffectsSettings
 import me.clip.voteparty.config.sections.PartySettings
 import me.clip.voteparty.config.sections.VoteSettings
 import me.clip.voteparty.plugin.VotePartyPlugin
+import me.clip.voteparty.version.EffectType
 import org.bukkit.entity.Player
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -67,12 +68,12 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon
 		{
 			return
 		}
-		val effects = conf.getProperty(EffectsSettings.VOTE).effects.filterNotNull()?.takeIf { it.isNotEmpty() } ?: return
+		val effects = conf.getProperty(EffectsSettings.VOTE).effects.takeIf { it.isNotEmpty() } ?: return
 		
 		val loc = player.location
 		
 		effects.forEach {
-			party.hook().display(it, loc, null)
+			party.hook().display(EffectType.valueOf(it), loc, null)
 		}
 	}
 	

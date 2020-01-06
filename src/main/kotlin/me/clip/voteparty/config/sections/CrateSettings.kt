@@ -10,14 +10,14 @@ import me.clip.voteparty.plugin.XMaterial
 object CrateSettings : SettingsHolder
 {
 	@JvmField
-	val ENABLED = newProperty("crate.enabled", true)
+	val ENABLED: Property<Boolean>? = newProperty("crate.enabled", true)
 	
 	@JvmField
-	val LORE = newListProperty("crate.lore", "&aPlace me &e:)")
+	val LORE: Property<List<String>>? = newListProperty("crate.lore", "&aPlace me &e:)")
 	
 	@JvmField
-	val MATERIAL: Property<XMaterial> = newBeanProperty(XMaterial::class.java,"crate.material", XMaterial.CHEST)
+	val MATERIAL: Property<XMaterial>? = newBeanProperty(XMaterial::class.java,"crate.material", XMaterial.CHEST)
 	
 	@JvmField
-	val NAME = newProperty("crate.name", "&b&lVote&f&lParty &7Crate");
+	val NAME: Property<String>? = newProperty("crate.name", "&b&lVote&f&lParty &7Crate");
 }
