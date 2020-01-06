@@ -24,7 +24,7 @@ object PluginSettings : SettingsHolder
 				"Contributors: https://github.com/VoteParty/VoteParty/graphs/contributors",
 				"Issues: https://github.com/VoteParty/VoteParty/issues",
 				"Spigot: https://www.spigotmc.org/resources/987/",
-				"Wiki: https://wiki.helpch.at/glares-resources/voteparty",
+				"Wiki: https://wiki.helpch.at/glares-plugins/voteparty",
 				"Discord: https://helpch.at/discord"
 		                          )
 		conf.setComment("settings", *pluginHeader)
