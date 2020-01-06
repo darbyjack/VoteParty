@@ -2,6 +2,7 @@ package me.clip.voteparty.placeholders
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion
 import me.clip.voteparty.VoteParty
+import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 
 class VotePartyPlaceholders(private val voteParty: VoteParty) : PlaceholderExpansion()
@@ -26,7 +27,7 @@ class VotePartyPlaceholders(private val voteParty: VoteParty) : PlaceholderExpan
 		return "2.0"
 	}
 	
-	override fun onPlaceholderRequest(player: Player, arg: String): String
+	override fun onRequest(offlinePlayer: OfflinePlayer, arg: String): String
 	{
 		
 		return when (arg.toLowerCase())
