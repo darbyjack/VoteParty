@@ -13,11 +13,11 @@ object CrateSettings : SettingsHolder
 	val ENABLED: Property<Boolean>? = newProperty("crate.enabled", true)
 	
 	@JvmField
-	val LORE: Property<List<String>>? = newListProperty("crate.lore", "&aPlace me &e:)")
+	val LORE: Property<List<String>>? = newListProperty("crate.lore", "", "&7Place the chest in order to", "&7to receive rewards!", "")
 	
 	@JvmField
 	val MATERIAL: Property<XMaterial>? = newBeanProperty(XMaterial::class.java,"crate.material", XMaterial.CHEST)
 	
 	@JvmField
-	val NAME: Property<String>? = newProperty("crate.name", "&b&lVote&f&lParty &7Crate");
+	val NAME: Property<String>? = newProperty("crate.name", "&d&lVote&5&lParty &f&lCrate");
 }
