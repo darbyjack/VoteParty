@@ -28,6 +28,7 @@ allprojects {
 		compileOnly "org.spigotmc:spigot-api:+"
 		
 		// testing
+		compileOnly "org.jetbrains.kotlin:kotlin-reflect"
 		testCompile "org.junit.jupiter:junit-jupiter-engine:5.4.2"
 		testRuntime "org.junit.jupiter:junit-jupiter-engine:5.4.2"
 	}
