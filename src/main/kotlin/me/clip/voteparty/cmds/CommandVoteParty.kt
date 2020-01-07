@@ -19,7 +19,7 @@ import me.clip.voteparty.config.sections.PartySettings
 import me.clip.voteparty.messages.Messages
 import org.bukkit.command.CommandSender
 
-@CommandAlias("vp")
+@CommandAlias("%vp")
 data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), Addon
 {
 	

@@ -23,10 +23,8 @@ import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import java.io.File
 import java.nio.file.Files
-import java.util.Arrays
 import java.util.Locale
 import java.util.logging.Level
-import java.util.stream.Stream
 
 
 class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : State
@@ -143,6 +141,8 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 		{
 			plugin.server.onlinePlayers.map(Player::getName)
 		}
+		
+		cmds.commandReplacements.addReplacement("vp", "vp|voteparty")
 		
 		cmds.registerCommand(CommandVoteParty(this))
 		
