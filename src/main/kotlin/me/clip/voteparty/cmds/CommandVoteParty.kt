@@ -6,6 +6,7 @@ import co.aikar.commands.annotation.CommandAlias
 import co.aikar.commands.annotation.CommandCompletion
 import co.aikar.commands.annotation.CommandPermission
 import co.aikar.commands.annotation.Default
+import co.aikar.commands.annotation.Description
 import co.aikar.commands.annotation.Subcommand
 import co.aikar.commands.annotation.Syntax
 import co.aikar.commands.annotation.Values
@@ -28,6 +29,7 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	
 	@Subcommand("addvote")
 	@Syntax("<amount>")
+	@Description("Add Vote")
 	@CommandPermission(ADMIN_PERM)
 	fun addVote(issuer: CommandIssuer, @Default("1") amount: Int)
 	{
@@ -45,6 +47,7 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	@Subcommand("givecrate")
 	@CommandCompletion("@online")
 	@Syntax("<player> <amount>")
+	@Description("Give Crate")
 	@CommandPermission(ADMIN_PERM)
 	fun giveCrate(issuer: CommandIssuer, @Values("@online") target: OnlinePlayer, @Default("1") amount: Int)
 	{
@@ -62,6 +65,7 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	
 	@Subcommand("setcounter")
 	@Syntax("<amount>")
+	@Description("Give Party")
 	@CommandPermission(ADMIN_PERM)
 	fun setCounter(issuer: CommandIssuer, amount: Int)
 	{
@@ -77,6 +81,7 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	}
 	
 	@Subcommand("startparty")
+	@Description("Start Party")
 	@CommandPermission(ADMIN_PERM)
 	fun startParty(issuer: CommandIssuer)
 	{
@@ -86,6 +91,7 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	
 	@Subcommand("giveparty")
 	@CommandCompletion("@players")
+	@Description("Give Party")
 	@Syntax("<player>")
 	@CommandPermission(ADMIN_PERM)
 	fun giveParty(issuer: CommandIssuer, @Values("@players") target: OnlinePlayer)
@@ -103,6 +109,7 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	}
 	
 	@Subcommand("reload")
+	@Description("Reload")
 	@CommandPermission(ADMIN_PERM)
 	fun reload(issuer: CommandIssuer)
 	{
@@ -111,6 +118,7 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	}
 	
 	@Subcommand("help")
+	@Description("Help")
 	fun help(sender: CommandSender)
 	{
 		display(sender, currentCommandManager)

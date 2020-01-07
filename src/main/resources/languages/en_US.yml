@@ -1,10 +1,10 @@
 descriptions:
   help: "Helpful commands for VoteParty."
-  set-counter: "Set the current vote counter."
-  add-vote: "Add votes to the current vote tally."
-  start-party: "Force launch a VoteParty."
-  give-crate: "Supply a player with a Vote crate."
-  give-party: "Host a private Vote Party for a player."
+  setcounter: "Set the current vote counter."
+  addvote: "Add votes to the current vote tally."
+  startparty: "Force launch a VoteParty."
+  givecrate: "Supply a player with a Vote crate."
+  giveparty: "Host a private Vote Party for a player."
   reload: "Reload the config file."
 error:
   invalid-number: "&fSorry, but this number must be positive in order to work correctly!"
