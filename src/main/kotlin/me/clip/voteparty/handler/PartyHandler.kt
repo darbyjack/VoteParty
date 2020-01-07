@@ -40,6 +40,7 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 				return@runTaskTimer cancel()
 			}
 			
+			runPartyCommandEffects(player)
 			server.dispatchCommand(server.consoleSender, formMessage(player, iter.next().command))
 		}
 	}
