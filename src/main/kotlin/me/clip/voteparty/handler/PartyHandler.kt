@@ -33,7 +33,7 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 		val cmds = conf.getProperty(PartySettings.REWARD_COMMANDS).commands.takeIf { it.isNotEmpty() } ?: return
 		
 		val iter = cmds.reduce(take).iterator()
-		plugin.runTaskTimer(conf.getProperty(PartySettings.COMMAND_DELAY).toLong())
+		plugin.runTaskTimer(conf.getProperty(PartySettings.COMMAND_DELAY).toLong() * 20)
 		{
 			if (!iter.hasNext())
 			{
