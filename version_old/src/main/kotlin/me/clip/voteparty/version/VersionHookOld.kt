@@ -8,7 +8,7 @@ import java.util.Arrays
 class VersionHookOld : VersionHook
 {
 	
-	override fun display(type: EffectType, location: Location, color: Color?)
+	override fun display(type: EffectType, location: Location, color: Color?, offsetX: Double, offsetY: Double, offsetZ: Double, speed: Double, count: Int)
 	{
 		val effect = resolve(type)
 		if (color != null && effect.hasFeature(ParticleEffect.Feature.COLOR))
@@ -17,7 +17,7 @@ class VersionHookOld : VersionHook
 		}
 		else
 		{
-			effect.send(location.world.players, location, 0.0, 0.0, 0.0, 0.0, 1)
+			effect.send(location.world.players, location, offsetX, offsetY, offsetZ, speed, count)
 		}
 	}
 	
