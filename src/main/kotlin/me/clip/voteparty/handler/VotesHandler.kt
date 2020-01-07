@@ -34,13 +34,14 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon
 	
 	fun giveGuaranteedVoteRewards(player: Player)
 	{
+		val settings = conf.getProperty(VoteSettings.GUARANTEED_REWARDS)
 		
-		if (!conf.getProperty(VoteSettings.GUARANTEED_REWARDS).enabled)
+		if (!settings.enabled)
 		{
 			return
 		}
 		
-		val cmds = conf.getProperty(VoteSettings.GUARANTEED_REWARDS).commands
+		val cmds = settings.commands
 		cmds.forEach()
 		{ command ->
 			server.dispatchCommand(server.consoleSender, formMessage(player, command))
@@ -49,12 +50,14 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon
 	
 	fun giveRandomVoteRewards(player: Player)
 	{
-		if (!conf.getProperty(VoteSettings.PER_VOTE_REWARDS).enabled)
+		val settings = conf.getProperty(VoteSettings.PER_VOTE_REWARDS)
+		
+		if (!settings.enabled)
 		{
 			return
 		}
-		val take = conf.getProperty(VoteSettings.PER_VOTE_REWARDS).max_possible.takeIf { it > 0 } ?: return
-		val cmds = conf.getProperty(VoteSettings.PER_VOTE_REWARDS).commands.takeIf { it.isNotEmpty() } ?: return
+		val take = settings.max_possible.takeIf { it > 0 } ?: return
+		val cmds = settings.commands.takeIf { it.isNotEmpty() } ?: return
 		
 		cmds.reduce(take).forEach()
 		{
@@ -64,15 +67,15 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon
 	
 	fun playerVoteEffects(player: Player)
 	{
-		if (!conf.getProperty(EffectsSettings.VOTE).enable)
+		val settings = conf.getProperty(EffectsSettings.VOTE)
+		
+		if (!settings.enable)
 		{
 			return
 		}
-		val effects = conf.getProperty(EffectsSettings.VOTE).effects.takeIf { it.isNotEmpty() } ?: return
+		val effects = settings.effects.takeIf { it.isNotEmpty() } ?: return
 		
 		val loc = player.location
-		
-		val settings = conf.getProperty(EffectsSettings.VOTE)
 		
 		effects.forEach {
 			party.hook().display(EffectType.valueOf(it), loc, null, settings.offsetX, settings.offsetY, settings.offsetZ, settings.speed, settings.count)
@@ -81,12 +84,14 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon
 	
 	fun runGlobalCommands(player: Player)
 	{
-		if (!conf.getProperty(VoteSettings.GLOBAL_COMMANDS).enabled)
+		val settings = conf.getProperty(VoteSettings.GLOBAL_COMMANDS)
+		
+		if (!settings.enabled)
 		{
 			return
 		}
 		
-		val cmds = conf.getProperty(VoteSettings.GLOBAL_COMMANDS).commands
+		val cmds = settings.commands
 		cmds.forEach()
 		{ command ->
 			server.dispatchCommand(server.consoleSender, formMessage(player, command))
