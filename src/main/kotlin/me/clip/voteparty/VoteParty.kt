@@ -134,7 +134,6 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 	private fun loadCmds()
 	{
 		@Suppress("DEPRECATION")
-		cmds.enableUnstableAPI("help")
 		cmds.locales.defaultLocale = Locale.forLanguageTag(conf?.getProperty(PluginSettings.LANGUAGE) ?: "en_US")
 		
 		cmds.commandCompletions.registerCompletion("online")

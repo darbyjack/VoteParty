@@ -1,15 +1,11 @@
 package me.clip.voteparty.cmds
 
 import co.aikar.commands.BaseCommand
-import co.aikar.commands.CommandHelp
 import co.aikar.commands.CommandIssuer
 import co.aikar.commands.annotation.CommandAlias
 import co.aikar.commands.annotation.CommandCompletion
 import co.aikar.commands.annotation.CommandPermission
 import co.aikar.commands.annotation.Default
-import co.aikar.commands.annotation.Description
-import co.aikar.commands.annotation.HelpCommand
-import co.aikar.commands.annotation.Private
 import co.aikar.commands.annotation.Subcommand
 import co.aikar.commands.annotation.Syntax
 import co.aikar.commands.annotation.Values
@@ -17,9 +13,11 @@ import co.aikar.commands.bukkit.contexts.OnlinePlayer
 import me.clip.voteparty.VoteParty
 import me.clip.voteparty.base.ADMIN_PERM
 import me.clip.voteparty.base.Addon
+import me.clip.voteparty.base.display
 import me.clip.voteparty.base.sendMessage
 import me.clip.voteparty.config.sections.PartySettings
 import me.clip.voteparty.messages.Messages
+import org.bukkit.command.CommandSender
 
 @CommandAlias("vp")
 data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), Addon
@@ -29,7 +27,6 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	
 	
 	@Subcommand("addvote")
-	@Description("{@@descriptions.add-vote}")
 	@Syntax("<amount>")
 	@CommandPermission(ADMIN_PERM)
 	fun addVote(issuer: CommandIssuer, @Default("1") amount: Int)
@@ -38,8 +35,7 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 		{
 			sendMessage(prefix, issuer, Messages.ERROR__INVALID_NUMBER)
 			return
-		}
-		else
+		} else
 		{
 			party.votesHandler.addVote(amount)
 			sendMessage(prefix, issuer, Messages.VOTES__VOTE_COUNTER_UPDATED)
@@ -47,7 +43,6 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	}
 	
 	@Subcommand("givecrate")
-	@Description("{@@descriptions.give-crate}")
 	@CommandCompletion("@online")
 	@Syntax("<player> <amount>")
 	@CommandPermission(ADMIN_PERM)
@@ -59,7 +54,6 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	}
 	
 	@Subcommand("setcounter")
-	@Description("{@@descriptions.set-counter}")
 	@Syntax("<amount>")
 	@CommandPermission(ADMIN_PERM)
 	fun setCounter(issuer: CommandIssuer, amount: Int)
@@ -68,8 +62,7 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 		{
 			sendMessage(prefix, issuer, Messages.ERROR__INVALID_NUMBER)
 			return
-		}
-		else
+		} else
 		{
 			party.conf().setProperty(PartySettings.VOTES_NEEDED, amount)
 			sendMessage(prefix, issuer, Messages.VOTES__VOTES_NEEDED_UPDATED)
@@ -77,7 +70,6 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	}
 	
 	@Subcommand("startparty")
-	@Description("{@@descriptions.start-party}")
 	@CommandPermission(ADMIN_PERM)
 	fun startParty(issuer: CommandIssuer)
 	{
@@ -86,7 +78,6 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	}
 	
 	@Subcommand("giveparty")
-	@Description("{@@descriptions.give-party}")
 	@CommandCompletion("@players")
 	@Syntax("<player>")
 	@CommandPermission(ADMIN_PERM)
@@ -105,7 +96,6 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	}
 	
 	@Subcommand("reload")
-	@Description("{@@descriptions.reload}")
 	@CommandPermission(ADMIN_PERM)
 	fun reload(issuer: CommandIssuer)
 	{
@@ -114,13 +104,11 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	}
 	
 	@Subcommand("help")
-	@Description("{@@descriptions.help}")
-	fun help(issuer: CommandIssuer, help: CommandHelp)
+	fun help(sender: CommandSender)
 	{
-		help.showHelp()
+		display(sender, currentCommandManager)
 	}
 	
-	@Private
 	@Default
 	fun default(issuer: CommandIssuer)
 	{
