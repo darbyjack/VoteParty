@@ -48,9 +48,16 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	@CommandPermission(ADMIN_PERM)
 	fun giveCrate(issuer: CommandIssuer, @Values("@online") target: OnlinePlayer, @Default("1") amount: Int)
 	{
-		sendMessage(prefix, issuer, Messages.CRATE__CRATE_GIVEN, target.player)
-		target.player.inventory.addItem(party.partyHandler.buildCrate(amount))
-		sendMessage(prefix, currentCommandManager.getCommandIssuer(target.player), Messages.CRATE__CRATE_RECEIVED)
+		if (amount <= 0)
+		{
+			sendMessage(prefix, issuer, Messages.ERROR__INVALID_NUMBER)
+			return
+		} else
+		{
+			sendMessage(prefix, issuer, Messages.CRATE__CRATE_GIVEN, target.player)
+			target.player.inventory.addItem(party.partyHandler.buildCrate(amount))
+			sendMessage(prefix, currentCommandManager.getCommandIssuer(target.player), Messages.CRATE__CRATE_RECEIVED)
+		}
 	}
 	
 	@Subcommand("setcounter")
