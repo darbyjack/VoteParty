@@ -65,7 +65,7 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	
 	@Subcommand("setcounter")
 	@Syntax("<amount>")
-	@Description("Give Party")
+	@Description("Set Counter")
 	@CommandPermission(ADMIN_PERM)
 	fun setCounter(issuer: CommandIssuer, amount: Int)
 	{
