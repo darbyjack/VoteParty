@@ -23,8 +23,11 @@ import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import java.io.File
 import java.nio.file.Files
+import java.util.Arrays
 import java.util.Locale
 import java.util.logging.Level
+import java.util.stream.Stream
+
 
 class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : State
 {
@@ -148,7 +151,8 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 	
 	private fun loadHook()
 	{
-		val hook = if ("MC: 1.8" in Bukkit.getVersion())
+		val regex = Regex("^.*\\s\\(MC:\\s(1\\.8(.*)|1\\.9(.*)|1\\.10(.*)|1\\.11(.*)|1\\.12(.*))\\)$")
+		val hook = if (Bukkit.getVersion().matches(regex))
 		{
 			VersionHookOld()
 		} else
