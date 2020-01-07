@@ -66,16 +66,28 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 	
 	fun runPartyStartEffects()
 	{
-		executeEffects(conf.getProperty(EffectsSettings.PARTY_START).enable,
-		               conf.getProperty(EffectsSettings.PARTY_START).effects,
-		               server.onlinePlayers)
+		val settings = conf.getProperty(EffectsSettings.PARTY_START)
+		executeEffects(settings.enable,
+		               settings.effects,
+		               server.onlinePlayers,
+		               settings.offsetX,
+		               settings.offsetY,
+		               settings.offsetZ,
+		               settings.speed,
+		               settings.count)
 	}
 	
 	fun runPartyCommandEffects(player: Player)
 	{
-		executeEffects(conf.getProperty(EffectsSettings.PARTY_COMMAND_EXECUTE).enable,
-		               conf.getProperty(EffectsSettings.PARTY_COMMAND_EXECUTE).effects,
-		               listOf(player))
+		val settings = conf.getProperty(EffectsSettings.PARTY_COMMAND_EXECUTE)
+		executeEffects(settings.enable,
+		               settings.effects,
+		               listOf(player),
+		               settings.offsetX,
+		               settings.offsetY,
+		               settings.offsetZ,
+		               settings.speed,
+		               settings.count)
 	}
 	
 	
@@ -128,7 +140,7 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 	}
 	
 	
-	private fun executeEffects(enabled: Boolean?, effects: Collection<String>, players: Collection<Player>)
+	private fun executeEffects(enabled: Boolean?, effects: Collection<String>, players: Collection<Player>, offsetX: Double, offsetY: Double, offsetZ: Double, speed: Double, count: Int)
 	{
 		if (enabled == false)
 		{
@@ -144,7 +156,7 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 		{ effect ->
 			targets.forEach()
 			{ player ->
-				party.hook().display(EffectType.valueOf(effect), player.location, null)
+				party.hook().display(EffectType.valueOf(effect), player.location, null, offsetX, offsetY, offsetZ, speed, count)
 			}
 		}
 	}
