@@ -58,45 +58,36 @@ fun show(command: Component, hover: Component, click: String): Component
 	return cmd
 }
 
-fun hover(properName: String, displayUsage: String, args: String, permission: String, description: Messages, manager: CommandManager<*, *, *, *, *, *>, sender: CommandSender): Component
+fun hover(name: String, usage: String, args: String, perm: String, description: Messages, manager: CommandManager<*, *, *, *, *, *>, sender: CommandSender): Component
 {
 	val line = TextComponent.newline()
 	val desc = manager.getLocales().getMessage(manager.getCommandIssuer(sender), description.messageKey)
 	return TextComponent.builder()
-			.append(bold(properName, true).color(TextColor.LIGHT_PURPLE))
+			.append(bold(name, true).color(TextColor.LIGHT_PURPLE))
 			.append(line)
 			.append(bold(desc, false).color(TextColor.WHITE))
 			.append(line)
 			.append(line)
-			.append(bold(displayUsage, false).color(TextColor.GRAY))
+			.append(bold(usage, false).color(TextColor.GRAY))
 			.append(bold(args, false).color(TextColor.WHITE))
 			.append(line)
-			.append(bold(permission, false).color(TextColor.DARK_GRAY))
+			.append(bold(perm, false).color(TextColor.DARK_GRAY))
 			.build()
 }
 
 fun display(sender: CommandSender, manager: CommandManager<*, *, *, *, *, *>)
 {
 	val line = TextComponent.newline()
-	val menu = TextComponent.builder()
-			.append(header())
-			.append(line)
-			.append(show(create("addvote"), hover("Add Vote", "/vp addvote ", "<amount>", ADMIN_PERM, Messages.DESCRIPTIONS__ADD_VOTE, manager, sender), "/vp addvote"))
-			.append(line)
-			.append(show(create("givecrate"), hover("Give Crate", "/vp givecreate ", "<player> <amount>", ADMIN_PERM, Messages.DESCRIPTIONS__GIVE_CRATE, manager, sender), "/vp givecrate"))
-			.append(line)
-			.append(show(create("giveparty"), hover("Give Party", "/vp givecreate ", "<player>", ADMIN_PERM, Messages.DESCRIPTIONS__GIVE_PARTY, manager, sender), "/vp giveparty"))
-			.append(line)
-			.append(show(create("help"), hover("Help", "/vp help ", "", "", Messages.DESCRIPTIONS__HELP, manager, sender), "/vp help"))
-			.append(line)
-			.append(show(create("reload"), hover("Reload", "/vp reload ", "", ADMIN_PERM, Messages.DESCRIPTIONS__RELOAD, manager, sender), "/vp reload"))
-			.append(line)
-			.append(show(create("setcounter"), hover("Set Counter", "/vp setcounter ", "<amount>", ADMIN_PERM, Messages.DESCRIPTIONS__SET_COUNTER, manager, sender), "/vp setcounter"))
-			.append(line)
-			.append(show(create("startparty"), hover("Start Party", "/vp startparty ", "", ADMIN_PERM, Messages.DESCRIPTIONS__START_PARTY, manager, sender), "/vp startparty"))
-			.append(line)
-			.append(footer())
-			.build()
-	
-	TextAdapter.sendComponent(sender, menu)
+	val menu = TextComponent.builder().append(header()).append(line)
+	manager.getRootCommand("vp").subCommands.entries().forEach {
+		val key = it.key
+		val cmd = it.value
+		if (key != "__default")
+		{
+			menu.append(show(create(key), hover(cmd.getHelpText(), "/vp $key ", cmd.getSyntaxText(), if (key == "help") "" else ADMIN_PERM, Messages.valueOf("DESCRIPTIONS__" + key.toUpperCase()), manager, sender), "/vp $key"))
+			menu.append(line)
+		}
+	}
+	menu.append(footer())
+	TextAdapter.sendComponent(sender, menu.build())
 }
