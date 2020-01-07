@@ -29,8 +29,10 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 	
 	fun giveRandomPartyRewards(player: Player)
 	{
-		val take = conf.getProperty(PartySettings.REWARD_COMMANDS).max_possible?.takeIf { it > 0 } ?: return
-		val cmds = conf.getProperty(PartySettings.REWARD_COMMANDS).commands.takeIf { it.isNotEmpty() } ?: return
+		val settings = conf.getProperty(PartySettings.REWARD_COMMANDS)
+		
+		val take = settings.max_possible.takeIf { it > 0 } ?: return
+		val cmds = settings.commands.takeIf { it.isNotEmpty() } ?: return
 		
 		val iter = cmds.reduce(take).iterator()
 		plugin.runTaskTimer(conf.getProperty(PartySettings.COMMAND_DELAY).toLong() * 20)
@@ -47,47 +49,41 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 	
 	fun giveGuaranteedPartyRewards(player: Player)
 	{
-		executeCommands(conf.getProperty(PartySettings.GUARANTEED_REWARDS).enabled,
-		                conf.getProperty(PartySettings.GUARANTEED_REWARDS).commands,
-		                player)
+		val settings = conf.getProperty(PartySettings.GUARANTEED_REWARDS)
+		
+		executeCommands(settings.enabled, settings.commands, player)
 	}
 	
 	fun runPrePartyCommands()
 	{
-		executeCommands(conf.getProperty(PartySettings.PRE_PARTY_COMMANDS).enabled,
-		                conf.getProperty(PartySettings.PRE_PARTY_COMMANDS).commands)
+		val settings = conf.getProperty(PartySettings.PRE_PARTY_COMMANDS)
+		
+		executeCommands(settings.enabled, settings.commands)
 	}
 	
 	fun runPartyCommands()
 	{
-		executeCommands(conf.getProperty(PartySettings.PARTY_COMMANDS).enabled,
-		                conf.getProperty(PartySettings.PARTY_COMMANDS).commands)
+		val settings = conf.getProperty(PartySettings.PARTY_COMMANDS)
+		
+		executeCommands(settings.enabled, settings.commands)
 	}
 	
 	fun runPartyStartEffects()
 	{
 		val settings = conf.getProperty(EffectsSettings.PARTY_START)
-		executeEffects(settings.enable,
-		               settings.effects,
-		               server.onlinePlayers,
-		               settings.offsetX,
-		               settings.offsetY,
-		               settings.offsetZ,
-		               settings.speed,
-		               settings.count)
+		
+		executeEffects(settings.enable, settings.effects, server.onlinePlayers,
+		               settings.offsetX, settings.offsetY, settings.offsetZ,
+		               settings.speed, settings.count)
 	}
 	
 	fun runPartyCommandEffects(player: Player)
 	{
 		val settings = conf.getProperty(EffectsSettings.PARTY_COMMAND_EXECUTE)
-		executeEffects(settings.enable,
-		               settings.effects,
-		               listOf(player),
-		               settings.offsetX,
-		               settings.offsetY,
-		               settings.offsetZ,
-		               settings.speed,
-		               settings.count)
+		
+		executeEffects(settings.enable, settings.effects, listOf(player),
+		               settings.offsetX, settings.offsetY, settings.offsetZ,
+		               settings.speed, settings.count)
 	}
 	
 	
