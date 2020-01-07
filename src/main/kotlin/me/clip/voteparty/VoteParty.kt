@@ -180,8 +180,8 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 	{
 		sender.sendMessage(color("&6 _  _&d  ____ "))
 		sender.sendMessage(color("&6/ )( \\&d(  _ \\"))
-		sender.sendMessage(color("&6\\ \\/ /&d ) __/" + " &3VoteParty &8v" + plugin.getDescription().getVersion()))
-		sender.sendMessage(color("&6 \\__/ &d(__)  " + " &3Server Version: &8" + plugin.getServer().getVersion()))
+		sender.sendMessage(color("&6\\ \\/ /&d ) __/" + " &3VoteParty &8v" + plugin.description.version))
+		sender.sendMessage(color("&6 \\__/ &d(__)  " + " &3Server Version: &8" + plugin.server.version))
 		sender.sendMessage(color(""))
 	}
 	
