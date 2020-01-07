@@ -4,6 +4,7 @@ import ch.jalu.configme.SettingsManager
 import co.aikar.commands.PaperCommandManager
 import com.google.gson.Gson
 import me.clip.voteparty.base.State
+import me.clip.voteparty.base.color
 import me.clip.voteparty.cmds.CommandVoteParty
 import me.clip.voteparty.config.ConfigBuilder
 import me.clip.voteparty.config.sections.PartySettings
@@ -20,6 +21,7 @@ import me.clip.voteparty.version.VersionHook
 import me.clip.voteparty.version.VersionHookNew
 import me.clip.voteparty.version.VersionHookOld
 import org.bukkit.Bukkit
+import org.bukkit.command.ConsoleCommandSender
 import org.bukkit.entity.Player
 import java.io.File
 import java.nio.file.Files
@@ -43,6 +45,7 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 	
 	override fun load()
 	{
+		logo(plugin.server.consoleSender)
 		loadConf()
 		loadCmds()
 		loadHook()
@@ -171,6 +174,15 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 		papi.register()
 		
 		this.papi = papi
+	}
+	
+	private fun logo(sender: ConsoleCommandSender)
+	{
+		sender.sendMessage(color("&6 _  _&d  ____ "))
+		sender.sendMessage(color("&6/ )( \\&d(  _ \\"))
+		sender.sendMessage(color("&6\\ \\/ /&d ) __/" + " &3VoteParty &8v" + plugin.getDescription().getVersion()))
+		sender.sendMessage(color("&6 \\__/ &d(__)  " + " &3Server Version: &8" + plugin.getServer().getVersion()))
+		sender.sendMessage(color(""))
 	}
 	
 	
