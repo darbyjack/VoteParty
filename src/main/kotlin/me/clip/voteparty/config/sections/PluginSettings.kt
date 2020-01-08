@@ -14,7 +14,7 @@ object PluginSettings : SettingsHolder
 	
 	@JvmField
 	@Comment("The prefix of all the messages in the plugin")
-	val PREFIX: Property<String>? = newProperty("settings.prefix", "&d&lV&dote&5&lP&5arty &7&l» ")
+	val PREFIX: Property<String>? = newProperty("settings.prefix", "&d&lVote&5&lParty &7&l» ")
 	
 	override fun registerComments(conf: CommentsConfiguration)
 	{
