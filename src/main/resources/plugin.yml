@@ -1,5 +1,15 @@
 name: VoteParty
 main: me.clip.voteparty.plugin.VotePartyPlugin
-
 version: '2.0'
-depend: [PlaceholderAPI, Votifier]
+authors: [Glare, Clip]
+depend: [PlaceholderAPI]
+softdepend: [Votifier]
+api-version: 1.13
+description: Reward players with random commands being executed for them when the server gets x amount of votes
+website: https://helpch.at/discord
+
+permissions:
+  voteparty.command.admin:
+    description: Ability to use all admin commands
+    default: op
+
