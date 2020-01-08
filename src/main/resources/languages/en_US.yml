@@ -5,7 +5,7 @@ descriptions:
   startparty: "Force launch a VoteParty."
   givecrate: "Supply a player with a Vote crate."
   giveparty: "Host a private Vote Party for a player."
-  reload: "Reload the config file."
+  reload: "Reload the config and language file."
 error:
   invalid-number: "&fSorry, but this number must be positive in order to work correctly!"
   disabled-world: "&fSorry, but this player is currently in a disabled world!"

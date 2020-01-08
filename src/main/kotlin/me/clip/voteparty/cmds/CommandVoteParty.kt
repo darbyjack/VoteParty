@@ -114,6 +114,7 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	fun reload(issuer: CommandIssuer)
 	{
 		voteParty.conf().reload()
+		voteParty.registerLang()
 		sendMessage(prefix, issuer, Messages.INFO__RELOADED)
 	}
 	
