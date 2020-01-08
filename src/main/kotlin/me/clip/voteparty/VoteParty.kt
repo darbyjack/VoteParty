@@ -5,6 +5,7 @@ import co.aikar.commands.PaperCommandManager
 import com.google.gson.Gson
 import me.clip.voteparty.base.State
 import me.clip.voteparty.base.color
+import me.clip.voteparty.base.runTaskTimer
 import me.clip.voteparty.cmds.CommandVoteParty
 import me.clip.voteparty.config.ConfigBuilder
 import me.clip.voteparty.config.sections.HookSettings
@@ -55,6 +56,8 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 		loadLang()
 		registerLang()
 		loadPapi()
+		loadVotes()
+		updateVotesTask()
 		
 		UpdateChecker.check(plugin, 987)
 		{
@@ -189,6 +192,20 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 		papi.register()
 		
 		this.papi = papi
+	}
+	
+	private fun loadVotes()
+	{
+		votesHandler.votes.set(conf().getProperty(PluginSettings.COUNTER))
+	}
+	
+	private fun updateVotesTask()
+	{
+		plugin.runTaskTimer(conf().getProperty(PluginSettings.SAVE_INTERVAL).toLong() * 20L)
+		{
+			conf().setProperty(PluginSettings.COUNTER, votesHandler.votes.get())
+			conf().save()
+		}
 	}
 	
 	private fun logo(sender: ConsoleCommandSender)
