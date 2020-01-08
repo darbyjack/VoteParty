@@ -53,6 +53,7 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 		loadCmds()
 		loadHook()
 		loadLang()
+		registerLang()
 		loadPapi()
 		
 		UpdateChecker.check(plugin, 987)
@@ -130,7 +131,10 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 				stream.close()
 			}
 		}
-		
+	}
+	
+	fun registerLang()
+	{
 		plugin.dataFolder.resolve("languages").listFiles()?.forEach()
 		{
 			if (!it.extension.equals("yml", true))
