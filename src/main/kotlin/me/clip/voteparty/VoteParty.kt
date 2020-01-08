@@ -7,11 +7,13 @@ import me.clip.voteparty.base.State
 import me.clip.voteparty.base.color
 import me.clip.voteparty.cmds.CommandVoteParty
 import me.clip.voteparty.config.ConfigBuilder
+import me.clip.voteparty.config.sections.HookSettings
 import me.clip.voteparty.config.sections.PartySettings
 import me.clip.voteparty.config.sections.PluginSettings
 import me.clip.voteparty.handler.PartyHandler
 import me.clip.voteparty.handler.VotesHandler
 import me.clip.voteparty.listener.CrateListener
+import me.clip.voteparty.listener.NuVotifierListener
 import me.clip.voteparty.listener.VoteListener
 import me.clip.voteparty.placeholders.VotePartyPlaceholders
 import me.clip.voteparty.plugin.VotePartyPlugin
@@ -34,8 +36,9 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 	private var conf = null as? SettingsManager?
 	private val cmds = PaperCommandManager(plugin)
 	
-	private val voteListener = VoteListener(plugin)
+	private val nuVotifierListener = NuVotifierListener(plugin)
 	private val crateListener = CrateListener(plugin)
+	private val votifierListener = VoteListener(plugin)
 	
 	private var hook = null as? VersionHook?
 	private var papi = null as? VotePartyPlaceholders?
@@ -75,14 +78,22 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 			}
 		}
 		
-		voteListener.load()
+		if (conf().getProperty(HookSettings.NUVOTIFIER))
+		{
+			nuVotifierListener.load()
+		}
 		crateListener.load()
+		votifierListener.load()
 	}
 	
 	override fun kill()
 	{
-		voteListener.kill()
+		if (conf().getProperty(HookSettings.NUVOTIFIER))
+		{
+			nuVotifierListener.kill()
+		}
 		crateListener.kill()
+		votifierListener.kill()
 	}
 	
 	private fun loadConf()
