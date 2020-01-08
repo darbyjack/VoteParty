@@ -57,7 +57,11 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 		registerLang()
 		loadPapi()
 		loadVotes()
-		updateVotesTask()
+		
+		plugin.runTaskTimer(conf().getProperty(PluginSettings.SAVE_INTERVAL).toLong() * 20L)
+		{
+			saveVotes()
+		}
 		
 		UpdateChecker.check(plugin, 987)
 		{
@@ -92,6 +96,7 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 	
 	override fun kill()
 	{
+		saveVotes()
 		if (conf().getProperty(HookSettings.NUVOTIFIER))
 		{
 			nuVotifierListener.kill()
@@ -199,13 +204,10 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 		votesHandler.votes.set(conf().getProperty(PluginSettings.COUNTER))
 	}
 	
-	private fun updateVotesTask()
+	private fun saveVotes()
 	{
-		plugin.runTaskTimer(conf().getProperty(PluginSettings.SAVE_INTERVAL).toLong() * 20L)
-		{
-			conf().setProperty(PluginSettings.COUNTER, votesHandler.votes.get())
-			conf().save()
-		}
+		conf().setProperty(PluginSettings.COUNTER, votesHandler.votes.get())
+		conf().save()
 	}
 	
 	private fun logo(sender: ConsoleCommandSender)
