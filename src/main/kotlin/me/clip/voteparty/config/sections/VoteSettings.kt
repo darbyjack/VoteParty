@@ -21,5 +21,5 @@ object VoteSettings : SettingsHolder
 	
 	@JvmField
 	@Comment("Global commands (such as a broadcast message) to be executed when a player votes")
-	val GLOBAL_COMMANDS: Property<Commands>? = newBeanProperty(Commands::class.java, "voting.global_commands", Commands(true, listOf("broadcast Only %voteparty_votes_required_party% more votes until a VoteParty!")))
+	val GLOBAL_COMMANDS: Property<Commands>? = newBeanProperty(Commands::class.java, "voting.global_commands", Commands(true, listOf("broadcast %player_name% just voted! Only %voteparty_votes_required_party% more votes until a VoteParty!")))
 }
