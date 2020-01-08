@@ -76,6 +76,7 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 		} else
 		{
 			party.conf().setProperty(PartySettings.VOTES_NEEDED, amount)
+			party.conf().save()
 			sendMessage(prefix, issuer, Messages.VOTES__VOTES_NEEDED_UPDATED)
 		}
 	}
