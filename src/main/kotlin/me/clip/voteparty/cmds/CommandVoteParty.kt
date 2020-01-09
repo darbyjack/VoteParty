@@ -18,6 +18,7 @@ import me.clip.voteparty.base.display
 import me.clip.voteparty.base.sendMessage
 import me.clip.voteparty.config.sections.PartySettings
 import me.clip.voteparty.messages.Messages
+import org.bukkit.OfflinePlayer
 import org.bukkit.command.CommandSender
 
 @CommandAlias("%vp")
@@ -79,6 +80,16 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 			party.conf().save()
 			sendMessage(prefix, issuer, Messages.VOTES__VOTES_NEEDED_UPDATED)
 		}
+	}
+	
+	@Subcommand("checkvotes")
+	@Syntax("<player>")
+	@CommandCompletion("@online")
+	@Description("Check Votes")
+	@CommandPermission(ADMIN_PERM)
+	fun checkVotes(issuer: CommandIssuer, onlinePlayer: OnlinePlayer)
+	{
+		sendMessage(prefix, issuer, Messages.INFO__PLAYER_VOTE_COUNT, onlinePlayer.player)
 	}
 	
 	@Subcommand("startparty")
