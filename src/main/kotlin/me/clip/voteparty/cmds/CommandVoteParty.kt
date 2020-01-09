@@ -20,6 +20,7 @@ import me.clip.voteparty.config.sections.PartySettings
 import me.clip.voteparty.messages.Messages
 import org.bukkit.OfflinePlayer
 import org.bukkit.command.CommandSender
+import java.util.concurrent.TimeUnit
 
 @CommandAlias("%vp")
 data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), Addon
@@ -89,7 +90,8 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	@CommandPermission(ADMIN_PERM)
 	fun checkVotes(issuer: CommandIssuer, offlinePlayer: OfflinePlayer)
 	{
-		sendMessage(prefix, issuer, Messages.INFO__PLAYER_VOTE_COUNT, offlinePlayer)
+		sendMessage(prefix, issuer, Messages.INFO__PLAYER_VOTE_COUNT, offlinePlayer,
+		            "{votes}", 20, "{time}", 1, "{unit}", TimeUnit.DAYS)
 	}
 	
 	@Subcommand("resetvotes")
