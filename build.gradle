@@ -16,6 +16,9 @@ allprojects {
 			url = "https://papermc.io/repo/repository/maven-public/"
 		}
 		maven {
+			url = "https://dl.bintray.com/ichbinjoe/public/"
+		}
+		maven {
 			url = "https://repo.glaremasters.me/repository/public/"
 		}
 	}
@@ -72,8 +75,6 @@ shadowJar {
 
 
 dependencies {
-	// update checker
-	implementation "com.konghq:unirest-java:3.3.00:standalone"
 
 	// config
 	implementation "ch.jalu:configme:1.2.0-SNAPSHOT"
@@ -83,10 +84,14 @@ dependencies {
 		exclude group: "org.bstats", module: "bstats-bukkit"
 	}
 	
-	compileOnly fileTree(dir: 'gradle/depends', include: ['*.jar'])
+	compileOnly "com.vexsoftware:nuvotifier-universal:2.6.0"
 
 	// command handler
 	implementation "co.aikar:acf-paper:0.5.0-SNAPSHOT"
+
+	// json stuff
+	implementation "net.kyori:text-api:3.0.2"
+	implementation "net.kyori:text-adapter-bukkit:3.0.3"
 	
 	implementation project(":version")
 	implementation project(":version_old")

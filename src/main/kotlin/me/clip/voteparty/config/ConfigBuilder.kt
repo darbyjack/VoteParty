@@ -8,6 +8,7 @@ import ch.jalu.configme.migration.PlainMigrationService
 import ch.jalu.configme.resource.YamlFileResource
 import me.clip.voteparty.config.sections.CrateSettings
 import me.clip.voteparty.config.sections.EffectsSettings
+import me.clip.voteparty.config.sections.HookSettings
 import me.clip.voteparty.config.sections.PartySettings
 import me.clip.voteparty.config.sections.PluginSettings
 import me.clip.voteparty.config.sections.VoteSettings
@@ -19,6 +20,7 @@ class ConfigBuilder private constructor(resource: YamlFileResource, configuratio
 		
 		private val SECTION_HOLDERS = arrayOf(
 				PluginSettings::class.java,
+				HookSettings::class.java,
 				CrateSettings::class.java,
 				EffectsSettings::class.java,
 				PartySettings::class.java,
