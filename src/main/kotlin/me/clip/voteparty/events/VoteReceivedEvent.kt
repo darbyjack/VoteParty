@@ -11,7 +11,7 @@ class VoteReceivedEvent(val player: OfflinePlayer) : Event(), Cancellable
 	
 	override fun getHandlers(): HandlerList
 	{
-		return HANDLERS
+		return handlerList
 	}
 	
 	override fun isCancelled(): Boolean
@@ -26,13 +26,8 @@ class VoteReceivedEvent(val player: OfflinePlayer) : Event(), Cancellable
 	
 	companion object
 	{
-		private val HANDLERS = HandlerList()
-		
 		@JvmStatic
-		fun getHandlerList(): HandlerList
-		{
-			return HANDLERS
-		}
+		val handlerList = HandlerList()
 	}
 	
 }
