@@ -2,8 +2,4 @@ package me.clip.voteparty.voteplayer
 
 import java.util.UUID
 
-class VotePlayer(val id: UUID)
-{
-	var votes = 0
-	
-}
+data class VotePlayer(val uuid: UUID, var name: String, val data: MutableList<Long>)
