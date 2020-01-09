@@ -111,7 +111,7 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 		crateListener.kill()
 		votifierListener.kill()
 		
-		votePlayerHandler.load()
+		votePlayerHandler.kill()
 	}
 	
 	private fun loadConf()
