@@ -6,7 +6,7 @@ import java.time.temporal.ChronoUnit
 object HumanTime
 {
 	
-	private val REGEX = "(\\d+) ?([a-zA-Z]+)".toPattern()
+	private val REGEX = "(\\d+) ?([a-zA-Z]+)".toRegex()
 	
 	
 	fun none(): Duration
@@ -21,29 +21,22 @@ object HumanTime
 			return none()
 		}
 		
-		val matcher = REGEX.matcher(text)
-		var millis = 0L
-		
-		while (matcher.find())
-		{
-			val numb = matcher.group(1).toLongOrNull()
-			val unit = matcher.group(2).let(::unit)
+		val time = REGEX.findAll(text).map(MatchResult::destructured).fold(0L)
+		{ prev, (numb, unit) ->
 			
-			if (numb == null || numb <= 0 || unit == null)
-			{
-				continue
-			}
+			val long = numb.toLongOrNull() ?: 0L
+			val time = unit.toDuration().toMillis()
 			
-			millis += unit.duration.toMillis() * numb
+			prev + (long * time)
 		}
 		
-		return Duration.ofMillis(millis)
+		return Duration.ofMillis(time)
 	}
 	
 	
-	private fun unit(text: String): ChronoUnit?
+	private fun String.toDuration(): Duration
 	{
-		return when (text.toLowerCase())
+		val unit = when (this.toLowerCase())
 		{
 			"mils", "millis", "milliseconds"  -> ChronoUnit.MILLIS
 			"s", "sec", "secs", "seconds"     -> ChronoUnit.SECONDS
@@ -52,8 +45,11 @@ object HumanTime
 			"d", "day", "days"                -> ChronoUnit.DAYS
 			"w", "week", "weeks"              -> ChronoUnit.WEEKS
 			"mon", "mons", "month", "months"  -> ChronoUnit.MONTHS
+			"y", "year", "years"              -> ChronoUnit.YEARS
 			else                              -> null
 		}
+		
+		return unit?.duration ?: Duration.ZERO
 	}
 	
 }
