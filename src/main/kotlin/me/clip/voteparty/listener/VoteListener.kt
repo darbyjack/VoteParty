@@ -12,6 +12,7 @@ class VoteListener(override val plugin: VotePartyPlugin) : VotePartyListener
 	@EventHandler
 	fun VoteReceivedEvent.onReceive()
 	{
+		plugin.voteParty?.votePlayerHandler?.get(player)?.data?.add(System.currentTimeMillis())
 		if (!player.isOnline && party.conf().getProperty(PartySettings.OFFLINE_VOTES) == true)
 		{
 			plugin.voteParty?.votesHandler?.addVote(1)
