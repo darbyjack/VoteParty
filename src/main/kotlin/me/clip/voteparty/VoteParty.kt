@@ -25,6 +25,7 @@ import me.clip.voteparty.version.VersionHookNew
 import me.clip.voteparty.version.VersionHookOld
 import me.clip.voteparty.voteplayer.VotePlayerHandler
 import org.bukkit.Bukkit
+import org.bukkit.OfflinePlayer
 import org.bukkit.command.ConsoleCommandSender
 import org.bukkit.entity.Player
 import java.io.File
@@ -252,6 +253,11 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 	fun getVotesNeeded(): Int
 	{
 		return conf().getProperty(PartySettings.VOTES_NEEDED) ?: 50
+	}
+	
+	fun getPlayerVotes(offlinePlayer: OfflinePlayer): Int
+	{
+		return votePlayerHandler[offlinePlayer]?.data?.size?: 0
 	}
 	
 	

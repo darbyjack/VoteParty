@@ -34,7 +34,7 @@ class VotePartyPlaceholders(private val voteParty: VoteParty) : PlaceholderExpan
 			"votes_recorded"       -> voteParty.getVotes().toString()
 			"votes_required_party" -> voteParty.getVotesNeeded().minus(voteParty.getVotes()).toString()
 			"votes_required_total" -> voteParty.getVotesNeeded().toString()
-			"player_votes" -> voteParty.votePlayerHandler[offlinePlayer]?.data?.size.toString()
+			"player_votes"         -> voteParty.getPlayerVotes(offlinePlayer).toString()
 			else                   -> ""
 		}
 	}
