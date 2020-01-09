@@ -4,7 +4,9 @@ import me.clip.voteparty.config.sections.PartySettings
 import me.clip.voteparty.events.VoteReceivedEvent
 import me.clip.voteparty.plugin.VotePartyListener
 import me.clip.voteparty.plugin.VotePartyPlugin
+import me.clip.voteparty.voteplayer.VotePlayer
 import org.bukkit.event.EventHandler
+import org.bukkit.event.player.PlayerJoinEvent
 
 class VoteListener(override val plugin: VotePartyPlugin) : VotePartyListener
 {
@@ -26,5 +28,14 @@ class VoteListener(override val plugin: VotePartyPlugin) : VotePartyListener
 		party.votesHandler.giveGuaranteedVoteRewards(online)
 		party.votesHandler.giveRandomVoteRewards(online)
 		party.votesHandler.playerVoteEffects(online)
+	}
+	
+	@EventHandler
+	fun PlayerJoinEvent.onJoin()
+	{
+		if (plugin.voteParty?.votePlayerHandler?.getPlayer(player) == null)
+		{
+			plugin.voteParty?.votePlayerHandler?.addPlayer(VotePlayer(player.uniqueId))
+		}
 	}
 }

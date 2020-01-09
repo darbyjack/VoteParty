@@ -11,6 +11,7 @@ import me.clip.voteparty.config.ConfigBuilder
 import me.clip.voteparty.config.sections.HookSettings
 import me.clip.voteparty.config.sections.PartySettings
 import me.clip.voteparty.config.sections.PluginSettings
+import me.clip.voteparty.database.DatabaseAdapter
 import me.clip.voteparty.handler.PartyHandler
 import me.clip.voteparty.handler.VotesHandler
 import me.clip.voteparty.listener.CrateListener
@@ -23,7 +24,9 @@ import me.clip.voteparty.util.JarFileWalker
 import me.clip.voteparty.version.VersionHook
 import me.clip.voteparty.version.VersionHookNew
 import me.clip.voteparty.version.VersionHookOld
+import me.clip.voteparty.voteplayer.VotePlayerHandler
 import org.bukkit.Bukkit
+import org.bukkit.OfflinePlayer
 import org.bukkit.command.ConsoleCommandSender
 import org.bukkit.entity.Player
 import java.io.File
@@ -44,8 +47,12 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 	private var hook = null as? VersionHook?
 	private var papi = null as? VotePartyPlaceholders?
 	
+	var DatabaseAdapter = DatabaseAdapter(this)
+	
 	val votesHandler = VotesHandler(plugin)
 	val partyHandler = PartyHandler(plugin)
+	
+	val votePlayerHandler = VotePlayerHandler(this)
 	
 	override fun load()
 	{
@@ -61,6 +68,7 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 		plugin.runTaskTimer(conf().getProperty(PluginSettings.SAVE_INTERVAL).toLong() * 20L)
 		{
 			saveVotes()
+			votePlayerHandler.saveData()
 		}
 		
 		UpdateChecker.check(plugin, 987)
@@ -97,6 +105,7 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 	override fun kill()
 	{
 		saveVotes()
+		votePlayerHandler.saveData()
 		if (conf().getProperty(HookSettings.NUVOTIFIER))
 		{
 			nuVotifierListener.kill()
@@ -238,6 +247,11 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 	fun getVotesNeeded(): Int
 	{
 		return conf().getProperty(PartySettings.VOTES_NEEDED) ?: 50
+	}
+	
+	fun getPlayerVotes(offlinePlayer: OfflinePlayer) : Int
+	{
+		return votePlayerHandler.getVotes(offlinePlayer)
 	}
 	
 	

@@ -10,6 +10,7 @@ enum class Messages : MessageKeyProvider
 	
 	INFO__VOTES_NEEDED,
 	INFO__RELOADED,
+	INFO__PLAYER_VOTE_COUNT,
 	
 	PARTY__FORCE_START_SUCCESSFUL,
 	
@@ -27,7 +28,8 @@ enum class Messages : MessageKeyProvider
 	DESCRIPTIONS__STARTPARTY,
 	DESCRIPTIONS__GIVECRATE,
 	DESCRIPTIONS__GIVEPARTY,
-	DESCRIPTIONS__RELOAD;
+	DESCRIPTIONS__RELOAD,
+	DESCRIPTIONS__CHECKVOTES;
 	
 	private val key = MessageKey.of(name.toLowerCase().replace("__", ".").replace("_", "-"))
 	
