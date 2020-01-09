@@ -225,10 +225,12 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 	{
 		val logo =
 			"""
+				
 				&6 _  _ &d ____
 				&6/ )( \&d(  _ \
 				&6\ \/ /&d ) __/ &3VoteParty &8v${plugin.description.version}
 				&6 \__/ &d(__)   &3Server Version: &8${plugin.server.version}
+				
 			"""
 		
 		sender.sendMessage(color(logo.trimIndent()))

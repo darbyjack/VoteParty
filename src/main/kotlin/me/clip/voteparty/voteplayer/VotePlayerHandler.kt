@@ -49,7 +49,6 @@ class VotePlayerHandler(override val plugin: VotePartyPlugin) : Addon, State, Li
 		HandlerList.unregisterAll(this)
 	}
 	
-	
 	operator fun get(uuid: UUID): VotePlayer?
 	{
 		return cached[uuid]
@@ -63,6 +62,11 @@ class VotePlayerHandler(override val plugin: VotePartyPlugin) : Addon, State, Li
 	operator fun get(player: OfflinePlayer): VotePlayer?
 	{
 		return get(player.uniqueId)
+	}
+	
+	fun reset(player: OfflinePlayer)
+	{
+		get(player)?.data?.clear()
 	}
 	
 	

@@ -92,6 +92,17 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 		sendMessage(prefix, issuer, Messages.INFO__PLAYER_VOTE_COUNT, offlinePlayer)
 	}
 	
+	@Subcommand("resetvotes")
+	@Syntax("<player>")
+	@CommandCompletion("@online")
+	@Description("Reset Votes")
+	@CommandPermission(ADMIN_PERM)
+	fun resetVotes(issuer: CommandIssuer, offlinePlayer: OfflinePlayer)
+	{
+		party.votePlayerHandler.reset(offlinePlayer)
+		sendMessage(prefix, issuer, Messages.INFO__VOTE_COUNT_RESET, offlinePlayer)
+	}
+	
 	@Subcommand("startparty")
 	@Description("Start Party")
 	@CommandPermission(ADMIN_PERM)
