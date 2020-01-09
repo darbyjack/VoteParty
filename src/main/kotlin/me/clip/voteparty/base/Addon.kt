@@ -4,6 +4,7 @@ import me.clip.voteparty.VoteParty
 import me.clip.voteparty.config.sections.PluginSettings
 import me.clip.voteparty.plugin.VotePartyPlugin
 import org.bukkit.Server
+import java.util.logging.Logger
 
 /**
  * Defines an aspect of the plugin that requires access to spigot api
@@ -16,6 +17,9 @@ interface Addon
 	
 	val server: Server
 		get() = plugin.server
+	
+	val logger: Logger
+		get() = plugin.logger
 	
 	
 	val party: VoteParty
