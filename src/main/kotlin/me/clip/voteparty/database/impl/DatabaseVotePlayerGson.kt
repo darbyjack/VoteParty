@@ -18,6 +18,8 @@ class DatabaseVotePlayerGson(override val plugin: VotePartyPlugin) : DatabasePro
 	{
 		val builder = GsonBuilder().disableHtmlEscaping().enableComplexMapKeySerialization().setPrettyPrinting().serializeNulls()
 		gson = builder.create()
+		
+		plugin.dataFolder.resolve("players").mkdirs()
 	}
 	
 	override fun kill()
@@ -30,10 +32,7 @@ class DatabaseVotePlayerGson(override val plugin: VotePartyPlugin) : DatabasePro
 	{
 		return try
 		{
-			plugin.dataFolder.resolve("players").resolve("$uuid.json").reader().use()
-			{
-				gson.fromJson(it, VotePlayer::class.java)
-			}
+			gson.fromJson(plugin.dataFolder.resolve("players").resolve("$uuid.json").readText(), VotePlayer::class.java)
 		}
 		catch (ex: Exception)
 		{
@@ -46,10 +45,7 @@ class DatabaseVotePlayerGson(override val plugin: VotePartyPlugin) : DatabasePro
 	{
 		try
 		{
-			plugin.dataFolder.resolve("players").resolve("${data.uuid}.json").writer().use()
-			{
-				gson.toJson(it, VotePlayer::class.java)
-			}
+			plugin.dataFolder.resolve("players").resolve("${data.uuid}.json").writeText(gson.toJson(data, VotePlayer::class.java))
 		}
 		catch (ex: Exception)
 		{
