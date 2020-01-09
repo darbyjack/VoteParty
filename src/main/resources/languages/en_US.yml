@@ -7,13 +7,15 @@ descriptions:
   giveparty: "Host a private Vote Party for a player."
   reload: "Reload the config and language file."
   checkvotes: "Check the amount of votes a player has."
+  resetvotes: "Reset the amount of votes a player has."
 error:
   invalid-number: "&fSorry, but this number must be positive in order to work correctly!"
   disabled-world: "&fSorry, but this player is currently in a disabled world!"
 info:
   votes-needed: "&d%voteparty_votes_required_party% Votes &fneeded for the next party."
   reloaded: "&fThe config has been reloaded!"
-  player-vote-count: "&d%player_name% &fcurrently has &d%voteparty_player_votes% &fvotes!"
+  player-vote-count: "&d%player_name% &fcurrently has &d%voteparty_player_votes% &fvote(s)!"
+  vote-count-reset: "&d%player_name%&f's vote count has been reset to &d0&f!"
 party:
   force-start-successful: "&fYou've force started a &dVote Party &ffor all online players!"
 votes:
