@@ -3,7 +3,6 @@ package me.clip.voteparty.placeholders
 import me.clip.placeholderapi.expansion.PlaceholderExpansion
 import me.clip.voteparty.VoteParty
 import org.bukkit.OfflinePlayer
-import org.bukkit.entity.Player
 
 class VotePartyPlaceholders(private val voteParty: VoteParty) : PlaceholderExpansion()
 {
@@ -35,7 +34,7 @@ class VotePartyPlaceholders(private val voteParty: VoteParty) : PlaceholderExpan
 			"votes_recorded"       -> voteParty.getVotes().toString()
 			"votes_required_party" -> voteParty.getVotesNeeded().minus(voteParty.getVotes()).toString()
 			"votes_required_total" -> voteParty.getVotesNeeded().toString()
-			"player_votes" -> voteParty.getPlayerVotes(offlinePlayer).toString()
+			"player_votes" -> voteParty.votePlayerHandler[offlinePlayer]?.data?.size.toString()
 			else                   -> ""
 		}
 	}

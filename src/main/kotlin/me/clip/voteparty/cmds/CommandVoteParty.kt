@@ -87,9 +87,9 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	@CommandCompletion("@online")
 	@Description("Check Votes")
 	@CommandPermission(ADMIN_PERM)
-	fun checkVotes(issuer: CommandIssuer, onlinePlayer: OnlinePlayer)
+	fun checkVotes(issuer: CommandIssuer, offlinePlayer: OfflinePlayer)
 	{
-		sendMessage(prefix, issuer, Messages.INFO__PLAYER_VOTE_COUNT, onlinePlayer.player)
+		sendMessage(prefix, issuer, Messages.INFO__PLAYER_VOTE_COUNT, offlinePlayer)
 	}
 	
 	@Subcommand("startparty")
