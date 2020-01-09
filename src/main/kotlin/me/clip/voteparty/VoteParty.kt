@@ -4,13 +4,18 @@ import ch.jalu.configme.SettingsManager
 import co.aikar.commands.PaperCommandManager
 import com.google.gson.Gson
 import me.clip.voteparty.base.State
+import me.clip.voteparty.base.color
+import me.clip.voteparty.base.runTaskTimer
 import me.clip.voteparty.cmds.CommandVoteParty
 import me.clip.voteparty.config.ConfigBuilder
+import me.clip.voteparty.config.sections.HookSettings
 import me.clip.voteparty.config.sections.PartySettings
 import me.clip.voteparty.config.sections.PluginSettings
+import me.clip.voteparty.database.DatabaseAdapter
 import me.clip.voteparty.handler.PartyHandler
 import me.clip.voteparty.handler.VotesHandler
 import me.clip.voteparty.listener.CrateListener
+import me.clip.voteparty.listener.NuVotifierListener
 import me.clip.voteparty.listener.VoteListener
 import me.clip.voteparty.placeholders.VotePartyPlaceholders
 import me.clip.voteparty.plugin.VotePartyPlugin
@@ -19,34 +24,52 @@ import me.clip.voteparty.util.JarFileWalker
 import me.clip.voteparty.version.VersionHook
 import me.clip.voteparty.version.VersionHookNew
 import me.clip.voteparty.version.VersionHookOld
+import me.clip.voteparty.voteplayer.VotePlayerHandler
 import org.bukkit.Bukkit
+import org.bukkit.OfflinePlayer
+import org.bukkit.command.ConsoleCommandSender
 import org.bukkit.entity.Player
 import java.io.File
 import java.nio.file.Files
 import java.util.Locale
 import java.util.logging.Level
 
+
 class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : State
 {
 	private var conf = null as? SettingsManager?
 	private val cmds = PaperCommandManager(plugin)
 	
-	private val voteListener = VoteListener(plugin)
+	private val nuVotifierListener = NuVotifierListener(plugin)
 	private val crateListener = CrateListener(plugin)
+	private val votifierListener = VoteListener(plugin)
 	
 	private var hook = null as? VersionHook?
 	private var papi = null as? VotePartyPlaceholders?
 	
+	var DatabaseAdapter = DatabaseAdapter(this)
+	
 	val votesHandler = VotesHandler(plugin)
 	val partyHandler = PartyHandler(plugin)
 	
+	val votePlayerHandler = VotePlayerHandler(this)
+	
 	override fun load()
 	{
+		logo(plugin.server.consoleSender)
 		loadConf()
 		loadCmds()
 		loadHook()
 		loadLang()
+		registerLang()
 		loadPapi()
+		loadVotes()
+		
+		plugin.runTaskTimer(conf().getProperty(PluginSettings.SAVE_INTERVAL).toLong() * 20L)
+		{
+			saveVotes()
+			votePlayerHandler.saveData()
+		}
 		
 		UpdateChecker.check(plugin, 987)
 		{
@@ -71,14 +94,24 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 			}
 		}
 		
-		voteListener.load()
+		if (conf().getProperty(HookSettings.NUVOTIFIER))
+		{
+			nuVotifierListener.load()
+		}
 		crateListener.load()
+		votifierListener.load()
 	}
 	
 	override fun kill()
 	{
-		voteListener.kill()
+		saveVotes()
+		votePlayerHandler.saveData()
+		if (conf().getProperty(HookSettings.NUVOTIFIER))
+		{
+			nuVotifierListener.kill()
+		}
 		crateListener.kill()
+		votifierListener.kill()
 	}
 	
 	private fun loadConf()
@@ -115,7 +148,10 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 				stream.close()
 			}
 		}
-		
+	}
+	
+	fun registerLang()
+	{
 		plugin.dataFolder.resolve("languages").listFiles()?.forEach()
 		{
 			if (!it.extension.equals("yml", true))
@@ -134,13 +170,14 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 	private fun loadCmds()
 	{
 		@Suppress("DEPRECATION")
-		cmds.enableUnstableAPI("help")
 		cmds.locales.defaultLocale = Locale.forLanguageTag(conf?.getProperty(PluginSettings.LANGUAGE) ?: "en_US")
 		
 		cmds.commandCompletions.registerCompletion("online")
 		{
 			plugin.server.onlinePlayers.map(Player::getName)
 		}
+		
+		cmds.commandReplacements.addReplacement("vp", "vp|voteparty")
 		
 		cmds.registerCommand(CommandVoteParty(this))
 		
@@ -149,7 +186,8 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 	
 	private fun loadHook()
 	{
-		val hook = if ("MC: 1.8" in Bukkit.getVersion())
+		val regex = Regex("^.*\\s\\(MC:\\s(1\\.8(.*)|1\\.9(.*)|1\\.10(.*)|1\\.11(.*)|1\\.12(.*))\\)$")
+		val hook = if (Bukkit.getVersion().matches(regex))
 		{
 			VersionHookOld()
 		} else
@@ -168,6 +206,26 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 		papi.register()
 		
 		this.papi = papi
+	}
+	
+	private fun loadVotes()
+	{
+		votesHandler.votes.set(conf().getProperty(PluginSettings.COUNTER))
+	}
+	
+	private fun saveVotes()
+	{
+		conf().setProperty(PluginSettings.COUNTER, votesHandler.votes.get())
+		conf().save()
+	}
+	
+	private fun logo(sender: ConsoleCommandSender)
+	{
+		sender.sendMessage(color("&6 _  _&d  ____ "))
+		sender.sendMessage(color("&6/ )( \\&d(  _ \\"))
+		sender.sendMessage(color("&6\\ \\/ /&d ) __/" + " &3VoteParty &8v" + plugin.description.version))
+		sender.sendMessage(color("&6 \\__/ &d(__)  " + " &3Server Version: &8" + plugin.server.version))
+		sender.sendMessage(color(""))
 	}
 	
 	
@@ -189,6 +247,11 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 	fun getVotesNeeded(): Int
 	{
 		return conf().getProperty(PartySettings.VOTES_NEEDED) ?: 50
+	}
+	
+	fun getPlayerVotes(offlinePlayer: OfflinePlayer) : Int
+	{
+		return votePlayerHandler.getVotes(offlinePlayer)
 	}
 	
 	

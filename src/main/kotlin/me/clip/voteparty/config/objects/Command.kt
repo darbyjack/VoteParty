@@ -6,6 +6,6 @@ data class Command(var chance: Int = 50, var command: String = "")
 {
 	fun randomChance(): Boolean
 	{
-		return chance <= ThreadLocalRandom.current().nextInt(100)
+		return chance >= ThreadLocalRandom.current().nextInt(100)
 	}
 }

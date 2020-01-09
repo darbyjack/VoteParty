@@ -12,15 +12,15 @@ object EffectsSettings : SettingsHolder
 {
 	@JvmField
 	@Comment("Configuration for particles when party commands are being executed")
-	val PARTY_COMMAND_EXECUTE: Property<Effects>? = newBeanProperty(Effects::class.java, "effects.party_commands_execute", Effects(true, listOf("SMOKE_NORMAL", "HEART")))
+	val PARTY_COMMAND_EXECUTE: Property<Effects>? = newBeanProperty(Effects::class.java, "effects.party_commands_execute", Effects(true, listOf("SMOKE_NORMAL", "HEART"), 0.0, 0.0, 0.0, 0.1, 2))
 
 	@JvmField
 	@Comment("Configuration for particles when a party starts")
-	val PARTY_START: Property<Effects>? = newBeanProperty(Effects::class.java, "effects.party_start", Effects(true, listOf("SMOKE_NORMAL", "HEART")))
+	val PARTY_START: Property<Effects>? = newBeanProperty(Effects::class.java, "effects.party_start", Effects(true, listOf("SMOKE_NORMAL", "HEART"), 0.0, 0.0, 0.0, 0.1, 2))
 	
 	@JvmField
 	@Comment("Configuration for particles when a player votes")
-	val VOTE: Property<Effects>? = newBeanProperty(Effects::class.java, "effects.vote", Effects(true, listOf("SMOKE_NORMAL", "HEART")))
+	val VOTE: Property<Effects>? = newBeanProperty(Effects::class.java, "effects.vote", Effects(true, listOf("SMOKE_NORMAL", "HEART"), 0.0, 0.0, 0.0, 0.1, 2))
 	
 	override fun registerComments(conf: CommentsConfiguration)
 	{
