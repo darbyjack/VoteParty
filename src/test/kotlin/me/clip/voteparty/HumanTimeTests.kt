@@ -15,11 +15,8 @@ object HumanTimeTests
 	{
 		val time = HumanTime.read("1w")
 		
-		assertEquals(1,
-		             time.getData(ChronoUnit.WEEKS))
-		
-		assertEquals(7,
-		             time.getData(ChronoUnit.DAYS))
+		assertEquals(ChronoUnit.WEEKS.duration,
+		             time)
 	}
 	
 	@Test
@@ -28,6 +25,7 @@ object HumanTimeTests
 		val time = HumanTime.read("1s")
 		
 		assertEquals(1000,
-		             time.getData(ChronoUnit.MILLIS))
+		             time.toMillis())
 	}
+	
 }
