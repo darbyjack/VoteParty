@@ -84,14 +84,25 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	}
 	
 	@Subcommand("checkvotes")
-	@Syntax("<player>")
+	@Syntax("<player> <amount> <timeunit>")
 	@CommandCompletion("@online")
 	@Description("Check Votes")
 	@CommandPermission(ADMIN_PERM)
-	fun checkVotes(issuer: CommandIssuer, offlinePlayer: OfflinePlayer)
+	fun checkVotes(issuer: CommandIssuer, offlinePlayer: OfflinePlayer, amount: Long, unit: TimeUnit)
 	{
-		sendMessage(prefix, issuer, Messages.INFO__PLAYER_VOTE_COUNT, offlinePlayer,
-		            "{votes}", 20, "{time}", 1, "{unit}", TimeUnit.DAYS)
+		val count = party.votePlayerHandler.getVotesWithinRange(offlinePlayer, amount, unit)
+		sendMessage(prefix, issuer, Messages.INFO__PLAYER_CHECK_VOTES, offlinePlayer,
+		            "{count}", count, "{amount}", amount, "{unit}", unit.toString().toLowerCase())
+	}
+	
+	@Subcommand("totalvotes")
+	@Syntax("<player>")
+	@CommandCompletion("@online")
+	@Description("Total Votes")
+	@CommandPermission(ADMIN_PERM)
+	fun totalVotes(issuer: CommandIssuer, offlinePlayer: OfflinePlayer)
+	{
+		sendMessage(prefix, issuer, Messages.INFO__PLAYER_TOTAL_VOTES, offlinePlayer)
 	}
 	
 	@Subcommand("resetvotes")

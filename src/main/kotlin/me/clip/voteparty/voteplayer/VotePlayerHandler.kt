@@ -9,7 +9,9 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.HandlerList
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
+import java.time.Instant
 import java.util.UUID
+import java.util.concurrent.TimeUnit
 
 /**
  *
@@ -69,6 +71,11 @@ class VotePlayerHandler(override val plugin: VotePartyPlugin) : Addon, State, Li
 		get(player)?.data?.clear()
 	}
 	
+	fun getVotesWithinRange(offlinePlayer: OfflinePlayer, amount: Long, unit: TimeUnit): Int
+	{
+		val time = TimeUnit.MILLISECONDS.convert(amount, unit)
+		return get(offlinePlayer)?.data?.count { it > Instant.now().minusMillis(time).toEpochMilli() } ?: 0
+	}
 	
 	@EventHandler
 	fun PlayerJoinEvent.onJoin()
