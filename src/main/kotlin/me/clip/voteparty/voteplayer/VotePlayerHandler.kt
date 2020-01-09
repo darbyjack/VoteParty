@@ -4,7 +4,7 @@ import me.clip.voteparty.base.Addon
 import me.clip.voteparty.base.State
 import me.clip.voteparty.database.impl.DatabaseVotePlayerGson
 import me.clip.voteparty.plugin.VotePartyPlugin
-import org.bukkit.entity.Player
+import org.bukkit.OfflinePlayer
 import org.bukkit.event.EventHandler
 import org.bukkit.event.player.PlayerJoinEvent
 import java.util.UUID
@@ -54,7 +54,7 @@ class VotePlayerHandler(override val plugin: VotePartyPlugin) : Addon, State
 		return cached[name.toLowerCase()]
 	}
 	
-	operator fun get(player: Player): VotePlayer?
+	operator fun get(player: OfflinePlayer): VotePlayer?
 	{
 		return get(player.uniqueId)
 	}
