@@ -1,7 +1,7 @@
 package me.clip.voteparty.base
 
-import co.aikar.commands.BaseCommand
 import co.aikar.commands.CommandIssuer
+import co.aikar.commands.MessageType
 import co.aikar.locales.MessageKeyProvider
 import me.clip.placeholderapi.PlaceholderAPI
 import me.clip.voteparty.config.objects.Command
@@ -25,9 +25,9 @@ fun formMessage(player: OfflinePlayer, message: String): String
 	return color(PlaceholderAPI.setPlaceholders(player, message))
 }
 
-fun BaseCommand.sendMessage(prefix: String, issuer: CommandIssuer, key: MessageKeyProvider, target: OfflinePlayer? = null)
+fun sendMessage(prefix: String, issuer: CommandIssuer, key: MessageKeyProvider, target: OfflinePlayer? = null, vararg replace: Any = emptyArray())
 {
-	issuer.sendMessage(formMessage(Bukkit.getOfflinePlayer(target?.uniqueId ?: issuer.uniqueId), prefix + currentCommandManager.getLocales().getMessage(issuer, key.messageKey)))
+	issuer.sendMessage(formMessage(Bukkit.getOfflinePlayer(target?.uniqueId ?: issuer.uniqueId), prefix + issuer.manager.formatMessage(issuer, MessageType.INFO, key, *replace.map { it.toString() }.toTypedArray())))
 }
 
 
