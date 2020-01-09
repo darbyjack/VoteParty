@@ -6,6 +6,8 @@ import me.clip.voteparty.database.impl.DatabaseVotePlayerGson
 import me.clip.voteparty.plugin.VotePartyPlugin
 import org.bukkit.OfflinePlayer
 import org.bukkit.event.EventHandler
+import org.bukkit.event.HandlerList
+import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import java.util.UUID
 
@@ -14,7 +16,7 @@ import java.util.UUID
  * And I quote. "Wait till someone complains" - Glare 2020
  *
  */
-class VotePlayerHandler(override val plugin: VotePartyPlugin) : Addon, State
+class VotePlayerHandler(override val plugin: VotePartyPlugin) : Addon, State, Listener
 {
 	
 	private val database = DatabaseVotePlayerGson(plugin)
@@ -32,6 +34,8 @@ class VotePlayerHandler(override val plugin: VotePartyPlugin) : Addon, State
 			cached[data.uuid] = data
 			cached[data.name.toLowerCase()] = data
 		}
+		
+		server.pluginManager.registerEvents(this, plugin)
 	}
 	
 	override fun kill()
@@ -41,6 +45,8 @@ class VotePlayerHandler(override val plugin: VotePartyPlugin) : Addon, State
 		database.kill()
 		
 		cached.clear()
+		
+		HandlerList.unregisterAll(this)
 	}
 	
 	
