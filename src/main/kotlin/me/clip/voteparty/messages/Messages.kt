@@ -5,6 +5,7 @@ import co.aikar.locales.MessageKeyProvider
 
 enum class Messages : MessageKeyProvider
 {
+	
 	ERROR__INVALID_NUMBER,
 	ERROR__DISABLED_WORLD,
 	
@@ -35,10 +36,12 @@ enum class Messages : MessageKeyProvider
 	DESCRIPTIONS__TOTALVOTES,
 	DESCRIPTIONS__RESETVOTES;
 	
-	private val key = MessageKey.of(name.toLowerCase().replace("__", ".").replace("_", "-"))
 	
-	override fun getMessageKey(): MessageKey?
+	private val key = MessageKey.of(name.toLowerCase().replace("__", ".").replace('_', '-'))
+	
+	override fun getMessageKey(): MessageKey
 	{
 		return key
 	}
+	
 }

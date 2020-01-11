@@ -1,6 +1,6 @@
 package me.clip.voteparty
 
-import me.clip.voteparty.update.UpdateChecker
+import me.clip.voteparty.util.UpdateChecker
 import org.junit.jupiter.api.Test
 
 object UpdateCheckerTests

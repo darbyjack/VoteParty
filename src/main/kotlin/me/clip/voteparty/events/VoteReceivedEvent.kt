@@ -7,12 +7,9 @@ import org.bukkit.event.HandlerList
 
 class VoteReceivedEvent(val player: OfflinePlayer) : Event(), Cancellable
 {
+	
 	private var isCancelled = false
 	
-	override fun getHandlers(): HandlerList
-	{
-		return handlerList
-	}
 	
 	override fun isCancelled(): Boolean
 	{
@@ -23,6 +20,13 @@ class VoteReceivedEvent(val player: OfflinePlayer) : Event(), Cancellable
 	{
 		isCancelled = cancelled
 	}
+	
+	
+	override fun getHandlers(): HandlerList
+	{
+		return handlerList
+	}
+	
 	
 	companion object
 	{

@@ -1,29 +1,48 @@
 package me.clip.voteparty.handler
 
-import ch.jalu.configme.SettingsManager
 import me.clip.voteparty.base.Addon
-import me.clip.voteparty.base.formMessage
-import me.clip.voteparty.base.reduce
+import me.clip.voteparty.base.State
 import me.clip.voteparty.config.sections.EffectsSettings
 import me.clip.voteparty.config.sections.PartySettings
+import me.clip.voteparty.config.sections.PluginSettings
 import me.clip.voteparty.config.sections.VoteSettings
+import me.clip.voteparty.exte.formMessage
+import me.clip.voteparty.exte.takeRandomly
 import me.clip.voteparty.plugin.VotePartyPlugin
 import me.clip.voteparty.version.EffectType
 import org.bukkit.entity.Player
 import java.util.concurrent.atomic.AtomicInteger
 
-class VotesHandler(override val plugin: VotePartyPlugin) : Addon
+class VotesHandler(override val plugin: VotePartyPlugin) : Addon, State
 {
 	
-	private val conf: SettingsManager
-		get() = party.conf()
+	private val votes = AtomicInteger()
 	
-	val votes = AtomicInteger()
 	
-	fun addVote(amount: Int)
+	override fun load()
 	{
-		
-		if (votes.addAndGet(amount) < conf.getProperty(PartySettings.VOTES_NEEDED))
+		votes.set(party.conf().getProperty(PluginSettings.COUNTER))
+	}
+	
+	override fun kill()
+	{
+		votes.set(0)
+	}
+	
+	
+	fun getVotes(): Int
+	{
+		return votes.get()
+	}
+	
+	fun setVotes(amount: Int)
+	{
+		votes.set(amount)
+	}
+	
+	fun addVotes(amount: Int)
+	{
+		if (votes.addAndGet(amount) < party.conf().getProperty(PartySettings.VOTES_NEEDED))
 		{
 			return
 		}
@@ -32,17 +51,17 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon
 		party.partyHandler.startParty()
 	}
 	
+	
 	fun giveGuaranteedVoteRewards(player: Player)
 	{
-		val settings = conf.getProperty(VoteSettings.GUARANTEED_REWARDS)
+		val settings = party.conf().getProperty(VoteSettings.GUARANTEED_REWARDS)
 		
-		if (!settings.enabled)
+		if (!settings.enabled || settings.commands.isEmpty())
 		{
 			return
 		}
 		
-		val cmds = settings.commands
-		cmds.forEach()
+		settings.commands.forEach()
 		{ command ->
 			server.dispatchCommand(server.consoleSender, formMessage(player, command))
 		}
@@ -50,16 +69,14 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon
 	
 	fun giveRandomVoteRewards(player: Player)
 	{
-		val settings = conf.getProperty(VoteSettings.PER_VOTE_REWARDS)
+		val settings = party.conf().getProperty(VoteSettings.PER_VOTE_REWARDS)
 		
-		if (!settings.enabled)
+		if (!settings.enabled || settings.max_possible <= 0 || settings.commands.isEmpty())
 		{
 			return
 		}
-		val take = settings.max_possible.takeIf { it > 0 } ?: return
-		val cmds = settings.commands.takeIf { it.isNotEmpty() } ?: return
 		
-		cmds.reduce(take).forEach()
+		settings.commands.takeRandomly(settings.max_possible).forEach()
 		{
 			server.dispatchCommand(server.consoleSender, formMessage(player, it.command))
 		}
@@ -67,32 +84,30 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon
 	
 	fun playerVoteEffects(player: Player)
 	{
-		val settings = conf.getProperty(EffectsSettings.VOTE)
+		val settings = party.conf().getProperty(EffectsSettings.VOTE)
 		
-		if (!settings.enable)
+		if (!settings.enable || settings.effects.isEmpty())
 		{
 			return
 		}
-		val effects = settings.effects.takeIf { it.isNotEmpty() } ?: return
 		
-		val loc = player.location
+		val location = player.location
 		
-		effects.forEach {
-			party.hook().display(EffectType.valueOf(it), loc, settings.offsetX, settings.offsetY, settings.offsetZ, settings.speed, settings.count)
+		settings.effects.forEach {
+			party.hook().display(EffectType.valueOf(it), location, settings.offsetX, settings.offsetY, settings.offsetZ, settings.speed, settings.count)
 		}
 	}
 	
 	fun runGlobalCommands(player: Player)
 	{
-		val settings = conf.getProperty(VoteSettings.GLOBAL_COMMANDS)
+		val settings = party.conf().getProperty(VoteSettings.GLOBAL_COMMANDS)
 		
-		if (!settings.enabled)
+		if (!settings.enabled || settings.commands.isEmpty())
 		{
 			return
 		}
 		
-		val cmds = settings.commands
-		cmds.forEach()
+		settings.commands.forEach()
 		{ command ->
 			server.dispatchCommand(server.consoleSender, formMessage(player, command))
 		}

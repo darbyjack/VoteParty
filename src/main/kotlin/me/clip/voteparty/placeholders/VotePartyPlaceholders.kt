@@ -6,15 +6,6 @@ import org.bukkit.OfflinePlayer
 
 class VotePartyPlaceholders(private val voteParty: VoteParty) : PlaceholderExpansion()
 {
-	override fun getIdentifier(): String
-	{
-		return "voteparty"
-	}
-	
-	override fun persist(): Boolean
-	{
-		return true
-	}
 	
 	override fun getAuthor(): String
 	{
@@ -25,6 +16,17 @@ class VotePartyPlaceholders(private val voteParty: VoteParty) : PlaceholderExpan
 	{
 		return "2.0"
 	}
+	
+	override fun getIdentifier(): String
+	{
+		return "voteparty"
+	}
+	
+	override fun persist(): Boolean
+	{
+		return true
+	}
+	
 	
 	override fun onRequest(offlinePlayer: OfflinePlayer, arg: String): String
 	{
@@ -38,4 +40,5 @@ class VotePartyPlaceholders(private val voteParty: VoteParty) : PlaceholderExpan
 			else                   -> ""
 		}
 	}
+	
 }
