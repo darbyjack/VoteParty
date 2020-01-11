@@ -11,23 +11,20 @@ import co.aikar.commands.annotation.Subcommand
 import co.aikar.commands.annotation.Syntax
 import co.aikar.commands.annotation.Values
 import co.aikar.commands.bukkit.contexts.OnlinePlayer
-import me.clip.voteparty.VoteParty
-import me.clip.voteparty.base.ADMIN_PERM
 import me.clip.voteparty.base.Addon
-import me.clip.voteparty.base.display
-import me.clip.voteparty.base.sendMessage
 import me.clip.voteparty.config.sections.PartySettings
+import me.clip.voteparty.exte.ADMIN_PERM
+import me.clip.voteparty.exte.display
+import me.clip.voteparty.exte.sendMessage
 import me.clip.voteparty.messages.Messages
+import me.clip.voteparty.plugin.VotePartyPlugin
 import org.bukkit.OfflinePlayer
 import org.bukkit.command.CommandSender
 import java.util.concurrent.TimeUnit
 
 @CommandAlias("%vp")
-data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), Addon
+internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseCommand(), Addon
 {
-	
-	override val plugin = voteParty.plugin
-	
 	
 	@Subcommand("addvote")
 	@Syntax("<amount>")
@@ -37,13 +34,11 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	{
 		if (amount <= 0)
 		{
-			sendMessage(prefix, issuer, Messages.ERROR__INVALID_NUMBER)
-			return
-		} else
-		{
-			party.votesHandler.addVote(amount)
-			sendMessage(prefix, issuer, Messages.VOTES__VOTE_COUNTER_UPDATED)
+			return sendMessage(issuer, Messages.ERROR__INVALID_NUMBER)
 		}
+		
+		party.votesHandler.addVotes(amount)
+		sendMessage(issuer, Messages.VOTES__VOTE_COUNTER_UPDATED)
 	}
 	
 	@Subcommand("givecrate")
@@ -55,14 +50,13 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	{
 		if (amount <= 0)
 		{
-			sendMessage(prefix, issuer, Messages.ERROR__INVALID_NUMBER)
-			return
-		} else
-		{
-			sendMessage(prefix, issuer, Messages.CRATE__CRATE_GIVEN, target.player)
-			target.player.inventory.addItem(party.partyHandler.buildCrate(amount))
-			sendMessage(prefix, currentCommandManager.getCommandIssuer(target.player), Messages.CRATE__CRATE_RECEIVED)
+			return sendMessage(issuer, Messages.ERROR__INVALID_NUMBER)
 		}
+		
+		sendMessage(issuer, Messages.CRATE__CRATE_GIVEN, target.player)
+		sendMessage(currentCommandManager.getCommandIssuer(target.player), Messages.CRATE__CRATE_RECEIVED)
+		
+		target.player.inventory.addItem(party.partyHandler.buildCrate(amount))
 	}
 	
 	@Subcommand("setcounter")
@@ -73,14 +67,14 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	{
 		if (amount <= 0)
 		{
-			sendMessage(prefix, issuer, Messages.ERROR__INVALID_NUMBER)
-			return
-		} else
-		{
-			party.conf().setProperty(PartySettings.VOTES_NEEDED, amount)
-			party.conf().save()
-			sendMessage(prefix, issuer, Messages.VOTES__VOTES_NEEDED_UPDATED)
+			return sendMessage(issuer, Messages.ERROR__INVALID_NUMBER)
+			
 		}
+		
+		party.conf().setProperty(PartySettings.VOTES_NEEDED, amount)
+		party.conf().save()
+		
+		sendMessage(issuer, Messages.VOTES__VOTES_NEEDED_UPDATED)
 	}
 	
 	@Subcommand("checkvotes")
@@ -90,9 +84,8 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	@CommandPermission(ADMIN_PERM)
 	fun checkVotes(issuer: CommandIssuer, offlinePlayer: OfflinePlayer, amount: Long, unit: TimeUnit)
 	{
-		val count = party.votePlayerHandler.getVotesWithinRange(offlinePlayer, amount, unit)
-		sendMessage(prefix, issuer, Messages.INFO__PLAYER_CHECK_VOTES, offlinePlayer,
-		            "{count}", count, "{amount}", amount, "{unit}", unit.toString().toLowerCase())
+		val count = party.usersHandler.getVotesWithinRange(offlinePlayer, amount, unit)
+		sendMessage(issuer, Messages.INFO__PLAYER_CHECK_VOTES, offlinePlayer, "{count}", count, "{amount}", amount, "{unit}", unit.toString().toLowerCase())
 	}
 	
 	@Subcommand("totalvotes")
@@ -102,7 +95,7 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	@CommandPermission(ADMIN_PERM)
 	fun totalVotes(issuer: CommandIssuer, offlinePlayer: OfflinePlayer)
 	{
-		sendMessage(prefix, issuer, Messages.INFO__PLAYER_TOTAL_VOTES, offlinePlayer)
+		sendMessage(issuer, Messages.INFO__PLAYER_TOTAL_VOTES, offlinePlayer)
 	}
 	
 	@Subcommand("resetvotes")
@@ -112,8 +105,8 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	@CommandPermission(ADMIN_PERM)
 	fun resetVotes(issuer: CommandIssuer, offlinePlayer: OfflinePlayer)
 	{
-		party.votePlayerHandler.reset(offlinePlayer)
-		sendMessage(prefix, issuer, Messages.INFO__VOTE_COUNT_RESET, offlinePlayer)
+		party.usersHandler.reset(offlinePlayer)
+		sendMessage(issuer, Messages.INFO__VOTE_COUNT_RESET, offlinePlayer)
 	}
 	
 	@Subcommand("startparty")
@@ -122,7 +115,7 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	fun startParty(issuer: CommandIssuer)
 	{
 		party.partyHandler.startParty()
-		sendMessage(prefix, issuer, Messages.PARTY__FORCE_START_SUCCESSFUL)
+		sendMessage(issuer, Messages.PARTY__FORCE_START_SUCCESSFUL)
 	}
 	
 	@Subcommand("giveparty")
@@ -134,14 +127,15 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	{
 		if (target.player.world.name in party.conf().getProperty(PartySettings.DISABLED_WORLDS))
 		{
-			sendMessage(prefix, issuer, Messages.ERROR__DISABLED_WORLD)
+			sendMessage(issuer, Messages.ERROR__DISABLED_WORLD)
 			return
 		}
 		
-		voteParty.partyHandler.giveGuaranteedPartyRewards(target.player)
-		voteParty.partyHandler.giveRandomPartyRewards(target.player)
-		sendMessage(prefix, issuer, Messages.VOTES__PRIVATE_PARTY_GIVEN, target.player)
-		sendMessage(prefix, currentCommandManager.getCommandIssuer(target.player), Messages.VOTES__PRIVATE_PARTY_RECEIVED)
+		party.partyHandler.giveGuaranteedPartyRewards(target.player)
+		party.partyHandler.giveRandomPartyRewards(target.player)
+		
+		sendMessage(issuer, Messages.VOTES__PRIVATE_PARTY_GIVEN, target.player)
+		sendMessage(currentCommandManager.getCommandIssuer(target.player), Messages.VOTES__PRIVATE_PARTY_RECEIVED)
 	}
 	
 	@Subcommand("reload")
@@ -149,9 +143,10 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	@CommandPermission(ADMIN_PERM)
 	fun reload(issuer: CommandIssuer)
 	{
-		voteParty.conf().reload()
-		voteParty.registerLang()
-		sendMessage(prefix, issuer, Messages.INFO__RELOADED)
+		party.conf().reload()
+		party.loadLang()
+		
+		sendMessage(issuer, Messages.INFO__RELOADED)
 	}
 	
 	@Subcommand("help")
@@ -164,7 +159,7 @@ data class CommandVoteParty(private val voteParty: VoteParty) : BaseCommand(), A
 	@Default
 	fun default(issuer: CommandIssuer)
 	{
-		sendMessage(prefix, currentCommandIssuer, Messages.INFO__VOTES_NEEDED)
+		sendMessage(issuer, Messages.INFO__VOTES_NEEDED)
 	}
 	
 }

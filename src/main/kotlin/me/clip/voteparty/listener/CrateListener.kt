@@ -2,32 +2,32 @@ package me.clip.voteparty.listener
 
 import me.clip.voteparty.config.sections.CrateSettings
 import me.clip.voteparty.config.sections.PartySettings
-import me.clip.voteparty.plugin.VotePartyListener
+import me.clip.voteparty.listener.base.VotePartyListener
 import me.clip.voteparty.plugin.VotePartyPlugin
 import org.bukkit.event.EventHandler
 import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
 
-class CrateListener(override val plugin: VotePartyPlugin) : VotePartyListener
+internal class CrateListener(override val plugin: VotePartyPlugin) : VotePartyListener
 {
 	
 	@EventHandler
 	fun PlayerInteractEvent.onInteract()
 	{
-		if (plugin.voteParty?.conf()?.getProperty(CrateSettings.ENABLED) == false)
+		if (party.conf().getProperty(CrateSettings.ENABLED) == false)
 		{
 			return
 		}
 		
-		if ((action != Action.RIGHT_CLICK_AIR) && (action != Action.RIGHT_CLICK_BLOCK))
+		if (action != Action.RIGHT_CLICK_AIR && action != Action.RIGHT_CLICK_BLOCK)
 		{
 			return
 		}
 		
-		val hand = player.inventory.itemInHand
-		val crate = plugin.voteParty?.partyHandler?.crate
+		val held = player.inventory.itemInHand
+		val item = party.partyHandler.buildCrate(1)
 		
-		if (!hand.isSimilar(crate))
+		if (!held.isSimilar(item))
 		{
 			return
 		}
@@ -39,15 +39,16 @@ class CrateListener(override val plugin: VotePartyPlugin) : VotePartyListener
 		
 		isCancelled = true
 		
-		if (hand.amount == 1)
+		if (held.amount == 1)
 		{
-			player.inventory.removeItem(hand)
+			player.inventory.removeItem(held)
 		} else
 		{
-			player.inventory.itemInHand.amount = hand.amount - 1
+			player.inventory.itemInHand.amount = held.amount - 1
 		}
 		
-		plugin.voteParty?.partyHandler?.giveGuaranteedPartyRewards(player)
-		plugin.voteParty?.partyHandler?.giveRandomPartyRewards(player)
+		party.partyHandler.giveGuaranteedPartyRewards(player)
+		party.partyHandler.giveRandomPartyRewards(player)
 	}
+	
 }

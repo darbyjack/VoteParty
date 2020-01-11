@@ -3,7 +3,7 @@ package me.clip.voteparty.base
 /**
  * Defines an object that holds state and requires enable and disable logic
  */
-interface State
+internal interface State
 {
 	
 	/**

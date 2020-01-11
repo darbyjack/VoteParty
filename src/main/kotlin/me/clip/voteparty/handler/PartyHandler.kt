@@ -1,17 +1,16 @@
 package me.clip.voteparty.handler
 
-import ch.jalu.configme.SettingsManager
 import me.clip.voteparty.base.Addon
-import me.clip.voteparty.base.color
-import me.clip.voteparty.base.formMessage
-import me.clip.voteparty.base.meta
-import me.clip.voteparty.base.name
-import me.clip.voteparty.base.reduce
-import me.clip.voteparty.base.runTaskLater
-import me.clip.voteparty.base.runTaskTimer
 import me.clip.voteparty.config.sections.CrateSettings
 import me.clip.voteparty.config.sections.EffectsSettings
 import me.clip.voteparty.config.sections.PartySettings
+import me.clip.voteparty.exte.color
+import me.clip.voteparty.exte.formMessage
+import me.clip.voteparty.exte.meta
+import me.clip.voteparty.exte.name
+import me.clip.voteparty.exte.runTaskLater
+import me.clip.voteparty.exte.runTaskTimer
+import me.clip.voteparty.exte.takeRandomly
 import me.clip.voteparty.plugin.VotePartyPlugin
 import me.clip.voteparty.version.EffectType
 import org.bukkit.Material
@@ -20,22 +19,19 @@ import org.bukkit.inventory.ItemStack
 
 class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 {
-	private val conf: SettingsManager
-		get() = party.conf()
-	
-	val crate: ItemStack
-		get() = buildCrate(1)
-	
 	
 	fun giveRandomPartyRewards(player: Player)
 	{
-		val settings = conf.getProperty(PartySettings.REWARD_COMMANDS)
+		val settings = party.conf().getProperty(PartySettings.REWARD_COMMANDS)
 		
-		val take = settings.max_possible.takeIf { it > 0 } ?: return
-		val cmds = settings.commands.takeIf { it.isNotEmpty() } ?: return
+		if (!settings.enabled || settings.max_possible <= 0 || settings.commands.isEmpty())
+		{
+			return
+		}
 		
-		val iter = cmds.reduce(take).iterator()
-		plugin.runTaskTimer(conf.getProperty(PartySettings.COMMAND_DELAY).toLong() * 20L)
+		val iter = settings.commands.takeRandomly(settings.max_possible).iterator()
+		
+		plugin.runTaskTimer(party.conf().getProperty(PartySettings.COMMAND_DELAY).toLong() * 20L)
 		{
 			if (!iter.hasNext())
 			{
@@ -49,28 +45,28 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 	
 	fun giveGuaranteedPartyRewards(player: Player)
 	{
-		val settings = conf.getProperty(PartySettings.GUARANTEED_REWARDS)
+		val settings = party.conf().getProperty(PartySettings.GUARANTEED_REWARDS)
 		
 		executeCommands(settings.enabled, settings.commands, player)
 	}
 	
 	fun runPrePartyCommands()
 	{
-		val settings = conf.getProperty(PartySettings.PRE_PARTY_COMMANDS)
+		val settings = party.conf().getProperty(PartySettings.PRE_PARTY_COMMANDS)
 		
 		executeCommands(settings.enabled, settings.commands)
 	}
 	
 	fun runPartyCommands()
 	{
-		val settings = conf.getProperty(PartySettings.PARTY_COMMANDS)
+		val settings = party.conf().getProperty(PartySettings.PARTY_COMMANDS)
 		
 		executeCommands(settings.enabled, settings.commands)
 	}
 	
 	fun runPartyStartEffects()
 	{
-		val settings = conf.getProperty(EffectsSettings.PARTY_START)
+		val settings = party.conf().getProperty(EffectsSettings.PARTY_START)
 		
 		executeEffects(settings.enable, settings.effects, server.onlinePlayers,
 		               settings.offsetX, settings.offsetY, settings.offsetZ,
@@ -79,7 +75,7 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 	
 	fun runPartyCommandEffects(player: Player)
 	{
-		val settings = conf.getProperty(EffectsSettings.PARTY_COMMAND_EXECUTE)
+		val settings = party.conf().getProperty(EffectsSettings.PARTY_COMMAND_EXECUTE)
 		
 		executeEffects(settings.enable, settings.effects, listOf(player),
 		               settings.offsetX, settings.offsetY, settings.offsetZ,
@@ -89,13 +85,13 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 	
 	fun buildCrate(amount: Int): ItemStack
 	{
-		val item = conf.getProperty(CrateSettings.MATERIAL).parseItem(true) ?: ItemStack(Material.CHEST, 1)
+		val item = party.conf().getProperty(CrateSettings.MATERIAL).parseItem(true) ?: ItemStack(Material.CHEST, 1)
 		item.amount = amount
 		
 		return item.meta()
 		{
-			name = conf.getProperty(CrateSettings.NAME) ?: "Vote Party Crate"
-			lore = conf.getProperty(CrateSettings.LORE).map(::color)
+			name = party.conf().getProperty(CrateSettings.NAME) ?: "Vote Party Crate"
+			lore = party.conf().getProperty(CrateSettings.LORE).map(::color)
 		}
 	}
 	
@@ -103,7 +99,7 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 	{
 		runPrePartyCommands()
 		
-		plugin.runTaskLater(conf.getProperty(PartySettings.START_DELAY) * 20L)
+		plugin.runTaskLater(party.conf().getProperty(PartySettings.START_DELAY) * 20L)
 		{
 			runPartyCommands()
 			runPartyStartEffects()
@@ -117,14 +113,9 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 	}
 	
 	
-	private fun executeCommands(enabled: Boolean?, cmds: Collection<String>?, player: Player? = null)
+	private fun executeCommands(enabled: Boolean, cmds: Collection<String>?, player: Player? = null)
 	{
-		if (enabled == false)
-		{
-			return
-		}
-		
-		if (player != null && (player.world.name in party.conf().getProperty(PartySettings.DISABLED_WORLDS)))
+		if (!enabled || (player != null && (player.world.name in party.conf().getProperty(PartySettings.DISABLED_WORLDS))))
 		{
 			return
 		}
@@ -136,16 +127,16 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 	}
 	
 	
-	private fun executeEffects(enabled: Boolean?, effects: Collection<String>, players: Collection<Player>, offsetX: Double, offsetY: Double, offsetZ: Double, speed: Double, count: Int)
+	private fun executeEffects(enabled: Boolean, effects: Collection<String>, players: Collection<Player>, offsetX: Double, offsetY: Double, offsetZ: Double, speed: Double, count: Int)
 	{
-		if (enabled == false)
+		if (!enabled)
 		{
 			return
 		}
 		
 		val targets = players.filter()
 		{
-			it.world.name !in conf.getProperty(PartySettings.DISABLED_WORLDS)
+			it.world.name !in party.conf().getProperty(PartySettings.DISABLED_WORLDS)
 		}
 		
 		effects.forEach()
