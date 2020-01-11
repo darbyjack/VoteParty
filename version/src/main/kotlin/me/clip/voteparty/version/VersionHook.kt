@@ -6,6 +6,6 @@ import org.bukkit.Location
 interface VersionHook
 {
 	
-	fun display(type: EffectType, location: Location, color: Color?, offsetX: Double, offsetY: Double, offsetZ: Double, speed: Double, count: Int)
+	fun display(type: EffectType, location: Location, offsetX: Double, offsetY: Double, offsetZ: Double, speed: Double, count: Int, color: Color? = null)
 	
 }

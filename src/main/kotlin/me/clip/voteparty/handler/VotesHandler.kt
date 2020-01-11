@@ -78,7 +78,7 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon
 		val loc = player.location
 		
 		effects.forEach {
-			party.hook().display(EffectType.valueOf(it), loc, null, settings.offsetX, settings.offsetY, settings.offsetZ, settings.speed, settings.count)
+			party.hook().display(EffectType.valueOf(it), loc, settings.offsetX, settings.offsetY, settings.offsetZ, settings.speed, settings.count)
 		}
 	}
 	
