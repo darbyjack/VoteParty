@@ -16,11 +16,14 @@ object UpdateChecker
 	{
 		plugin.server.scheduler.runTaskAsynchronously(plugin, Runnable
 		{
-			check(plugin.description.version, id, complete)
+			complete.invoke(check(plugin.description.version, id))
 		})
 	}
 	
-	fun check(version: String, id: Int, complete: (result: UpdateResult) -> Unit)
+	/**
+	 * runs the update check on the current thread, and returns an appropriate result
+	 */
+	fun check(version: String, id: Int): UpdateResult
 	{
 		val response = try
 		{
@@ -28,7 +31,7 @@ object UpdateChecker
 		}
 		catch (ex: Exception)
 		{
-			return complete.invoke(UpdateResult.EXCEPTIONS(throwable = ex))
+			return UpdateResult.EXCEPTIONS(throwable = ex)
 		}
 		
 		
@@ -39,12 +42,12 @@ object UpdateChecker
 		}
 		catch (ex: Exception)
 		{
-			return complete.invoke(UpdateResult.EXCEPTIONS(throwable = ex))
+			return UpdateResult.EXCEPTIONS(throwable = ex)
 		}
 		
 		if (old == new)
 		{
-			return complete.invoke(UpdateResult.UP_TO_DATE)
+			return UpdateResult.UP_TO_DATE
 		}
 		
 		val oldVersion = old.split('.').mapNotNull(String::toIntOrNull)
@@ -52,7 +55,7 @@ object UpdateChecker
 		
 		if (newVersion.size > oldVersion.size)
 		{
-			return complete.invoke(UpdateResult.NEW_UPDATE(version = new))
+			return UpdateResult.NEW_UPDATE(version = new)
 		}
 		
 		oldVersion.forEachIndexed()
@@ -62,10 +65,10 @@ object UpdateChecker
 				return@forEachIndexed
 			}
 			
-			return complete.invoke(UpdateResult.NEW_UPDATE(version = new))
+			return UpdateResult.NEW_UPDATE(version = new)
 		}
 		
-		return complete.invoke(UpdateResult.UNRELEASED)
+		return UpdateResult.UNRELEASED
 	}
 	
 	
