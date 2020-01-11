@@ -152,7 +152,7 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 		{ effect ->
 			targets.forEach()
 			{ player ->
-				party.hook().display(EffectType.valueOf(effect), player.location, null, offsetX, offsetY, offsetZ, speed, count)
+				party.hook().display(EffectType.valueOf(effect), player.location, offsetX, offsetY, offsetZ, speed, count)
 			}
 		}
 	}
