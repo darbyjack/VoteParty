@@ -11,7 +11,7 @@ internal object PluginSettings : SettingsHolder
 	
 	@JvmField
 	@Comment("The default language of the plugin")
-	val LANGUAGE: Property<String> = newProperty("settings.language", "en_US")
+	val LANGUAGE: Property<String> = newProperty("settings.language", "en-US")
 	
 	@JvmField
 	@Comment("The prefix of all the messages in the plugin")
