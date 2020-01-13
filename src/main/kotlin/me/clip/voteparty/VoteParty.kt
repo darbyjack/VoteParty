@@ -249,6 +249,11 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 	{
 		return checkNotNull(hook)
 	}
+
+	fun manager(): PaperCommandManager
+	{
+		return cmds
+	}
 	
 	
 	fun getVotes(): Int

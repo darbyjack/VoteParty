@@ -32,3 +32,4 @@ crate:
 claim:
   success: "&fYou successfully claimed the rewards from an offline vote! You have &d{claim} &fleft to claim."
   none: "&fYou don't have any rewards to claim from offline votes!"
+  notify: "&fHey there! You seemed to have voted while offline! You have some claiming rewards! Collect them by using &d/vp claim&f!"

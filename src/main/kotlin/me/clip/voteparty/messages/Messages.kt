@@ -27,6 +27,7 @@ enum class Messages : MessageKeyProvider
 
 	CLAIM__SUCCESS,
 	CLAIM__NONE,
+	CLAIM__NOTIFY,
 	
 	DESCRIPTIONS__HELP,
 	DESCRIPTIONS__SETCOUNTER,
