@@ -2,6 +2,7 @@ package me.clip.voteparty.user
 
 import me.clip.voteparty.base.Addon
 import me.clip.voteparty.base.State
+import me.clip.voteparty.conf.sections.VoteSettings
 import me.clip.voteparty.data.impl.DatabaseVotePlayerGson
 import me.clip.voteparty.plugin.VotePartyPlugin
 import org.bukkit.OfflinePlayer
@@ -92,7 +93,7 @@ class UsersHandler(override val plugin: VotePartyPlugin) : Addon, State, Listene
 		
 		if (old == null)
 		{
-			val new = User(player.uniqueId, player.name, mutableListOf())
+			val new = User(player.uniqueId, player.name, mutableListOf(), 0)
 			
 			cached[new.uuid] = new
 			cached[new.name.toLowerCase()] = new

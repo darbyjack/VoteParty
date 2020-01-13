@@ -24,6 +24,9 @@ enum class Messages : MessageKeyProvider
 	
 	CRATE__CRATE_GIVEN,
 	CRATE__CRATE_RECEIVED,
+
+	CLAIM__SUCCESS,
+	CLAIM__NONE,
 	
 	DESCRIPTIONS__HELP,
 	DESCRIPTIONS__SETCOUNTER,
@@ -34,7 +37,8 @@ enum class Messages : MessageKeyProvider
 	DESCRIPTIONS__RELOAD,
 	DESCRIPTIONS__CHECKVOTES,
 	DESCRIPTIONS__TOTALVOTES,
-	DESCRIPTIONS__RESETVOTES;
+	DESCRIPTIONS__RESETVOTES,
+	DESCRIPTIONS__CLAIM;
 	
 	
 	private val key = MessageKey.of(name.toLowerCase().replace("__", ".").replace('_', '-'))
