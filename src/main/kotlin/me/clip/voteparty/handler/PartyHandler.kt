@@ -1,9 +1,9 @@
 package me.clip.voteparty.handler
 
 import me.clip.voteparty.base.Addon
-import me.clip.voteparty.config.sections.CrateSettings
-import me.clip.voteparty.config.sections.EffectsSettings
-import me.clip.voteparty.config.sections.PartySettings
+import me.clip.voteparty.conf.sections.CrateSettings
+import me.clip.voteparty.conf.sections.EffectsSettings
+import me.clip.voteparty.conf.sections.PartySettings
 import me.clip.voteparty.exte.color
 import me.clip.voteparty.exte.formMessage
 import me.clip.voteparty.exte.meta

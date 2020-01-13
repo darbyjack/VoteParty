@@ -2,7 +2,7 @@ package me.clip.voteparty.user
 
 import me.clip.voteparty.base.Addon
 import me.clip.voteparty.base.State
-import me.clip.voteparty.database.impl.DatabaseVotePlayerGson
+import me.clip.voteparty.data.impl.DatabaseVotePlayerGson
 import me.clip.voteparty.plugin.VotePartyPlugin
 import org.bukkit.OfflinePlayer
 import org.bukkit.event.EventHandler

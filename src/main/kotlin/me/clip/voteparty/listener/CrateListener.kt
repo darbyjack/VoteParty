@@ -1,7 +1,7 @@
 package me.clip.voteparty.listener
 
-import me.clip.voteparty.config.sections.CrateSettings
-import me.clip.voteparty.config.sections.PartySettings
+import me.clip.voteparty.conf.sections.CrateSettings
+import me.clip.voteparty.conf.sections.PartySettings
 import me.clip.voteparty.listener.base.VotePartyListener
 import me.clip.voteparty.plugin.VotePartyPlugin
 import org.bukkit.event.EventHandler

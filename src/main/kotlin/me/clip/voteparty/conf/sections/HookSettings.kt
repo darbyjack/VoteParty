@@ -1,4 +1,4 @@
-package me.clip.voteparty.config.sections
+package me.clip.voteparty.conf.sections
 
 import ch.jalu.configme.Comment
 import ch.jalu.configme.SettingsHolder

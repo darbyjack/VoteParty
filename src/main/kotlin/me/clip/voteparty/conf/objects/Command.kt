@@ -1,4 +1,4 @@
-package me.clip.voteparty.config.objects
+package me.clip.voteparty.conf.objects
 
 import java.util.concurrent.ThreadLocalRandom
 

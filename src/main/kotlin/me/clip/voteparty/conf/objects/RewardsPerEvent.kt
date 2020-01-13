@@ -1,4 +1,6 @@
-package me.clip.voteparty.config.objects
+package me.clip.voteparty.conf.objects
+
+import me.clip.voteparty.conf.objects.Command
 
 internal data class RewardsPerEvent(var enabled: Boolean = true,
                            var max_possible: Int = 1,

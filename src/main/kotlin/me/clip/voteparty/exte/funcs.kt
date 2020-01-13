@@ -5,8 +5,8 @@ import co.aikar.commands.CommandIssuer
 import co.aikar.locales.MessageKeyProvider
 import me.clip.placeholderapi.PlaceholderAPI
 import me.clip.voteparty.base.Addon
-import me.clip.voteparty.config.objects.Command
-import me.clip.voteparty.config.sections.PluginSettings
+import me.clip.voteparty.conf.objects.Command
+import me.clip.voteparty.conf.sections.PluginSettings
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Material

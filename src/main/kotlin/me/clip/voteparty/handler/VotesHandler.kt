@@ -2,10 +2,10 @@ package me.clip.voteparty.handler
 
 import me.clip.voteparty.base.Addon
 import me.clip.voteparty.base.State
-import me.clip.voteparty.config.sections.EffectsSettings
-import me.clip.voteparty.config.sections.PartySettings
-import me.clip.voteparty.config.sections.PluginSettings
-import me.clip.voteparty.config.sections.VoteSettings
+import me.clip.voteparty.conf.sections.EffectsSettings
+import me.clip.voteparty.conf.sections.PartySettings
+import me.clip.voteparty.conf.sections.PluginSettings
+import me.clip.voteparty.conf.sections.VoteSettings
 import me.clip.voteparty.exte.formMessage
 import me.clip.voteparty.exte.takeRandomly
 import me.clip.voteparty.plugin.VotePartyPlugin
