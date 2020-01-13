@@ -1,6 +1,7 @@
 package me.clip.voteparty.listener
 
 import me.clip.voteparty.conf.sections.PartySettings
+import me.clip.voteparty.conf.sections.VoteSettings
 import me.clip.voteparty.events.VoteReceivedEvent
 import me.clip.voteparty.listener.base.VotePartyListener
 import me.clip.voteparty.plugin.VotePartyPlugin
@@ -15,6 +16,13 @@ internal class VotesListener(override val plugin: VotePartyPlugin) : VotePartyLi
 		if (!player.isOnline && !party.conf().getProperty(PartySettings.OFFLINE_VOTES))
 		{
 			return
+		}
+
+		val user = party.usersHandler[player]
+
+		if (party.conf().getProperty(VoteSettings.OFFLINE_VOTE_CLAIMING))
+		{
+			user?.inc()
 		}
 		
 		party.votesHandler.addVotes(1)

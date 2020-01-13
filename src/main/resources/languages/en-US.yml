@@ -9,6 +9,7 @@ descriptions:
   checkvotes: "Check the amount of votes a player has."
   totalvotes: "Get the total amount of votes a player has."
   resetvotes: "Reset the amount of votes a player has."
+  claim: "Claim rewards from offline votes."
 error:
   invalid-number: "&fSorry, but this number must be positive in order to work correctly!"
   disabled-world: "&fSorry, but this player is currently in a disabled world!"
@@ -28,3 +29,6 @@ votes:
 crate:
   crate-given: "&fYou've given &d%player_name% &fvote crate(s)!"
   crate-received: "&fYou've received a vote crate!"
+claim:
+  success: "&fYou successfully claimed the rewards from an offline vote! You have &d{claim} &fleft to claim."
+  none: "&fYou don't have any rewards to claim from offline votes!"

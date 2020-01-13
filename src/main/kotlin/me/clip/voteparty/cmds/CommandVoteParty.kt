@@ -14,12 +14,14 @@ import co.aikar.commands.bukkit.contexts.OnlinePlayer
 import me.clip.voteparty.base.Addon
 import me.clip.voteparty.conf.sections.PartySettings
 import me.clip.voteparty.exte.ADMIN_PERM
+import me.clip.voteparty.exte.BASE_PERM
 import me.clip.voteparty.exte.display
 import me.clip.voteparty.exte.sendMessage
 import me.clip.voteparty.messages.Messages
 import me.clip.voteparty.plugin.VotePartyPlugin
 import org.bukkit.OfflinePlayer
 import org.bukkit.command.CommandSender
+import org.bukkit.entity.Player
 import java.util.concurrent.TimeUnit
 
 @CommandAlias("%vp")
@@ -147,6 +149,31 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 		party.loadLang()
 		
 		sendMessage(issuer, Messages.INFO__RELOADED)
+	}
+
+	@Subcommand("claim")
+	@Description("Claim")
+	@CommandPermission("$BASE_PERM.claim")
+	fun claim(player: Player)
+	{
+		val user = party.usersHandler[player]
+		var claimable = user?.claimable ?: 0
+
+		if (claimable > 0)
+		{
+			party.partyHandler.giveGuaranteedPartyRewards(player)
+			party.partyHandler.giveRandomPartyRewards(player)
+
+			user?.dec()
+
+			claimable = user?.claimable ?: 0
+
+			sendMessage(currentCommandIssuer, Messages.CLAIM__SUCCESS, null, "{claim}", claimable)
+		}
+		else
+		{
+			sendMessage(currentCommandIssuer, Messages.CLAIM__NONE)
+		}
 	}
 	
 	@Subcommand("help")
