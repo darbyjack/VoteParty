@@ -2,7 +2,7 @@ package me.clip.voteparty.database.base
 
 import me.clip.voteparty.base.Addon
 import me.clip.voteparty.base.State
-import me.clip.voteparty.voteplayer.User
+import me.clip.voteparty.user.User
 import java.util.UUID
 
 internal interface DatabaseVotePlayer : Addon, State

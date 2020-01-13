@@ -4,7 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import me.clip.voteparty.database.base.DatabaseVotePlayer
 import me.clip.voteparty.plugin.VotePartyPlugin
-import me.clip.voteparty.voteplayer.User
+import me.clip.voteparty.user.User
 import java.util.UUID
 import java.util.logging.Level
 

@@ -1,4 +1,4 @@
-package me.clip.voteparty.voteplayer
+package me.clip.voteparty.user
 
 import java.util.UUID
 
