@@ -12,7 +12,7 @@ import co.aikar.commands.annotation.Syntax
 import co.aikar.commands.annotation.Values
 import co.aikar.commands.bukkit.contexts.OnlinePlayer
 import me.clip.voteparty.base.Addon
-import me.clip.voteparty.config.sections.PartySettings
+import me.clip.voteparty.conf.sections.PartySettings
 import me.clip.voteparty.exte.ADMIN_PERM
 import me.clip.voteparty.exte.display
 import me.clip.voteparty.exte.sendMessage

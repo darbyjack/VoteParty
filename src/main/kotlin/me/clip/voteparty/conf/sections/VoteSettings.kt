@@ -1,12 +1,12 @@
-package me.clip.voteparty.config.sections
+package me.clip.voteparty.conf.sections
 
 import ch.jalu.configme.Comment
 import ch.jalu.configme.SettingsHolder
 import ch.jalu.configme.properties.Property
 import ch.jalu.configme.properties.PropertyInitializer.newBeanProperty
-import me.clip.voteparty.config.objects.Command
-import me.clip.voteparty.config.objects.Commands
-import me.clip.voteparty.config.objects.RewardsPerEvent
+import me.clip.voteparty.conf.objects.Command
+import me.clip.voteparty.conf.objects.Commands
+import me.clip.voteparty.conf.objects.RewardsPerEvent
 
 internal object VoteSettings : SettingsHolder
 {

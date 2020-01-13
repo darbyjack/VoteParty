@@ -1,8 +1,8 @@
-package me.clip.voteparty.database.impl
+package me.clip.voteparty.data.impl
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import me.clip.voteparty.database.base.DatabaseVotePlayer
+import me.clip.voteparty.data.base.DatabaseVotePlayer
 import me.clip.voteparty.plugin.VotePartyPlugin
 import me.clip.voteparty.user.User
 import java.util.UUID

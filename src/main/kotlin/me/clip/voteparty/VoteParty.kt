@@ -5,10 +5,10 @@ import co.aikar.commands.PaperCommandManager
 import com.google.gson.Gson
 import me.clip.voteparty.base.State
 import me.clip.voteparty.cmds.CommandVoteParty
-import me.clip.voteparty.config.VotePartyConfiguration
-import me.clip.voteparty.config.sections.HookSettings
-import me.clip.voteparty.config.sections.PartySettings
-import me.clip.voteparty.config.sections.PluginSettings
+import me.clip.voteparty.conf.VotePartyConfiguration
+import me.clip.voteparty.conf.sections.HookSettings
+import me.clip.voteparty.conf.sections.PartySettings
+import me.clip.voteparty.conf.sections.PluginSettings
 import me.clip.voteparty.exte.color
 import me.clip.voteparty.exte.runTaskTimer
 import me.clip.voteparty.handler.PartyHandler

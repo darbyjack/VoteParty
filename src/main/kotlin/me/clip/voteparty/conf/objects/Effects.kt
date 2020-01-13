@@ -1,4 +1,4 @@
-package me.clip.voteparty.config.objects
+package me.clip.voteparty.conf.objects
 
 internal data class Effects(var enable: Boolean = true,
                    var effects: List<String> = listOf("SMOKE_NORMAL", "HEART"),

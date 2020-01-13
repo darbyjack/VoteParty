@@ -1,4 +1,4 @@
-package me.clip.voteparty.database.base
+package me.clip.voteparty.data.base
 
 import me.clip.voteparty.base.Addon
 import me.clip.voteparty.base.State
