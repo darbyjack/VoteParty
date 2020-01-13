@@ -23,7 +23,7 @@ import me.clip.voteparty.util.UpdateChecker
 import me.clip.voteparty.version.VersionHook
 import me.clip.voteparty.version.VersionHookNew
 import me.clip.voteparty.version.VersionHookOld
-import me.clip.voteparty.voteplayer.UsersHandler
+import me.clip.voteparty.user.UsersHandler
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.command.ConsoleCommandSender
