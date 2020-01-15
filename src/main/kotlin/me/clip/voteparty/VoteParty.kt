@@ -18,18 +18,25 @@ import me.clip.voteparty.listener.HooksListenerNuVotifier
 import me.clip.voteparty.listener.VotesListener
 import me.clip.voteparty.placeholders.VotePartyPlaceholders
 import me.clip.voteparty.plugin.VotePartyPlugin
+import me.clip.voteparty.user.UsersHandler
 import me.clip.voteparty.util.JarFileWalker
 import me.clip.voteparty.util.UpdateChecker
 import me.clip.voteparty.version.VersionHook
 import me.clip.voteparty.version.VersionHookNew
 import me.clip.voteparty.version.VersionHookOld
-import me.clip.voteparty.user.UsersHandler
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.command.ConsoleCommandSender
+import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player
+import java.io.ByteArrayInputStream
+import java.io.File
+import java.io.InputStream
+import java.io.InputStreamReader
+import java.io.Reader
 import java.util.Locale
 import java.util.logging.Level
+
 
 class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : State
 {
@@ -126,6 +133,7 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 			val file = plugin.dataFolder.resolve(path.toString().drop(1)).absoluteFile
 			if (file.exists())
 			{
+				mergeConfig(stream, file)
 				return@walk // language file was already created
 			}
 			
@@ -138,6 +146,24 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 				stream.close()
 			}
 		}
+	}
+	
+	fun mergeConfig(stream: InputStream, outside: File)
+	{
+		val inside: InputStream = ByteArrayInputStream(stream.readBytes())
+		val reader: Reader = InputStreamReader(inside)
+		val insideLang: YamlConfiguration = YamlConfiguration.loadConfiguration(reader)
+		
+		val outsideLang: YamlConfiguration = YamlConfiguration.loadConfiguration(outside)
+		
+		for (i in insideLang.getKeys(true))
+		{
+			if (!outsideLang.contains(i))
+			{
+				outsideLang.set(i, insideLang.get(i))
+			}
+		}
+		outsideLang.save(outside)
 	}
 	
 	private fun loadCmds()
@@ -248,6 +274,11 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 	fun hook(): VersionHook
 	{
 		return checkNotNull(hook)
+	}
+	
+	fun manager(): PaperCommandManager
+	{
+		return cmds
 	}
 	
 	

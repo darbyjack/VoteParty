@@ -15,7 +15,7 @@ internal object CrateSettings : SettingsHolder
 	val LORE: Property<List<String>> = newListProperty("crate.lore", "", "&7Place the chest in order to", "&7to receive rewards!", "")
 	
 	@JvmField
-	val MATERIAL: Property<XMaterial> = newBeanProperty(XMaterial::class.java,"crate.material", XMaterial.CHEST)
+	val MATERIAL: Property<XMaterial> = newBeanProperty(XMaterial::class.java, "crate.material", XMaterial.CHEST)
 	
 	@JvmField
 	val NAME: Property<String> = newProperty("crate.name", "&d&lVote&5&lParty &f&lCrate")
