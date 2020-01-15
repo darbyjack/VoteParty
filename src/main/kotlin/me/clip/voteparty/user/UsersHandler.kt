@@ -92,7 +92,7 @@ class UsersHandler(override val plugin: VotePartyPlugin) : Addon, State, Listene
 		
 		if (old == null)
 		{
-			val new = User(player.uniqueId, player.name, mutableListOf())
+			val new = User(player.uniqueId, player.name, mutableListOf(), 0)
 			
 			cached[new.uuid] = new
 			cached[new.name.toLowerCase()] = new
