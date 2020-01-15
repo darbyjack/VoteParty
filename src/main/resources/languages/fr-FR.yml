@@ -1,6 +1,6 @@
 ---
 descriptions:
-  help: "Commandes pour utiles VoteParty."
+  help: "Commandes utiles pour VoteParty."
   setcounter: "Régler le compteur de vote actuel."
   addvote: "Ajouter les votes au décompte actuel."
   startparty: "Forcer le lancement d'un VoteParty."
