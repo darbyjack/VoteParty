@@ -130,7 +130,7 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 			val file = plugin.dataFolder.resolve(path.toString().drop(1)).absoluteFile
 			if (file.exists())
 			{
-				mergeConfig(stream, file)
+				mergeLanguage(stream, file)
 				return@walk // language file was already created
 			}
 			
@@ -145,7 +145,7 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 		}
 	}
 	
-	fun mergeConfig(stream: InputStream, outside: File)
+	fun mergeLanguage(stream: InputStream, outside: File)
 	{
 		val new = YamlConfiguration.loadConfiguration(stream.reader())
 		val old = YamlConfiguration.loadConfiguration(outside)
