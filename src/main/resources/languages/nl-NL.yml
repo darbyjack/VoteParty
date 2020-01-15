@@ -1,14 +1,14 @@
 ---
 descriptions:
-  help: "Helpful commands for VoteParty."
-  setcounter: "Set the current vote counter."
-  addvote: "Add votes to the current vote tally."
-  startparty: "Force launch a VoteParty."
-  givecrate: "Supply a player with a Vote crate."
-  giveparty: "Host a private Vote Party for a player."
-  reload: "Reload the config and language file."
-  checkvotes: "Check the amount of votes a player has."
-  totalvotes: "Get the total amount of votes a player has."
+  help: "Behulpzame commandos voor VoteParty."
+  setcounter: "Stel de huidige stem teller in."
+  addvote: "Voeg stemmen toe aan de huidige stemmentelling."
+  startparty: "Forceer het starten van een VoteParty."
+  givecrate: "Voorzie een speler van een Vote crate."
+  giveparty: "Organiseer een privé Vote Party voor een speler."
+  reload: "Herlaad het configuratie- en taalbestand."
+  checkvotes: "Controleer de hoeveelheid stemmen die een speler heeft."
+  totalvotes: "Haal het totale aantal stemmen op die een speler heeft."
   resetvotes: "Reset the amount of votes a player has."
   claim: "Claim rewards from offline votes."
 error:
