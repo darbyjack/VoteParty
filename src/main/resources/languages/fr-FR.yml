@@ -1,3 +1,4 @@
+---
 descriptions:
   help: "Commandes utiles pour VoteParty."
   setcounter: "Régler le compteur de vote actuel."
@@ -9,6 +10,7 @@ descriptions:
   checkvotes: "Vérifiez le nombre de votes d'un joueur."
   totalvotes: "Obtenez le nombre total de votes d'un joueur."
   resetvotes: "Réinitialisez le nombre de votes d'un joueur."
+  claim: "Claim rewards from offline votes."
 error:
   invalid-number: "&fDésolé, mais ce numéro doit être positif pour fonctionner correctement !"
   disabled-world: "&fDésolé, mais ce joueur est actuellement dans un monde désactivé !"
@@ -28,3 +30,7 @@ votes:
 crate:
   crate-given: "&fVous avez donné à &d%player_name% &f une vote crate(s)!"
   crate-received: "&fVous avez reçu une caisse de vote !"
+claim:
+  success: "&fYou successfully claimed the rewards from an offline vote! You have &d{claim} &fleft to claim."
+  none: "&fYou don't have any rewards to claim from offline votes!"
+  notify: "&fHey there! You seemed to have voted while offline! You have some claiming rewards! Collect them by using &d/vp claim&f!"
