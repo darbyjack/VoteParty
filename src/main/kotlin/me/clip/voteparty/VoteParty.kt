@@ -29,11 +29,8 @@ import org.bukkit.OfflinePlayer
 import org.bukkit.command.ConsoleCommandSender
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player
-import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.InputStream
-import java.io.InputStreamReader
-import java.io.Reader
 import java.util.Locale
 import java.util.logging.Level
 
@@ -150,20 +147,14 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 	
 	fun mergeConfig(stream: InputStream, outside: File)
 	{
-		val inside: InputStream = ByteArrayInputStream(stream.readBytes())
-		val reader: Reader = InputStreamReader(inside)
-		val insideLang: YamlConfiguration = YamlConfiguration.loadConfiguration(reader)
+		val new = YamlConfiguration.loadConfiguration(stream.reader())
+		val old = YamlConfiguration.loadConfiguration(outside)
 		
-		val outsideLang: YamlConfiguration = YamlConfiguration.loadConfiguration(outside)
-		
-		for (i in insideLang.getKeys(true))
+		for (path in new.getKeys(false))
 		{
-			if (!outsideLang.contains(i))
-			{
-				outsideLang.set(i, insideLang.get(i))
-			}
+			old.set(path, old.get(path, new.get(path)))
 		}
-		outsideLang.save(outside)
+		old.save(outside)
 	}
 	
 	private fun loadCmds()
