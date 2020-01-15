@@ -20,9 +20,9 @@ internal class VotesListener(override val plugin: VotePartyPlugin) : VotePartyLi
 		{
 			return
 		}
-
+		
 		val user = party.usersHandler[player]
-
+		
 		if (party.conf().getProperty(VoteSettings.OFFLINE_VOTE_CLAIMING))
 		{
 			user?.inc()
@@ -38,7 +38,7 @@ internal class VotesListener(override val plugin: VotePartyPlugin) : VotePartyLi
 		party.votesHandler.giveRandomVoteRewards(online)
 		party.votesHandler.playerVoteEffects(online)
 	}
-
+	
 	@EventHandler
 	fun PlayerJoinEvent.onJoin()
 	{
@@ -46,7 +46,7 @@ internal class VotesListener(override val plugin: VotePartyPlugin) : VotePartyLi
 		{
 			return
 		}
-
+		
 		val user = party.usersHandler[player]
 		val claimable = user?.claimable ?: 0
 		if (claimable > 0 && party.conf().getProperty(VoteSettings.OFFLINE_VOTE_CLAIMING_NOTIFY))
