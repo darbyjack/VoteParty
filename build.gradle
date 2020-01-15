@@ -7,7 +7,7 @@ allprojects {
 	apply plugin: 'org.jetbrains.kotlin.jvm'
 	
 	group 'me.clip'
-	version '2.0'
+	version '2.1.0'
 	
 	repositories {
 		mavenCentral()
@@ -96,4 +96,13 @@ dependencies {
 	implementation project(":version")
 	implementation project(":version_old")
 	implementation project(":version_new")
+}
+
+import org.apache.tools.ant.filters.ReplaceTokens
+
+
+processResources {
+	from(sourceSets.main.resources.srcDirs) {
+		filter ReplaceTokens, tokens: [version: version]
+	}
 }

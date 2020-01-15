@@ -1,6 +1,6 @@
 name: VoteParty
 main: me.clip.voteparty.plugin.VotePartyPlugin
-version: '2.0'
+version: @version@
 authors: [Glare, Clip]
 depend: [PlaceholderAPI]
 softdepend: [Votifier]
