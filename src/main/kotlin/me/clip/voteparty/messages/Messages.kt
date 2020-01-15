@@ -24,7 +24,7 @@ enum class Messages : MessageKeyProvider
 	
 	CRATE__CRATE_GIVEN,
 	CRATE__CRATE_RECEIVED,
-
+	
 	CLAIM__SUCCESS,
 	CLAIM__NONE,
 	CLAIM__NOTIFY,
