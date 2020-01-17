@@ -177,8 +177,7 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 		 *  MC: 1.8    => '8'
 		 *  MC: 1.12.2 => '12'
 		 */
-		
-		this.hook = if (Bukkit.getVersion().substringAfter('.').substringBefore('.').toInt() >= 13)
+		this.hook = if (Bukkit.getBukkitVersion().substringAfter('.').substringBefore('.').toInt() >= 13)
 		{
 			VersionHookNew()
 		}
