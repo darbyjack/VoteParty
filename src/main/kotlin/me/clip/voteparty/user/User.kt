@@ -2,15 +2,22 @@ package me.clip.voteparty.user
 
 import java.util.UUID
 
-data class User(val uuid: UUID, var name: String, val data: MutableList<Long>, var claimable: Int)
+data class User(val uuid: UUID, var name: String, private val data: MutableList<Long>, var claimable: Int)
 {
-	fun inc()
+	
+	fun voted()
 	{
-		claimable = claimable.plus(1)
+		data += System.currentTimeMillis()
 	}
 	
-	fun dec()
+	fun votes(): List<Long>
 	{
-		claimable = claimable.minus(1)
+		return data
 	}
+	
+	fun reset()
+	{
+		data.clear()
+	}
+
 }

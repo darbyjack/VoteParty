@@ -51,9 +51,12 @@ class UsersHandler(override val plugin: VotePartyPlugin) : Addon, State, Listene
 	}
 	
 	
-	operator fun get(uuid: UUID): User?
+	operator fun get(uuid: UUID): User
 	{
-		return cached[uuid]
+		return cached.getOrPut(uuid)
+		{
+			User(uuid, "", mutableListOf(), 0)
+		}
 	}
 	
 	operator fun get(name: String): User?
@@ -61,7 +64,7 @@ class UsersHandler(override val plugin: VotePartyPlugin) : Addon, State, Listene
 		return cached[name.toLowerCase()]
 	}
 	
-	operator fun get(player: OfflinePlayer): User?
+	operator fun get(player: OfflinePlayer): User
 	{
 		return get(player.uniqueId)
 	}
@@ -69,14 +72,14 @@ class UsersHandler(override val plugin: VotePartyPlugin) : Addon, State, Listene
 	
 	fun reset(player: OfflinePlayer)
 	{
-		get(player)?.data?.clear()
+		get(player).reset()
 	}
 	
 	fun getVotesWithinRange(offlinePlayer: OfflinePlayer, amount: Long, unit: TimeUnit): Int
 	{
 		val time = Instant.now().minusMillis(TimeUnit.MILLISECONDS.convert(amount, unit)).toEpochMilli()
 		
-		return get(offlinePlayer)?.data?.count { it > time } ?: 0
+		return get(offlinePlayer).votes().count { it > time }
 	}
 	
 	
