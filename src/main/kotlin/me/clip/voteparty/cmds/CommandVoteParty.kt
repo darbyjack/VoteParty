@@ -156,24 +156,17 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 	@CommandPermission("$BASE_PERM.claim")
 	fun claim(player: Player)
 	{
-		val user = party.usersHandler[player]
-		var claimable = user?.claimable ?: 0
+		val user = party.usersHandler[player] ?: return
 		
-		if (claimable > 0)
+		if (user.claimable <= 0)
 		{
-			party.partyHandler.giveGuaranteedPartyRewards(player)
-			party.partyHandler.giveRandomPartyRewards(player)
-			
-			user?.dec()
-			
-			claimable = user?.claimable ?: 0
-			
-			sendMessage(currentCommandIssuer, Messages.CLAIM__SUCCESS, null, "{claim}", claimable)
+			return sendMessage(currentCommandIssuer, Messages.CLAIM__NONE)
 		}
-		else
-		{
-			sendMessage(currentCommandIssuer, Messages.CLAIM__NONE)
-		}
+		
+		party.partyHandler.giveGuaranteedPartyRewards(player)
+		party.partyHandler.giveRandomPartyRewards(player)
+		
+		sendMessage(currentCommandIssuer, Messages.CLAIM__SUCCESS, null, "{claim}", user.claimable--)
 	}
 	
 	@Subcommand("help")
