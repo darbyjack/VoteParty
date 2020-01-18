@@ -156,7 +156,7 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 	@CommandPermission("$BASE_PERM.claim")
 	fun claim(player: Player)
 	{
-		val user = party.usersHandler[player] ?: return
+		val user = party.usersHandler[player]
 		
 		if (user.claimable <= 0)
 		{

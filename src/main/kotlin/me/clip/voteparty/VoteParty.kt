@@ -280,7 +280,7 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 	
 	fun getPlayerVotes(player: OfflinePlayer): Int
 	{
-		return usersHandler[player]?.data?.size ?: 0
+		return usersHandler[player].votes().size
 	}
 	
 	
