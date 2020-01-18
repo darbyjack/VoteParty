@@ -145,7 +145,7 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 		}
 	}
 	
-	fun mergeLanguage(stream: InputStream, outside: File)
+	private fun mergeLanguage(stream: InputStream, outside: File)
 	{
 		val new = YamlConfiguration.loadConfiguration(stream.reader())
 		val old = YamlConfiguration.loadConfiguration(outside)
