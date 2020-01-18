@@ -23,7 +23,7 @@ internal object PluginSettings : SettingsHolder
 	
 	@JvmField
 	@Comment("How often to save the current amount of votes (in seconds)")
-	val SAVE_INTERVAL: Property<Int> = newProperty("settings.counter.save-interval", 60)
+	val SAVE_INTERVAL: Property<Int> = newProperty("settings.counter.save-interval", 300)
 	
 	
 	override fun registerComments(conf: CommentsConfiguration)

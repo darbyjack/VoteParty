@@ -9,7 +9,8 @@ object UpdateChecker
 {
 	
 	private const val API = "https://api.spiget.org/v2/resources/%d/versions?size=1&sort=-releaseDate"
-	private val LIST_TYPE = object : TypeToken<List<Version>>() {}.type
+	private val LIST_TYPE = object : TypeToken<List<Version>>()
+	{}.type
 	
 	
 	fun check(plugin: Plugin, id: Int, complete: (result: UpdateResult) -> Unit)
