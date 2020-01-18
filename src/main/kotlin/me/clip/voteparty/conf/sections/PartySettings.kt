@@ -46,5 +46,5 @@ internal object PartySettings : SettingsHolder
 	@JvmField
 	@Comment("Commands to be executed when a party has started")
 	val PARTY_COMMANDS: Property<Commands> = newBeanProperty(Commands::class.java, "party.party_commands", Commands(true, listOf("broadcast A Vote Party has started!")))
-
+	
 }

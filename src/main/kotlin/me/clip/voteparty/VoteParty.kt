@@ -18,18 +18,22 @@ import me.clip.voteparty.listener.HooksListenerNuVotifier
 import me.clip.voteparty.listener.VotesListener
 import me.clip.voteparty.placeholders.VotePartyPlaceholders
 import me.clip.voteparty.plugin.VotePartyPlugin
+import me.clip.voteparty.user.UsersHandler
 import me.clip.voteparty.util.JarFileWalker
 import me.clip.voteparty.util.UpdateChecker
 import me.clip.voteparty.version.VersionHook
 import me.clip.voteparty.version.VersionHookNew
 import me.clip.voteparty.version.VersionHookOld
-import me.clip.voteparty.user.UsersHandler
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.command.ConsoleCommandSender
+import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player
+import java.io.File
+import java.io.InputStream
 import java.util.Locale
 import java.util.logging.Level
+
 
 class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : State
 {
@@ -126,6 +130,7 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 			val file = plugin.dataFolder.resolve(path.toString().drop(1)).absoluteFile
 			if (file.exists())
 			{
+				mergeLanguage(stream, file)
 				return@walk // language file was already created
 			}
 			
@@ -138,6 +143,18 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 				stream.close()
 			}
 		}
+	}
+	
+	private fun mergeLanguage(stream: InputStream, outside: File)
+	{
+		val new = YamlConfiguration.loadConfiguration(stream.reader())
+		val old = YamlConfiguration.loadConfiguration(outside)
+		
+		for (path in new.getKeys(false))
+		{
+			old.set(path, old.get(path, new.get(path)))
+		}
+		old.save(outside)
 	}
 	
 	private fun loadCmds()
@@ -156,12 +173,8 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 	
 	private fun loadHook()
 	{
-		/**
-		 *  MC: 1.8    => '8'
-		 *  MC: 1.12.2 => '12'
-		 */
-		
-		this.hook = if (Bukkit.getVersion().substringAfter('.').substringBefore('.').toInt() >= 13)
+		val regex = Regex("^.*\\s\\(MC:\\s(1\\.8(.*)|1\\.9(.*)|1\\.10(.*)|1\\.11(.*)|1\\.12(.*))\\)$")
+		this.hook = if (!Bukkit.getVersion().matches(regex))
 		{
 			VersionHookNew()
 		}
@@ -248,6 +261,11 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 	fun hook(): VersionHook
 	{
 		return checkNotNull(hook)
+	}
+	
+	fun manager(): PaperCommandManager
+	{
+		return cmds
 	}
 	
 	

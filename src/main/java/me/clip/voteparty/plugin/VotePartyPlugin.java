@@ -5,34 +5,39 @@ import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
 
-public final class VotePartyPlugin extends JavaPlugin {
+public final class VotePartyPlugin extends JavaPlugin
+{
 
-    private VoteParty voteParty;
+	private VoteParty voteParty;
 
-    @Override
-    public void onEnable() {
-        this.voteParty = new VoteParty(this);
-        this.voteParty.load();
+	@Override
+	public void onEnable()
+	{
+		this.voteParty = new VoteParty(this);
+		this.voteParty.load();
 
-        getServer().getServicesManager().register(VoteParty.class, this.voteParty, this, ServicePriority.Normal);
-    }
+		getServer().getServicesManager().register(VoteParty.class, this.voteParty, this, ServicePriority.Normal);
+	}
 
-    @Override
-    public void onDisable() {
-        if (this.voteParty != null) {
-            this.voteParty.kill();
-        }
+	@Override
+	public void onDisable()
+	{
+		if (this.voteParty != null)
+		{
+			this.voteParty.kill();
+		}
 
-        this.voteParty = null;
+		this.voteParty = null;
 
-        getServer().getServicesManager().unregisterAll(this);
-    }
+		getServer().getServicesManager().unregisterAll(this);
+	}
 
 
-    @Nullable
-    public VoteParty getVoteParty() {
-        return this.voteParty;
-    }
+	@Nullable
+	public VoteParty getVoteParty()
+	{
+		return this.voteParty;
+	}
 
 }
 
