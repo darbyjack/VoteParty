@@ -74,8 +74,9 @@ class UsersHandler(override val plugin: VotePartyPlugin) : Addon, State, Listene
 	
 	fun getVotesWithinRange(offlinePlayer: OfflinePlayer, amount: Long, unit: TimeUnit): Int
 	{
-		val time = TimeUnit.MILLISECONDS.convert(amount, unit)
-		return get(offlinePlayer)?.data?.count { it > Instant.now().minusMillis(time).toEpochMilli() } ?: 0
+		val time = Instant.now().minusMillis(TimeUnit.MILLISECONDS.convert(amount, unit)).toEpochMilli()
+		
+		return get(offlinePlayer)?.data?.count { it > time } ?: 0
 	}
 	
 	
