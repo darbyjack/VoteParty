@@ -173,8 +173,7 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 	
 	private fun loadHook()
 	{
-		val regex = Regex("^.*\\s\\(MC:\\s(1\\.8(.*)|1\\.9(.*)|1\\.10(.*)|1\\.11(.*)|1\\.12(.*))\\)$")
-		this.hook = if (!Bukkit.getVersion().matches(regex))
+		this.hook = if (Bukkit.getBukkitVersion().substringBefore('-').substringAfter('.').substringBefore('.').toInt() >= 13)
 		{
 			VersionHookNew()
 		}
