@@ -18,3 +18,6 @@ permissions:
   voteparty.command.admin:
     description: 'Ability to use all admin commands'
     default: op
+  voteparty.command.claim:
+    description: 'Ability to claim offline vote rewards'
+    default: true
