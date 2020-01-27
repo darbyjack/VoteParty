@@ -67,6 +67,24 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon, State
 		}
 	}
 	
+	fun givePermissionVoteRewards(player: Player)
+	{
+		val settings = party.conf().getProperty(VoteSettings.PERMISSION_VOTE_REWARDS)
+		
+		if (!settings.enabled || settings.permCommands.isEmpty())
+		{
+			return
+		}
+		
+		settings.permCommands.filter { player.hasPermission(it.permission) }.forEach()
+		{ perm ->
+			perm.commands.forEach()
+			{ command ->
+				server.dispatchCommand(server.consoleSender, formMessage(player, command))
+			}
+		}
+	}
+	
 	fun giveRandomVoteRewards(player: Player)
 	{
 		val settings = party.conf().getProperty(VoteSettings.PER_VOTE_REWARDS)

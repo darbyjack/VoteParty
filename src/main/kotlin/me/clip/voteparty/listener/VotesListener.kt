@@ -38,6 +38,7 @@ internal class VotesListener(override val plugin: VotePartyPlugin) : VotePartyLi
 		party.votesHandler.runGlobalCommands(online)
 		party.votesHandler.giveGuaranteedVoteRewards(online)
 		party.votesHandler.giveRandomVoteRewards(online)
+		party.votesHandler.givePermissionVoteRewards(online)
 		party.votesHandler.playerVoteEffects(online)
 	}
 	
