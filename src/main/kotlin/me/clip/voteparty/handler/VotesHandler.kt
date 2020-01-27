@@ -76,14 +76,11 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon, State
 			return
 		}
 		
-		settings.permCommands.forEach()
+		settings.permCommands.filter { player.hasPermission(it.permission) }.forEach()
 		{ perm ->
-			if (player.hasPermission(perm.permission))
-			{
-				perm.commands.forEach()
-				{ command ->
-					server.dispatchCommand(server.consoleSender, formMessage(player, command))
-				}
+			perm.commands.forEach()
+			{ command ->
+				server.dispatchCommand(server.consoleSender, formMessage(player, command))
 			}
 		}
 	}
