@@ -70,7 +70,6 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 		if (amount <= 0)
 		{
 			return sendMessage(issuer, Messages.ERROR__INVALID_NUMBER)
-			
 		}
 		
 		party.conf().setProperty(PartySettings.VOTES_NEEDED, amount)
@@ -129,8 +128,7 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 	{
 		if (target.player.world.name in party.conf().getProperty(PartySettings.DISABLED_WORLDS))
 		{
-			sendMessage(issuer, Messages.ERROR__DISABLED_WORLD)
-			return
+			return sendMessage(issuer, Messages.ERROR__DISABLED_WORLD)
 		}
 		
 		party.partyHandler.giveGuaranteedPartyRewards(target.player)
