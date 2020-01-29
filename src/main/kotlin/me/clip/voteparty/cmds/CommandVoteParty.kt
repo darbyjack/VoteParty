@@ -14,7 +14,7 @@ import co.aikar.commands.bukkit.contexts.OnlinePlayer
 import me.clip.voteparty.base.Addon
 import me.clip.voteparty.conf.sections.PartySettings
 import me.clip.voteparty.exte.ADMIN_PERM
-import me.clip.voteparty.exte.BASE_PERM
+import me.clip.voteparty.exte.CLAIM_PERM
 import me.clip.voteparty.exte.display
 import me.clip.voteparty.exte.sendMessage
 import me.clip.voteparty.messages.Messages
@@ -153,7 +153,7 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 	
 	@Subcommand("claim")
 	@Description("Claim")
-	@CommandPermission("$BASE_PERM.claim")
+	@CommandPermission(CLAIM_PERM)
 	fun claim(player: Player)
 	{
 		val user = party.usersHandler[player]
