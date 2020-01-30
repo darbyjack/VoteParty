@@ -96,7 +96,10 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon, State
 		
 		settings.commands.takeRandomly(settings.max_possible).forEach()
 		{
-			server.dispatchCommand(server.consoleSender, formMessage(player, it.command))
+			it.command.forEach()
+			{
+				server.dispatchCommand(server.consoleSender, formMessage(player, it))
+			}
 		}
 	}
 	

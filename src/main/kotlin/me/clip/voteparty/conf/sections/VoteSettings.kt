@@ -16,7 +16,7 @@ internal object VoteSettings : SettingsHolder
 	
 	@JvmField
 	@Comment("Configuration for chance rewards to be given for voting.", "Add as many commands as you want, set their chance, and choose the max amount a player can earn!")
-	val PER_VOTE_REWARDS: Property<RewardsPerEvent> = newBeanProperty(RewardsPerEvent::class.java, "voting.per_vote_rewards", RewardsPerEvent(true, 1, listOf(Command(50, "eco give %player_name% 100"), Command(70, "give %player_name% STEAK 10"))))
+	val PER_VOTE_REWARDS: Property<RewardsPerEvent> = newBeanProperty(RewardsPerEvent::class.java, "voting.per_vote_rewards", RewardsPerEvent(true, 1, listOf(Command(50, listOf("eco give %player_name% 100")), Command(70, listOf("give %player_name% STEAK 10")))))
 	
 	@JvmField
 	@Comment("Configuration for extra commands to be executed on players who have specific permission nodes")

@@ -33,7 +33,7 @@ internal object PartySettings : SettingsHolder
 	
 	@JvmField
 	@Comment("Configuration for chance rewards to be given during a party.", "Add as many commands as you want, set their chance, and choose the max amount a player can earn!")
-	val REWARD_COMMANDS: Property<RewardsPerEvent> = newBeanProperty(RewardsPerEvent::class.java, "party.reward_commands", RewardsPerEvent(true, 1, listOf(Command(50, "eco give %player_name% 100"), Command(50, "give %player_name% DIAMOND 6"), Command(50, "give %player_name% IRON_INGOT 12"))))
+	val REWARD_COMMANDS: Property<RewardsPerEvent> = newBeanProperty(RewardsPerEvent::class.java, "party.reward_commands", RewardsPerEvent(true, 1, listOf(Command(50, listOf("eco give %player_name% 100")), Command(50, listOf("give %player_name% DIAMOND 6")), Command(50, listOf("give %player_name% IRON_INGOT 12")))))
 	
 	@JvmField
 	@Comment("A list of rewards that will ALWAYS be given to a player during a party")
