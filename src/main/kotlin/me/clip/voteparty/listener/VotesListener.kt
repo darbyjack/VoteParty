@@ -26,7 +26,7 @@ internal class VotesListener(override val plugin: VotePartyPlugin) : VotePartyLi
 		val user = party.usersHandler[player]
 		user.voted()
 		
-		if (party.conf().getProperty(VoteSettings.OFFLINE_VOTE_CLAIMING))
+		if (!player.isOnline && party.conf().getProperty(VoteSettings.OFFLINE_VOTE_CLAIMING))
 		{
 			user.claimable++
 		}
