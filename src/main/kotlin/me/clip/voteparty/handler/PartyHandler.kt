@@ -50,6 +50,25 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 		executeCommands(settings.enabled, settings.commands, player)
 	}
 	
+	fun givePermissionPartyRewards(player: Player)
+	{
+		val settings = party.conf().getProperty(PartySettings.PERMISSION_PARTY_REWARDS)
+		
+		if (!settings.enabled || settings.permCommands.isEmpty())
+		{
+			return
+		}
+		
+		settings.permCommands.filter { player.hasPermission(it.permission) }.forEach()
+		{ perm ->
+			perm.commands.forEach()
+			{ command ->
+				server.dispatchCommand(server.consoleSender, formMessage(player, command))
+			}
+			
+		}
+	}
+	
 	fun runPrePartyCommands()
 	{
 		val settings = party.conf().getProperty(PartySettings.PRE_PARTY_COMMANDS)
@@ -108,6 +127,7 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 			{
 				giveGuaranteedPartyRewards(it)
 				giveRandomPartyRewards(it)
+				givePermissionPartyRewards(it)
 			}
 		}
 	}

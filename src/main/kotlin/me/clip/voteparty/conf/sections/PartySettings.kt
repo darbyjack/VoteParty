@@ -6,6 +6,8 @@ import ch.jalu.configme.properties.Property
 import ch.jalu.configme.properties.PropertyInitializer.*
 import me.clip.voteparty.conf.objects.Command
 import me.clip.voteparty.conf.objects.Commands
+import me.clip.voteparty.conf.objects.PermCommands
+import me.clip.voteparty.conf.objects.PermRewards
 import me.clip.voteparty.conf.objects.RewardsPerEvent
 
 internal object PartySettings : SettingsHolder
@@ -34,6 +36,10 @@ internal object PartySettings : SettingsHolder
 	@JvmField
 	@Comment("Configuration for chance rewards to be given during a party.", "Add as many commands as you want, set their chance, and choose the max amount a player can earn!")
 	val REWARD_COMMANDS: Property<RewardsPerEvent> = newBeanProperty(RewardsPerEvent::class.java, "party.reward_commands", RewardsPerEvent(true, 1, listOf(Command(50, "eco give %player_name% 100"), Command(50, "give %player_name% DIAMOND 6"), Command(50, "give %player_name% IRON_INGOT 12"))))
+	
+	@JvmField
+	@Comment("Configuration for extra commands to be executed on players who have specific permission nodes when a party happens")
+	val PERMISSION_PARTY_REWARDS: Property<PermRewards> = newBeanProperty(PermRewards::class.java, "party.permission-rewards", PermRewards(true, listOf(PermCommands("my.special.permission", listOf("eco give %player_name% 500")))))
 	
 	@JvmField
 	@Comment("A list of rewards that will ALWAYS be given to a player during a party")
