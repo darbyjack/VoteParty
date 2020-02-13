@@ -54,6 +54,16 @@ object UpdateChecker
 			return UpdateResult.NEW_UPDATE(version = new)
 		}
 		
+		oldVersion.forEachIndexed()
+		{ index, value ->
+			if (value >= newVersion[index])
+			{
+				return@forEachIndexed
+			}
+			
+			return UpdateResult.NEW_UPDATE(version = new)
+		}
+		
 		return UpdateResult.UNRELEASED
 	}
 	
