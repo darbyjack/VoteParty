@@ -22,20 +22,10 @@ object UpdateChecker
 	 */
 	fun check(version: String, id: Int): UpdateResult
 	{
-		val response = try
-		{
-			URL(API.format(id)).readText()
-		}
-		catch (ex: Exception)
-		{
-			return UpdateResult.EXCEPTIONS(throwable = ex)
-		}
-		
-		
 		val old = version
 		val new = try
 		{
-			response
+			URL(API.format(id)).readText()
 		}
 		catch (ex: Exception)
 		{
