@@ -1,16 +1,12 @@
 package me.clip.voteparty.util
 
-import com.google.gson.reflect.TypeToken
-import me.clip.voteparty.VoteParty
 import org.bukkit.plugin.Plugin
 import java.net.URL
 
 object UpdateChecker
 {
 	
-	private const val API = "https://api.spiget.org/v2/resources/%d/versions?size=1&sort=-releaseDate"
-	private val LIST_TYPE = object : TypeToken<List<Version>>()
-	{}.type
+	private const val API = "https://api.spigotmc.org/legacy/update.php?resource=987"
 	
 	
 	fun check(plugin: Plugin, id: Int, complete: (result: UpdateResult) -> Unit)
@@ -36,22 +32,21 @@ object UpdateChecker
 		}
 		
 		
-		val old = version
 		val new = try
 		{
-			checkNotNull(VoteParty.GSON.fromJson<List<Version>>(response, LIST_TYPE)?.firstOrNull()?.name)
+			response
 		}
 		catch (ex: Exception)
 		{
 			return UpdateResult.EXCEPTIONS(throwable = ex)
 		}
 		
-		if (old == new)
+		if (version == new)
 		{
 			return UpdateResult.UP_TO_DATE
 		}
 		
-		val oldVersion = old.split('.').mapNotNull(String::toIntOrNull)
+		val oldVersion = version.split('.').mapNotNull(String::toIntOrNull)
 		val newVersion = new.split('.').mapNotNull(String::toIntOrNull)
 		
 		if (newVersion.size > oldVersion.size)
@@ -59,21 +54,9 @@ object UpdateChecker
 			return UpdateResult.NEW_UPDATE(version = new)
 		}
 		
-		oldVersion.forEachIndexed()
-		{ index, value ->
-			if (value >= newVersion[index])
-			{
-				return@forEachIndexed
-			}
-			
-			return UpdateResult.NEW_UPDATE(version = new)
-		}
-		
 		return UpdateResult.UNRELEASED
 	}
 	
-	
-	private data class Version(val name: String?)
 	
 	sealed class UpdateResult
 	{

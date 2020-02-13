@@ -10,7 +10,7 @@ object UpdateCheckerTests
 	@Test
 	internal fun testUpdate()
 	{
-		val result = UpdateChecker.check("1.14.0", 987)
+		val result = UpdateChecker.check("2.20", 987)
 		
 		Assertions.assertEquals(UpdateChecker.UpdateResult.UNRELEASED, result)
 	}
