@@ -1,14 +1,12 @@
 package me.clip.voteparty.util
 
-import com.google.gson.reflect.TypeToken
-import me.clip.voteparty.VoteParty
 import org.bukkit.plugin.Plugin
 import java.net.URL
 
 object UpdateChecker
 {
 	
-	private const val API = "https://api.spigotmc.org/legacy/update.php?resource=987"
+	private const val API = "https://api.spigotmc.org/legacy/update.php?resource=%d"
 	
 	
 	fun check(plugin: Plugin, id: Int, complete: (result: UpdateResult) -> Unit)
