@@ -1,16 +1,12 @@
 package me.clip.voteparty.util
 
-import com.google.gson.reflect.TypeToken
-import me.clip.voteparty.VoteParty
 import org.bukkit.plugin.Plugin
 import java.net.URL
 
 object UpdateChecker
 {
 	
-	private const val API = "https://api.spiget.org/v2/resources/%d/versions?size=1&sort=-releaseDate"
-	private val LIST_TYPE = object : TypeToken<List<Version>>()
-	{}.type
+	private const val API = "https://api.spigotmc.org/legacy/update.php?resource=%d"
 	
 	
 	fun check(plugin: Plugin, id: Int, complete: (result: UpdateResult) -> Unit)
@@ -26,20 +22,10 @@ object UpdateChecker
 	 */
 	fun check(version: String, id: Int): UpdateResult
 	{
-		val response = try
-		{
-			URL(API.format(id)).readText()
-		}
-		catch (ex: Exception)
-		{
-			return UpdateResult.EXCEPTIONS(throwable = ex)
-		}
-		
-		
 		val old = version
 		val new = try
 		{
-			checkNotNull(VoteParty.GSON.fromJson<List<Version>>(response, LIST_TYPE)?.firstOrNull()?.name)
+			URL(API.format(id)).readText()
 		}
 		catch (ex: Exception)
 		{
