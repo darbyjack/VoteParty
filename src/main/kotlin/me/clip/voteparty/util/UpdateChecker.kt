@@ -1,5 +1,7 @@
 package me.clip.voteparty.util
 
+import com.google.gson.reflect.TypeToken
+import me.clip.voteparty.VoteParty
 import org.bukkit.plugin.Plugin
 import java.net.URL
 
@@ -32,6 +34,7 @@ object UpdateChecker
 		}
 		
 		
+		val old = version
 		val new = try
 		{
 			response
@@ -41,12 +44,12 @@ object UpdateChecker
 			return UpdateResult.EXCEPTIONS(throwable = ex)
 		}
 		
-		if (version == new)
+		if (old == new)
 		{
 			return UpdateResult.UP_TO_DATE
 		}
 		
-		val oldVersion = version.split('.').mapNotNull(String::toIntOrNull)
+		val oldVersion = old.split('.').mapNotNull(String::toIntOrNull)
 		val newVersion = new.split('.').mapNotNull(String::toIntOrNull)
 		
 		if (newVersion.size > oldVersion.size)
@@ -67,6 +70,8 @@ object UpdateChecker
 		return UpdateResult.UNRELEASED
 	}
 	
+	
+	private data class Version(val name: String?)
 	
 	sealed class UpdateResult
 	{
