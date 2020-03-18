@@ -33,7 +33,7 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 	@Syntax("<amount> [player]")
 	@Description("Add Vote")
 	@CommandPermission(ADMIN_PERM)
-	fun addVote(issuer: CommandIssuer, @Default("1") amount: Int, @Optional name: String)
+	fun addVote(issuer: CommandIssuer, @Default("1") amount: Int, @Optional name: String?)
 	{
 		
 		if (amount <= 0)
@@ -41,16 +41,19 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 			return sendMessage(issuer, Messages.ERROR__INVALID_NUMBER)
 		}
 		
-		if (name.isNotEmpty())
+		if (name != null)
 		{
-			val user = party.usersHandler[name] ?: return sendMessage(issuer, Messages.ERROR__USER_NOT_FOUND)
-			
-			repeat(amount) {
-				user.voted()
-				user.claimable++
+			if (name.isNotEmpty())
+			{
+				val user = party.usersHandler[name] ?: return sendMessage(issuer, Messages.ERROR__USER_NOT_FOUND)
+				
+				repeat(amount) {
+					user.voted()
+					user.claimable++
+				}
+				
+				sendMessage(issuer, Messages.VOTES__ADDED_TO_PLAYER, user.player(), "{count}", amount)
 			}
-			
-			sendMessage(issuer, Messages.VOTES__ADDED_TO_PLAYER)
 		}
 		
 		party.votesHandler.addVotes(amount)
