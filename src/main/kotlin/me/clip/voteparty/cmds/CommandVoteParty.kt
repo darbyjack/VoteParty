@@ -7,6 +7,7 @@ import co.aikar.commands.annotation.CommandCompletion
 import co.aikar.commands.annotation.CommandPermission
 import co.aikar.commands.annotation.Default
 import co.aikar.commands.annotation.Description
+import co.aikar.commands.annotation.Optional
 import co.aikar.commands.annotation.Subcommand
 import co.aikar.commands.annotation.Syntax
 import co.aikar.commands.annotation.Values
@@ -32,8 +33,9 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 	@Syntax("<amount>")
 	@Description("Add Vote")
 	@CommandPermission(ADMIN_PERM)
-	fun addVote(issuer: CommandIssuer, @Default("1") amount: Int)
+	fun addVote(issuer: CommandIssuer, @Default("1") amount: Int, @Optional name: String)
 	{
+		
 		if (amount <= 0)
 		{
 			return sendMessage(issuer, Messages.ERROR__INVALID_NUMBER)
@@ -41,6 +43,18 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 		
 		party.votesHandler.addVotes(amount)
 		sendMessage(issuer, Messages.VOTES__VOTE_COUNTER_UPDATED)
+		
+		if (name.isNotEmpty())
+		{
+			val user = party.usersHandler[name] ?: return sendMessage(issuer, Messages.ERROR__USER_NOT_FOUND)
+			
+			for (i in 0..amount)
+			{
+				user.voted()
+				user.claimable++
+			}
+			sendMessage(issuer, Messages.VOTES__ADDED_TO_PLAYER)
+		}
 	}
 	
 	@Subcommand("givecrate")
