@@ -41,9 +41,6 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 			return sendMessage(issuer, Messages.ERROR__INVALID_NUMBER)
 		}
 		
-		party.votesHandler.addVotes(amount)
-		sendMessage(issuer, Messages.VOTES__VOTE_COUNTER_UPDATED)
-		
 		if (name.isNotEmpty())
 		{
 			val user = party.usersHandler[name] ?: return sendMessage(issuer, Messages.ERROR__USER_NOT_FOUND)
@@ -55,6 +52,9 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 			}
 			sendMessage(issuer, Messages.VOTES__ADDED_TO_PLAYER)
 		}
+		
+		party.votesHandler.addVotes(amount)
+		sendMessage(issuer, Messages.VOTES__VOTE_COUNTER_UPDATED)
 	}
 	
 	@Subcommand("givecrate")
