@@ -14,6 +14,7 @@ import co.aikar.commands.annotation.Values
 import co.aikar.commands.bukkit.contexts.OnlinePlayer
 import me.clip.voteparty.base.Addon
 import me.clip.voteparty.conf.sections.PartySettings
+import me.clip.voteparty.events.VoteReceivedEvent
 import me.clip.voteparty.exte.ADMIN_PERM
 import me.clip.voteparty.exte.CLAIM_PERM
 import me.clip.voteparty.exte.display
@@ -46,8 +47,8 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 			val user = party.usersHandler[name] ?: return sendMessage(issuer, Messages.ERROR__USER_NOT_FOUND)
 			
 			repeat(amount) {
-				user.voted()
-				user.claimable++
+				val event = VoteReceivedEvent(user.player())
+				server.pluginManager.callEvent(event)
 			}
 			
 			sendMessage(issuer, Messages.VOTES__ADDED_TO_PLAYER, user.player(), "{count}", amount)
