@@ -47,8 +47,7 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 			val user = party.usersHandler[name] ?: return sendMessage(issuer, Messages.ERROR__USER_NOT_FOUND)
 			
 			repeat(amount) {
-				val event = VoteReceivedEvent(user.player())
-				server.pluginManager.callEvent(event)
+				server.pluginManager.callEvent(VoteReceivedEvent(user.player()))
 			}
 			
 			sendMessage(issuer, Messages.VOTES__ADDED_TO_PLAYER, user.player(), "{count}", amount)
