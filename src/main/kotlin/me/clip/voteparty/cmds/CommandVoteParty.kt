@@ -50,7 +50,7 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 				server.pluginManager.callEvent(VoteReceivedEvent(user.player()))
 			}
 			
-			sendMessage(issuer, Messages.VOTES__ADDED_TO_PLAYER, user.player(), "{count}", amount)
+			return sendMessage(issuer, Messages.VOTES__ADDED_TO_PLAYER, user.player(), "{count}", amount)
 		}
 		
 		party.votesHandler.addVotes(amount)
