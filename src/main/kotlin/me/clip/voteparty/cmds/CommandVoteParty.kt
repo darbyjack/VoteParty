@@ -7,12 +7,14 @@ import co.aikar.commands.annotation.CommandCompletion
 import co.aikar.commands.annotation.CommandPermission
 import co.aikar.commands.annotation.Default
 import co.aikar.commands.annotation.Description
+import co.aikar.commands.annotation.Optional
 import co.aikar.commands.annotation.Subcommand
 import co.aikar.commands.annotation.Syntax
 import co.aikar.commands.annotation.Values
 import co.aikar.commands.bukkit.contexts.OnlinePlayer
 import me.clip.voteparty.base.Addon
 import me.clip.voteparty.conf.sections.PartySettings
+import me.clip.voteparty.events.VoteReceivedEvent
 import me.clip.voteparty.exte.ADMIN_PERM
 import me.clip.voteparty.exte.CLAIM_PERM
 import me.clip.voteparty.exte.display
@@ -29,14 +31,26 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 {
 	
 	@Subcommand("addvote")
-	@Syntax("<amount>")
+	@Syntax("<amount> [player]")
 	@Description("Add Vote")
 	@CommandPermission(ADMIN_PERM)
-	fun addVote(issuer: CommandIssuer, @Default("1") amount: Int)
+	fun addVote(issuer: CommandIssuer, @Default("1") amount: Int, @Optional name: String?)
 	{
+		
 		if (amount <= 0)
 		{
 			return sendMessage(issuer, Messages.ERROR__INVALID_NUMBER)
+		}
+		
+		if (!name.isNullOrEmpty())
+		{
+			val user = party.usersHandler[name] ?: return sendMessage(issuer, Messages.ERROR__USER_NOT_FOUND)
+			
+			repeat(amount) {
+				server.pluginManager.callEvent(VoteReceivedEvent(user.player()))
+			}
+			
+			return sendMessage(issuer, Messages.VOTES__ADDED_TO_PLAYER, user.player(), "{count}", amount)
 		}
 		
 		party.votesHandler.addVotes(amount)
