@@ -13,6 +13,7 @@ descriptions:
 error:
   invalid-number: "&fSorry, but this number must be positive in order to work correctly!"
   disabled-world: "&fSorry, but this player is currently in a disabled world!"
+  user-not-found: "&fSorry, but this player could not be found!"
 info:
   votes-needed: "&d%voteparty_votes_required_party% Votes &fneeded for the next party."
   reloaded: "&fThe config has been reloaded!"
@@ -26,6 +27,7 @@ votes:
   vote-counter-updated: "&fCurrent votes updated to &d%voteparty_votes_recorded%&f!"
   private-party-given: "&fYou've given a private &dVote Party &fto &d%player_name%&f!"
   private-party-received: "&fYou've received a private &dVote Party&f!"
+  added-to-player: "&fYou've given {count} votes to %player_name%!"
 crate:
   crate-given: "&fYou've given &d%player_name% &fvote crate(s)!"
   crate-received: "&fYou've received a vote crate!"
