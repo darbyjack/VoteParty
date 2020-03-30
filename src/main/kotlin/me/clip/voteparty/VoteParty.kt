@@ -5,10 +5,12 @@ import co.aikar.commands.PaperCommandManager
 import com.google.gson.Gson
 import me.clip.voteparty.base.State
 import me.clip.voteparty.cmds.CommandVoteParty
+import me.clip.voteparty.conf.VoteDataConfiguration
 import me.clip.voteparty.conf.VotePartyConfiguration
 import me.clip.voteparty.conf.sections.HookSettings
 import me.clip.voteparty.conf.sections.PartySettings
 import me.clip.voteparty.conf.sections.PluginSettings
+import me.clip.voteparty.conf.sections.VoteData
 import me.clip.voteparty.exte.color
 import me.clip.voteparty.exte.runTaskTimer
 import me.clip.voteparty.handler.PartyHandler
@@ -44,6 +46,7 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 	
 	
 	private var conf = null as? SettingsManager?
+	private var voteData = null as? SettingsManager?
 	private val cmds = PaperCommandManager(plugin)
 	
 	private val crateListener = CrateListener(plugin)
@@ -59,6 +62,7 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 		logo(plugin.server.consoleSender)
 		
 		loadConf()
+		loadVoteData()
 		loadCmds()
 		loadHook()
 		loadPapi()
@@ -115,6 +119,18 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 		}
 		
 		this.conf = VotePartyConfiguration(file)
+	}
+	
+	private fun loadVoteData()
+	{
+		val file = plugin.dataFolder.resolve("votes.yml")
+		
+		if (!file.exists()) {
+			file.parentFile.mkdirs()
+			file.createNewFile()
+		}
+		
+		this.voteData = VoteDataConfiguration(file)
 	}
 	
 	private fun saveLang()
@@ -194,13 +210,13 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 	
 	private fun loadVotes()
 	{
-		votesHandler.setVotes(conf().getProperty(PluginSettings.COUNTER))
+		votesHandler.setVotes(voteData().getProperty(VoteData.COUNTER))
 	}
 	
 	private fun saveVotes()
 	{
-		conf().setProperty(PluginSettings.COUNTER, votesHandler.getVotes())
-		conf().save()
+		voteData().setProperty(VoteData.COUNTER, votesHandler.getVotes())
+		voteData().save()
 	}
 	
 	
@@ -255,6 +271,11 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 	fun conf(): SettingsManager
 	{
 		return checkNotNull(conf)
+	}
+	
+	fun voteData(): SettingsManager
+	{
+		return checkNotNull(voteData)
 	}
 	
 	fun hook(): VersionHook

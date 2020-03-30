@@ -2,8 +2,8 @@ package me.clip.voteparty.conf
 
 import ch.jalu.configme.SettingsManagerImpl
 import ch.jalu.configme.configurationdata.ConfigurationDataBuilder
-import ch.jalu.configme.migration.PlainMigrationService
 import ch.jalu.configme.resource.YamlFileResource
+import me.clip.voteparty.conf.migrations.VoteMigrationService
 import me.clip.voteparty.conf.sections.CrateSettings
 import me.clip.voteparty.conf.sections.EffectsSettings
 import me.clip.voteparty.conf.sections.HookSettings
@@ -12,7 +12,7 @@ import me.clip.voteparty.conf.sections.PluginSettings
 import me.clip.voteparty.conf.sections.VoteSettings
 import java.io.File
 
-internal class VotePartyConfiguration(file: File) : SettingsManagerImpl(YamlFileResource(file), ConfigurationDataBuilder.createConfiguration(SECTIONS), PlainMigrationService())
+internal class VotePartyConfiguration(file: File) : SettingsManagerImpl(YamlFileResource(file), ConfigurationDataBuilder.createConfiguration(SECTIONS), VoteMigrationService())
 {
 	
 	private companion object
