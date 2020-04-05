@@ -14,6 +14,7 @@ descriptions:
 error:
   invalid-number: "&fDésolé, mais ce numéro doit être positif pour fonctionner correctement !"
   disabled-world: "&fDésolé, mais ce joueur est actuellement dans un monde désactivé !"
+  user-not-found: "&fSorry, but this player could not be found!"
 info:
   votes-needed: "&d%voteparty_votes_required_party% Votes &frequis pour la prochaine party."
   reloaded: "&fLa configuration a été rechargée !"
@@ -27,6 +28,7 @@ votes:
   vote-counter-updated: "&fVotes actuels mis à jour à &d%voteparty_votes_recorded%&f!"
   private-party-given: "&f Vous avex donne des &dcaisse de votes &fa %player_name%&f!"
   private-party-received: "&fVous avez reçu un &dVote Party&f!"
+  added-to-player: "&fYou've given {count} votes to %player_name%!"
 crate:
   crate-given: "&fVous avez donné à &d%player_name% &f une vote crate(s)!"
   crate-received: "&fVous avez reçu une caisse de vote !"
