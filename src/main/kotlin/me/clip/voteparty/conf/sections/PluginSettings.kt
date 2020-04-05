@@ -18,10 +18,6 @@ internal object PluginSettings : SettingsHolder
 	val PREFIX: Property<String> = newProperty("settings.prefix", "&d&lVote&5&lParty &7&l» ")
 	
 	@JvmField
-	@Comment("It is suggested that you don't modify this value manually.", "Every X seconds, this value will update to the latest known amount of votes.", "This allows you to persist vote counts through reboots.")
-	val COUNTER: Property<Int> = newProperty("settings.counter.votes", 0)
-	
-	@JvmField
 	@Comment("How often to save the current amount of votes (in seconds)")
 	val SAVE_INTERVAL: Property<Int> = newProperty("settings.counter.save-interval", 300)
 	
