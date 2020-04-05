@@ -5,6 +5,7 @@ import me.clip.voteparty.base.State
 import me.clip.voteparty.conf.sections.EffectsSettings
 import me.clip.voteparty.conf.sections.PartySettings
 import me.clip.voteparty.conf.sections.PluginSettings
+import me.clip.voteparty.conf.sections.VoteData
 import me.clip.voteparty.conf.sections.VoteSettings
 import me.clip.voteparty.exte.formMessage
 import me.clip.voteparty.exte.takeRandomly
@@ -21,7 +22,7 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon, State
 	
 	override fun load()
 	{
-		votes.set(party.conf().getProperty(PluginSettings.COUNTER))
+		votes.set(party.voteData().getProperty(VoteData.COUNTER))
 	}
 	
 	override fun kill()
