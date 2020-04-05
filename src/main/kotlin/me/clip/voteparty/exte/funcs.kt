@@ -51,6 +51,17 @@ internal fun Plugin.runTaskTimer(period: Long, task: BukkitRunnable.() -> Unit)
 	}.runTaskTimer(this, 0L, period)
 }
 
+internal fun Plugin.runTaskTimerAsync(period: Long, task: BukkitRunnable.() -> Unit)
+{
+	object : BukkitRunnable()
+	{
+		override fun run()
+		{
+			task.invoke(this)
+		}
+	}.runTaskTimerAsynchronously(this, 0L, period)
+}
+
 internal fun Plugin.runTaskLater(delay: Long, task: () -> Unit)
 {
 	server.scheduler.runTaskLater(this, task, delay)

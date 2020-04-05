@@ -13,6 +13,7 @@ import me.clip.voteparty.conf.sections.PluginSettings
 import me.clip.voteparty.conf.sections.VoteData
 import me.clip.voteparty.exte.color
 import me.clip.voteparty.exte.runTaskTimer
+import me.clip.voteparty.exte.runTaskTimerAsync
 import me.clip.voteparty.handler.PartyHandler
 import me.clip.voteparty.handler.VotesHandler
 import me.clip.voteparty.listener.CrateListener
@@ -88,7 +89,7 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 		// votes
 		loadVotes()
 		
-		plugin.runTaskTimer(conf().getProperty(PluginSettings.SAVE_INTERVAL).toLong() * 20L)
+		plugin.runTaskTimerAsync(conf().getProperty(PluginSettings.SAVE_INTERVAL).toLong() * 20L)
 		{
 			saveVotes()
 		}
