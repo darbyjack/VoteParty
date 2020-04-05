@@ -14,6 +14,7 @@ descriptions:
 error:
   invalid-number: "&fSorry, maar dit nummer moet positief zijn om goed te werken!"
   disabled-world: "&fSorry, maar deze speler bevindt zich momenteel in een uitgeschakelde wereld!"
+  user-not-found: "&fSorry, but this player could not be found!"
 info:
   votes-needed: "&d%voteparty_votes_required_party% stemmen zijn nodig voor de volgende party."
   reloaded: "&fDe configuratie is herladen!"
@@ -27,6 +28,7 @@ votes:
   vote-counter-updated: "&fHuidige stemmen bijgewerkt naar &d%voteparty_votes_recorded%&f!"
   private-party-given: "&fJe hebt een privé &dVote Party &fgegeven aan &d%player_name%&f!"
   private-party-received: "&fJe hebt een privé &dVote Party&f ontvangen!"
+  added-to-player: "&fYou've given {count} votes to %player_name%!"
 crate:
   crate-given: "&fJe hebt &d%player_name% &fvote crate(s) gegeven!"
   crate-received: "&fJe hebt een vote crate ontvangen!"
