@@ -18,6 +18,10 @@ internal object PartySettings : SettingsHolder
 	val VOTES_NEEDED: Property<Int> = newProperty("party.votes_needed", 50)
 	
 	@JvmField
+	@Comment("Would you like to use a crate for the rewards?")
+	val USE_CRATE: Property<Boolean> = newProperty("party.use_crate", false)
+	
+	@JvmField
 	@Comment("The list of worlds where party rewards won't be given")
 	val DISABLED_WORLDS: Property<List<String>> = newListProperty("party.disabled_worlds", "")
 	
