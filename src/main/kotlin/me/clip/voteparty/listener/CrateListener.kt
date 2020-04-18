@@ -50,6 +50,7 @@ internal class CrateListener(override val plugin: VotePartyPlugin) : VotePartyLi
 		
 		party.partyHandler.giveGuaranteedPartyRewards(player)
 		party.partyHandler.giveRandomPartyRewards(player)
+		party.partyHandler.givePermissionPartyRewards(player)
 	}
 	
 }
