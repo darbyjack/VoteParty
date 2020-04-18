@@ -1,0 +1,38 @@
+---
+descriptions:
+  help: "Hjälpsamma kommandon till VoteParty."
+  setcounter: "Ange nuvarande röstantal."
+  addvote: "Lägg till röster i nuvarande rösträkning."
+  startparty: "Tvångs kör ett VoteParty."
+  givecrate: "Förse en spelare med en röstlåda."
+  giveparty: "Aktivera ett privat Vote Party för en spelare."
+  reload: "Ladda om konfigurations filerna."
+  checkvotes: "Kontrollera antalet röster en spelare har."
+  totalvotes: "Få totala antalet röster en spelare har."
+  resetvotes: "Nollställ antalet röster en spelare har."
+  claim: "Hämta belöningar från offline röster."
+error:
+  invalid-number: "&fTyvärr, men det måste vara ett positivt heltal för att det ska fungera korrekt!"
+  disabled-world: "&fTyvärr, men den spelaren är i en avstängd värld!"
+  user-not-found: "&fTyvärr, men spelaren hittades ej!"
+info:
+  votes-needed: "&d%voteparty_votes_required_party% Röster &fbehövs för nästa party."
+  reloaded: "&fKonfigurationen config har laddats om!"
+  player-total-votes: "&d%player_name% &fhar ett totalt antal av &d%voteparty_player_votes% &fröst(er)!"
+  player-check-votes: "&d%player_name% &fhar röstat &d{count} gånger under de senaste &d{amount} {unit}&d!"
+  vote-count-reset: "&d%player_name%&f's röster har återställts till &d0&f!"
+party:
+  force-start-successful: "&fDu tvingade igång ett &dVote Party &fför alla onlinespelare!"
+votes:
+  votes-needed-updated: "&fNya nödvändiga röster har ändrats! &d%voteparty_votes_required_party% Röster &fbehövda för nästa party."
+  vote-counter-updated: "&fNuvarande röster uppdaterades till &d%voteparty_votes_recorded%&f!"
+  private-party-given: "&fDu har skänkt ett privat &dVote Party &ftill &d%player_name%&f!"
+  private-party-received: "&fDu har fått ett privat &dVote Party&f!"
+  added-to-player: "&fDu har gett {count} röster till %player_name%!"
+crate:
+  crate-given: "&fDu har gett &d%player_name% röstlådor!"
+  crate-received: "&fDu har fått en röstlåda!"
+claim:
+  success: "&fDu har lyckats hämtat belöningarna från en offlineröst! Du har &d{claim} &fkvar att hämta."
+  none: "&fDu har inga belöningar från offlineröster att hämta!"
+  notify: "&fHej där! Du har röstat när du varit offline! Du har belöningar att hämta! Samla in dem genom kommandot &d/vp claim&f!"
