@@ -123,11 +123,18 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 			runPartyCommands()
 			runPartyStartEffects()
 			
-			server.onlinePlayers.forEach()
-			{
-				giveGuaranteedPartyRewards(it)
-				giveRandomPartyRewards(it)
-				givePermissionPartyRewards(it)
+			if (party.conf().getProperty(PartySettings.USE_CRATE)) {
+				server.onlinePlayers.forEach {
+					it.inventory.addItem(buildCrate(1))
+				}
+			}
+			else {
+				server.onlinePlayers.forEach()
+				{
+					giveGuaranteedPartyRewards(it)
+					giveRandomPartyRewards(it)
+					givePermissionPartyRewards(it)
+				}
 			}
 		}
 	}
