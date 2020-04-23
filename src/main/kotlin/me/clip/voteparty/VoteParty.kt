@@ -13,7 +13,11 @@ import me.clip.voteparty.conf.sections.PluginSettings
 import me.clip.voteparty.conf.sections.VoteData
 import me.clip.voteparty.exte.color
 import me.clip.voteparty.exte.runTaskTimer
+<<<<<<< master
 import me.clip.voteparty.exte.runTaskTimerAsync
+=======
+import me.clip.voteparty.handler.LeaderboardHandler
+>>>>>>> Started working on leaderboards
 import me.clip.voteparty.handler.PartyHandler
 import me.clip.voteparty.handler.VotesHandler
 import me.clip.voteparty.listener.CrateListener
@@ -44,6 +48,7 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 	val votesHandler = VotesHandler(plugin)
 	val partyHandler = PartyHandler(plugin)
 	val usersHandler = UsersHandler(plugin)
+	val leaderboardHandler = LeaderboardHandler(plugin)
 	
 	
 	private var conf = null as? SettingsManager?
@@ -76,6 +81,7 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 		// handlers
 		votesHandler.load()
 		usersHandler.load()
+		leaderboardHandler.load()
 		
 		// listeners
 		crateListener.load()
@@ -106,6 +112,7 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 		votesListener.kill()
 		
 		usersHandler.kill()
+		leaderboardHandler.kill()
 	}
 	
 	
