@@ -65,6 +65,7 @@ shadowJar {
 	minimize()
 	relocate("co.aikar.commands", "me.clip.voteparty.libs.acf")
 	relocate("ch.jalu.configme", "me.clip.voteparty.libs.configme")
+	relocate("net.kyori.text", "me.clip.voteparty.libs.text")
 	archiveFileName = "VoteParty-${project.version}.jar"
 }
 
