@@ -37,4 +37,9 @@ class LeaderboardHandler(override val plugin: VotePartyPlugin) : Addon, State
 	{
 		return cache
 	}
+	
+	fun getLeaderboard(type: LeaderboardType): Leaderboard
+	{
+		return cache.get(type)
+	}
 }
