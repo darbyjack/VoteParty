@@ -9,6 +9,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.HandlerList
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
+import java.time.Duration
 import java.time.Instant
 import java.util.UUID
 import java.util.concurrent.TimeUnit
@@ -82,6 +83,17 @@ class UsersHandler(override val plugin: VotePartyPlugin) : Addon, State, Listene
 		return get(offlinePlayer).votes().count { it > time }
 	}
 	
+	fun getVotesWithinRange(duration: Duration) : Map<User, Int>
+	{
+		val time = Instant.now().minus(duration).toEpochMilli()
+		
+		val data = mutableMapOf<User, Int>()
+		cached.forEach {
+			data[it.value] = it.value.votes().count { it > time }
+		}
+		
+		return data.asSequence().sortedByDescending { it.value }.associate { it.key to it.value }
+	}
 	
 	@EventHandler
 	fun PlayerJoinEvent.onJoin()
