@@ -8,13 +8,14 @@ allprojects {
 	apply plugin: 'org.jetbrains.kotlin.jvm'
 	
 	group 'me.clip'
-	version '2.9'
+	version '2.10-DEV'
 	
 	repositories {
 		mavenCentral()
 		
 		maven { url = "https://papermc.io/repo/repository/maven-public/" }
 		maven { url = "https://dl.bintray.com/ichbinjoe/public/" }
+		maven { url = 'https://repo.aikar.co/content/groups/aikar/' }
 		maven { url = "https://repo.glaremasters.me/repository/public/" }
 	}
 	
@@ -64,6 +65,7 @@ apply plugin: 'com.github.johnrengelman.shadow'
 shadowJar {
 	minimize()
 	relocate("co.aikar.commands", "me.clip.voteparty.libs.acf")
+	relocate("co.aikar.locales", "me.clip.voteparty.libs.locales")
 	relocate("ch.jalu.configme", "me.clip.voteparty.libs.configme")
 	relocate("net.kyori.text", "me.clip.voteparty.libs.text")
 	archiveFileName = "VoteParty-${project.version}.jar"
