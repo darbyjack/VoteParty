@@ -1,5 +1,9 @@
 package me.clip.voteparty.leaderboard
 
-import me.clip.voteparty.user.User
-
-data class Leaderboard(val type: LeaderboardType, val data: Map<User, Int>)
+data class Leaderboard(val type: LeaderboardType, val data: List<LeaderboardUser>)
+{
+	fun getEntry(index: Int) : LeaderboardUser
+	{
+		return data[index - 1]
+	}
+}
