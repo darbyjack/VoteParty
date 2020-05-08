@@ -38,7 +38,6 @@ class UsersHandler(override val plugin: VotePartyPlugin) : Addon, State, Listene
 			cached[data.uuid] = data
 			cached[data.name.toLowerCase()] = data
 		}
-		
 		server.pluginManager.registerEvents(this, plugin)
 	}
 	
@@ -89,8 +88,8 @@ class UsersHandler(override val plugin: VotePartyPlugin) : Addon, State, Listene
 		val time = Instant.now().minus(duration).toEpochMilli()
 		
 		val data = mutableListOf<LeaderboardUser>()
-		cached.forEach {
-			data.add(LeaderboardUser(it.value, it.value.votes().count { it > time }))
+		cached.values.distinct().forEach {
+			data.add(LeaderboardUser(it, it.votes().count { it > time }))
 		}
 		
 		return data.sortedByDescending { it.votes }
