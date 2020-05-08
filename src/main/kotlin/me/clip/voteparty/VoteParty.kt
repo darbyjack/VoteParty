@@ -12,12 +12,8 @@ import me.clip.voteparty.conf.sections.PartySettings
 import me.clip.voteparty.conf.sections.PluginSettings
 import me.clip.voteparty.conf.sections.VoteData
 import me.clip.voteparty.exte.color
-import me.clip.voteparty.exte.runTaskTimer
-<<<<<<< master
 import me.clip.voteparty.exte.runTaskTimerAsync
-=======
 import me.clip.voteparty.handler.LeaderboardHandler
->>>>>>> Started working on leaderboards
 import me.clip.voteparty.handler.PartyHandler
 import me.clip.voteparty.handler.VotesHandler
 import me.clip.voteparty.listener.CrateListener

@@ -3,6 +3,7 @@ package me.clip.voteparty.user
 import me.clip.voteparty.base.Addon
 import me.clip.voteparty.base.State
 import me.clip.voteparty.data.impl.DatabaseVotePlayerGson
+import me.clip.voteparty.leaderboard.LeaderboardUser
 import me.clip.voteparty.plugin.VotePartyPlugin
 import org.bukkit.OfflinePlayer
 import org.bukkit.event.EventHandler
@@ -83,16 +84,16 @@ class UsersHandler(override val plugin: VotePartyPlugin) : Addon, State, Listene
 		return get(offlinePlayer).votes().count { it > time }
 	}
 	
-	fun getVotesWithinRange(duration: Duration) : Map<User, Int>
+	fun getVotesWithinRange(duration: Duration) : List<LeaderboardUser>
 	{
 		val time = Instant.now().minus(duration).toEpochMilli()
 		
-		val data = mutableMapOf<User, Int>()
+		val data = mutableListOf<LeaderboardUser>()
 		cached.forEach {
-			data[it.value] = it.value.votes().count { it > time }
+			data.add(LeaderboardUser(it.value, it.value.votes().count { it > time }))
 		}
 		
-		return data.asSequence().sortedByDescending { it.value }.associate { it.key to it.value }
+		return data.sortedByDescending { it.votes }
 	}
 	
 	@EventHandler
