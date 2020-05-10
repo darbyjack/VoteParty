@@ -10,7 +10,7 @@ descriptions:
   checkvotes: "Vérifiez le nombre de votes d'un joueur."
   totalvotes: "Obtenez le nombre total de votes d'un joueur."
   resetvotes: "Réinitialisez le nombre de votes d'un joueur."
-  claim: "Claim rewards from offline votes."
+  claim: "Réclamez les récompenses de vos votes hors ligne."
 error:
   invalid-number: "&fDésolé, mais ce numéro doit être positif pour fonctionner correctement !"
   disabled-world: "&fDésolé, mais ce joueur est actuellement dans un monde désactivé !"
