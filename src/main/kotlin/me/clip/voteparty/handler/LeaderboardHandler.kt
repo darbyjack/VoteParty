@@ -33,7 +33,7 @@ class LeaderboardHandler(override val plugin: VotePartyPlugin) : Addon, State
 		cache.invalidateAll()
 	}
 	
-	fun getLeaderboard(type: LeaderboardType): Leaderboard
+	fun getLeaderboard(type: LeaderboardType): Leaderboard?
 	{
 		return cache.get(type)
 	}
