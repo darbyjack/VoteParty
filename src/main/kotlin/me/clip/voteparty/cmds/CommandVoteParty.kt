@@ -173,7 +173,7 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 	@Subcommand("test")
 	fun test ()
 	{
-		party.leaderboardHandler.getLeaderboard(LeaderboardType.ALL_TIME).data.forEach {
+		party.leaderboardHandler.getLeaderboard(LeaderboardType.ALLTIME)?.data?.forEach {
 			currentCommandIssuer.sendMessage(it.name() + " - " + it.votes)
 		}
 	}
