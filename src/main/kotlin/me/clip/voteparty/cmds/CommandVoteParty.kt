@@ -19,7 +19,6 @@ import me.clip.voteparty.exte.ADMIN_PERM
 import me.clip.voteparty.exte.CLAIM_PERM
 import me.clip.voteparty.exte.display
 import me.clip.voteparty.exte.sendMessage
-import me.clip.voteparty.leaderboard.LeaderboardType
 import me.clip.voteparty.messages.Messages
 import me.clip.voteparty.plugin.VotePartyPlugin
 import org.bukkit.OfflinePlayer
@@ -146,10 +145,12 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 			return sendMessage(issuer, Messages.ERROR__DISABLED_WORLD)
 		}
 		
-		if (party.conf().getProperty(PartySettings.USE_CRATE)) {
+		if (party.conf().getProperty(PartySettings.USE_CRATE))
+		{
 			target.player.inventory.addItem(party.partyHandler.buildCrate(1))
 		}
-		else {
+		else
+		{
 			party.partyHandler.giveGuaranteedPartyRewards(target.player)
 			party.partyHandler.giveRandomPartyRewards(target.player)
 			party.partyHandler.givePermissionPartyRewards(target.player)
@@ -168,14 +169,6 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 		party.loadLang()
 		
 		sendMessage(issuer, Messages.INFO__RELOADED)
-	}
-	
-	@Subcommand("test")
-	fun test ()
-	{
-		party.leaderboardHandler.getLeaderboard(LeaderboardType.ALLTIME)?.data?.forEach {
-			currentCommandIssuer.sendMessage(it.name() + " - " + it.votes)
-		}
 	}
 	
 	@Subcommand("claim")
