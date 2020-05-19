@@ -145,10 +145,12 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 			return sendMessage(issuer, Messages.ERROR__DISABLED_WORLD)
 		}
 		
-		if (party.conf().getProperty(PartySettings.USE_CRATE)) {
+		if (party.conf().getProperty(PartySettings.USE_CRATE))
+		{
 			target.player.inventory.addItem(party.partyHandler.buildCrate(1))
 		}
-		else {
+		else
+		{
 			party.partyHandler.giveGuaranteedPartyRewards(target.player)
 			party.partyHandler.giveRandomPartyRewards(target.player)
 			party.partyHandler.givePermissionPartyRewards(target.player)

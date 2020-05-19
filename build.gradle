@@ -8,7 +8,7 @@ allprojects {
 	apply plugin: 'org.jetbrains.kotlin.jvm'
 	
 	group 'me.clip'
-	version '2.10'
+	version '2.11'
 	
 	repositories {
 		mavenCentral()
@@ -78,9 +78,7 @@ dependencies {
 	implementation "ch.jalu:configme:1.2.0-SNAPSHOT"
 
 	// placeholderapi
-	compileOnly("me.clip:placeholderapi:2.10.4") {
-		exclude group: "org.bstats", module: "bstats-bukkit"
-	}
+	compileOnly "me.clip:placeholderapi:2.10.6"
 	
 	compileOnly "com.vexsoftware:nuvotifier-universal:2.6.0"
 

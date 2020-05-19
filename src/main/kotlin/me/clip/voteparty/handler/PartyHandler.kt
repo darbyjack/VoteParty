@@ -4,6 +4,9 @@ import me.clip.voteparty.base.Addon
 import me.clip.voteparty.conf.sections.CrateSettings
 import me.clip.voteparty.conf.sections.EffectsSettings
 import me.clip.voteparty.conf.sections.PartySettings
+import me.clip.voteparty.events.PartyEndEvent
+import me.clip.voteparty.events.PartyStartEvent
+import me.clip.voteparty.events.PrePartyEvent
 import me.clip.voteparty.exte.color
 import me.clip.voteparty.exte.formMessage
 import me.clip.voteparty.exte.meta
@@ -13,6 +16,7 @@ import me.clip.voteparty.exte.runTaskTimer
 import me.clip.voteparty.exte.takeRandomly
 import me.clip.voteparty.plugin.VotePartyPlugin
 import me.clip.voteparty.version.EffectType
+import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -116,10 +120,26 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 	
 	fun startParty()
 	{
+		
+		val prePartyEvent = PrePartyEvent()
+		Bukkit.getPluginManager().callEvent(prePartyEvent)
+		
+		if (prePartyEvent.isCancelled) {
+			return
+		}
+		
 		runPrePartyCommands()
 		
 		plugin.runTaskLater(party.conf().getProperty(PartySettings.START_DELAY) * 20L)
 		{
+			
+			val partyStartEvent = PartyStartEvent()
+			Bukkit.getPluginManager().callEvent(partyStartEvent)
+			
+			if (partyStartEvent.isCancelled) {
+				return@runTaskLater
+			}
+			
 			runPartyCommands()
 			runPartyStartEffects()
 			
@@ -136,6 +156,9 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 					givePermissionPartyRewards(it)
 				}
 			}
+			
+			val partyEndEvent = PartyEndEvent()
+			Bukkit.getPluginManager().callEvent(partyEndEvent)
 		}
 	}
 	

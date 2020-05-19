@@ -1,7 +1,7 @@
 name: VoteParty
 main: me.clip.voteparty.plugin.VotePartyPlugin
 
-version: @version@
+version: '@version@'
 website: 'https://helpch.at/discord'
 authors: ['Glare', 'Clip', 'Sxtanna']
 

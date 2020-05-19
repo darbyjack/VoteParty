@@ -3,12 +3,14 @@ package me.clip.voteparty.user
 import me.clip.voteparty.base.Addon
 import me.clip.voteparty.base.State
 import me.clip.voteparty.data.impl.DatabaseVotePlayerGson
+import me.clip.voteparty.leaderboard.LeaderboardUser
 import me.clip.voteparty.plugin.VotePartyPlugin
 import org.bukkit.OfflinePlayer
 import org.bukkit.event.EventHandler
 import org.bukkit.event.HandlerList
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
+import java.time.Duration
 import java.time.Instant
 import java.util.UUID
 import java.util.concurrent.TimeUnit
@@ -36,7 +38,6 @@ class UsersHandler(override val plugin: VotePartyPlugin) : Addon, State, Listene
 			cached[data.uuid] = data
 			cached[data.name.toLowerCase()] = data
 		}
-		
 		server.pluginManager.registerEvents(this, plugin)
 	}
 	
@@ -82,6 +83,17 @@ class UsersHandler(override val plugin: VotePartyPlugin) : Addon, State, Listene
 		return get(offlinePlayer).votes().count { it > time }
 	}
 	
+	fun getVotesWithinRange(duration: Duration) : List<LeaderboardUser>
+	{
+		val time = Instant.now().minus(duration).toEpochMilli()
+		
+		val data = mutableListOf<LeaderboardUser>()
+		cached.values.distinct().forEach {
+			data.add(LeaderboardUser(it, it.votes().count { it > time }))
+		}
+		
+		return data.sortedByDescending { it.votes }
+	}
 	
 	@EventHandler
 	fun PlayerJoinEvent.onJoin()
