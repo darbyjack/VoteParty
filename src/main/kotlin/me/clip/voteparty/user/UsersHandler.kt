@@ -87,12 +87,10 @@ class UsersHandler(override val plugin: VotePartyPlugin) : Addon, State, Listene
 	{
 		val time = Instant.now().minus(duration).toEpochMilli()
 		
-		val data = mutableListOf<LeaderboardUser>()
-		cached.values.distinct().forEach {
-			data.add(LeaderboardUser(it, it.votes().count { it > time }))
-		}
-		
-		return data.sortedByDescending { it.votes }
+		return cached.values.asSequence().distinct()
+				.map { LeaderboardUser(it, it.votes().count { it >= time }) }
+				.sortedByDescending { it.votes }
+				.toList()
 	}
 	
 	@EventHandler
