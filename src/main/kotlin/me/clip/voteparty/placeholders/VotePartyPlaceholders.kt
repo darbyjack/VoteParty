@@ -75,6 +75,9 @@ class VotePartyPlaceholders(private val voteParty: VoteParty) : PlaceholderExpan
 		return if (type == "name") user.name() else user.votes.toString()
 	}
 
+	/**
+	 * Get the placement of a player based on the given leaderboard type
+	 */
 	private fun getPlacement(input: String, offlinePlayer: OfflinePlayer) : String
 	{
 		val leaderboard = voteParty.leaderboardHandler.getLeaderboard(LeaderboardType.valueOf(input.toUpperCase())) ?: return ""
