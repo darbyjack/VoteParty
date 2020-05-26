@@ -40,8 +40,8 @@ class VotePartyPlaceholders(private val voteParty: VoteParty) : PlaceholderExpan
 			return getPlacement(arg.replace("placement_", "").toLowerCase(), offlinePlayer)
 		}
 
-		if (arg.startsWith("votes_")) {
-			return getVotes(arg.replace("votes_", "").toLowerCase(), offlinePlayer)
+		if (arg.startsWith("totalvotes_")) {
+			return getVotes(arg.replace("totalvotes_", "").toLowerCase(), offlinePlayer)
 		}
 		
 		return when (arg.toLowerCase())
