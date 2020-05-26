@@ -82,6 +82,12 @@ class UsersHandler(override val plugin: VotePartyPlugin) : Addon, State, Listene
 		
 		return get(offlinePlayer).votes().count { it > time }
 	}
+
+	fun getVotesWithinRange(offlinePlayer: OfflinePlayer, duration: Duration) : Int
+	{
+		val time = Instant.now().minus(duration).toEpochMilli()
+		return get(offlinePlayer).votes().count { it > time }
+	}
 	
 	fun getVotesWithinRange(duration: Duration) : List<LeaderboardUser>
 	{

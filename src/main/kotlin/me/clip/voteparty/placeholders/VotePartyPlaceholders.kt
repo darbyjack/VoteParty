@@ -39,6 +39,10 @@ class VotePartyPlaceholders(private val voteParty: VoteParty) : PlaceholderExpan
 		if (arg.startsWith("placement_")) {
 			return getPlacement(arg.replace("placement_", "").toLowerCase(), offlinePlayer)
 		}
+
+		if (arg.startsWith("votes_")) {
+			return getVotes(arg.replace("votes_", "").toLowerCase(), offlinePlayer)
+		}
 		
 		return when (arg.toLowerCase())
 		{
@@ -84,6 +88,15 @@ class VotePartyPlaceholders(private val voteParty: VoteParty) : PlaceholderExpan
 		val user = voteParty.usersHandler[offlinePlayer]
 		val placement = leaderboard.getPlacement(user) ?: return ""
 		return placement.plus(1).toString()
+	}
+
+	/**
+	 * Get the amount of votes a player has based on the given leaderboard type
+	 */
+	private fun getVotes(input: String, offlinePlayer: OfflinePlayer) : String
+	{
+		val type = LeaderboardType.valueOf(input.toUpperCase())
+		return voteParty.usersHandler.getVotesWithinRange(offlinePlayer, type.duration).toString()
 	}
 	
 }
