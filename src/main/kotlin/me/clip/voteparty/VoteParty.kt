@@ -302,7 +302,8 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 	{
 		return conf().getProperty(PartySettings.VOTES_NEEDED)
 	}
-	
+
+	@Deprecated("This was only used in the PlaceholderAPI Placeholders. A new and improved method has been implemented", ReplaceWith("UserHandler#getVotesWithinRange"))
 	fun getPlayerVotes(player: OfflinePlayer): Int
 	{
 		return usersHandler[player].votes().size
