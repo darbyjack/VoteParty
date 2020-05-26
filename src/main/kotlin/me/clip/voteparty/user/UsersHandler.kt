@@ -82,17 +82,22 @@ class UsersHandler(override val plugin: VotePartyPlugin) : Addon, State, Listene
 		
 		return get(offlinePlayer).votes().count { it > time }
 	}
+
+	fun getVotesWithinRange(offlinePlayer: OfflinePlayer, duration: Duration) : Int
+	{
+		val time = Instant.now().minus(duration).toEpochMilli()
+		return get(offlinePlayer).votes().count { it > time }
+	}
 	
 	fun getVotesWithinRange(duration: Duration) : List<LeaderboardUser>
 	{
 		val time = Instant.now().minus(duration).toEpochMilli()
 		
-		val data = mutableListOf<LeaderboardUser>()
-		cached.values.distinct().forEach {
-			data.add(LeaderboardUser(it, it.votes().count { it > time }))
-		}
-		
-		return data.sortedByDescending { it.votes }
+		return cached.values.asSequence().distinct()
+				.filter { it.votes().isNotEmpty() }
+				.map { LeaderboardUser(it, it.votes().count { it >= time }) }
+				.sortedByDescending { it.votes }
+				.toList()
 	}
 	
 	@EventHandler
