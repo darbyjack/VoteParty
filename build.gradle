@@ -79,7 +79,8 @@ dependencies {
 
 	// placeholderapi
 	compileOnly "me.clip:placeholderapi:2.10.6"
-	
+
+	// NuVotifier hook
 	compileOnly "com.vexsoftware:nuvotifier-universal:2.6.0"
 
 	// command handler
