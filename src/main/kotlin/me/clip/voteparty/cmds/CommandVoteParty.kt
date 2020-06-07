@@ -151,9 +151,7 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 		}
 		else
 		{
-			party.partyHandler.giveGuaranteedPartyRewards(target.player)
-			party.partyHandler.giveRandomPartyRewards(target.player)
-			party.partyHandler.givePermissionPartyRewards(target.player)
+			party.partyHandler.runAll(target.player)
 		}
 		
 		sendMessage(issuer, Messages.VOTES__PRIVATE_PARTY_GIVEN, target.player)
@@ -183,9 +181,7 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 			return sendMessage(currentCommandIssuer, Messages.CLAIM__NONE)
 		}
 		
-		party.votesHandler.giveRandomVoteRewards(player)
-		party.votesHandler.giveGuaranteedVoteRewards(player)
-		party.votesHandler.givePermissionVoteRewards(player)
+		party.votesHandler.runAll(player)
 		
 		sendMessage(currentCommandIssuer, Messages.CLAIM__SUCCESS, null, "{claim}", user.claimable--)
 	}

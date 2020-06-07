@@ -52,6 +52,13 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon, State
 		party.partyHandler.startParty()
 	}
 	
+	fun runAll(player: Player)
+	{
+		giveRandomVoteRewards(player)
+		giveGuaranteedVoteRewards(player)
+		givePermissionVoteRewards(player)
+	}
+	
 	
 	fun giveGuaranteedVoteRewards(player: Player)
 	{

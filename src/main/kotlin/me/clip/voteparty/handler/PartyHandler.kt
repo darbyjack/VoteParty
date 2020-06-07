@@ -73,6 +73,13 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 		}
 	}
 	
+	fun runAll(player: Player)
+	{
+		giveRandomPartyRewards(player)
+		giveGuaranteedPartyRewards(player)
+		givePermissionPartyRewards(player)
+	}
+	
 	fun runPrePartyCommands()
 	{
 		val settings = party.conf().getProperty(PartySettings.PRE_PARTY_COMMANDS)
