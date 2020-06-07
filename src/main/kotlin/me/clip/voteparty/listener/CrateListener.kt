@@ -48,9 +48,7 @@ internal class CrateListener(override val plugin: VotePartyPlugin) : VotePartyLi
 			player.inventory.itemInHand.amount = held.amount - 1
 		}
 		
-		party.partyHandler.giveGuaranteedPartyRewards(player)
-		party.partyHandler.giveRandomPartyRewards(player)
-		party.partyHandler.givePermissionPartyRewards(player)
+		party.partyHandler.runAll(player)
 	}
 	
 }
