@@ -189,6 +189,7 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 	
 	@Subcommand("help")
 	@Description("Help")
+	@CommandPermission("voteparty.help")
 	fun help(sender: CommandSender)
 	{
 		display(sender, currentCommandManager)
