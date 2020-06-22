@@ -182,8 +182,9 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 		}
 		
 		party.votesHandler.runAll(player)
+		user.claimable--
 		
-		sendMessage(currentCommandIssuer, Messages.CLAIM__SUCCESS, null, "{claim}", user.claimable--)
+		sendMessage(currentCommandIssuer, Messages.CLAIM__SUCCESS, null, "{claim}", user.claimable)
 	}
 	
 	@Subcommand("help")
