@@ -87,8 +87,8 @@ dependencies {
 	implementation "co.aikar:acf-paper:0.5.0-SNAPSHOT"
 
 	// json stuff
-	implementation "net.kyori:text-api:3.0.2"
-	implementation "net.kyori:text-adapter-bukkit:3.0.3"
+	implementation "net.kyori:text-api:3.0.5-SNAPSHOT"
+	implementation "net.kyori:text-adapter-bukkit:3.0.5-SNAPSHOT"
 	
 	implementation project(":version")
 	implementation project(":version_old")
