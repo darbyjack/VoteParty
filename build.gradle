@@ -8,11 +8,12 @@ allprojects {
 	apply plugin: 'org.jetbrains.kotlin.jvm'
 	
 	group 'me.clip'
-	version '2.15'
+	version '2.16-DEV'
 	
 	repositories {
 		mavenCentral()
 		
+		maven { url = "https://oss.sonatype.org/content/repositories/snapshots/" }
 		maven { url = "https://papermc.io/repo/repository/maven-public/" }
 		maven { url = "https://dl.bintray.com/ichbinjoe/public/" }
 		maven { url = 'https://repo.aikar.co/content/groups/aikar/' }
@@ -67,7 +68,7 @@ shadowJar {
 	relocate("co.aikar.commands", "me.clip.voteparty.libs.acf")
 	relocate("co.aikar.locales", "me.clip.voteparty.libs.locales")
 	relocate("ch.jalu.configme", "me.clip.voteparty.libs.configme")
-	relocate("net.kyori.text", "me.clip.voteparty.libs.text")
+	relocate("net.kyori", "me.clip.voteparty.libs.kyori")
 	archiveFileName = "VoteParty-${project.version}.jar"
 }
 
@@ -87,8 +88,8 @@ dependencies {
 	implementation "co.aikar:acf-paper:0.5.0-SNAPSHOT"
 
 	// json stuff
-	implementation "net.kyori:text-api:3.0.5-SNAPSHOT"
-	implementation "net.kyori:text-adapter-bukkit:3.0.5-SNAPSHOT"
+	implementation "net.kyori:adventure-platform-bukkit:4.0.0-SNAPSHOT"
+	implementation "net.kyori:adventure-text-minimessage:3.0.0-SNAPSHOT"
 	
 	implementation project(":version")
 	implementation project(":version_old")

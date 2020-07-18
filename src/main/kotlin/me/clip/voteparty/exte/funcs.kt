@@ -7,6 +7,7 @@ import me.clip.placeholderapi.PlaceholderAPI
 import me.clip.voteparty.base.Addon
 import me.clip.voteparty.conf.objects.Command
 import me.clip.voteparty.conf.sections.PluginSettings
+import me.clip.voteparty.messages.Messages
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Material
@@ -37,6 +38,11 @@ internal fun Addon.sendMessage(receiver: CommandIssuer, message: MessageKeyProvi
 	}
 	
 	receiver.sendMessage(formMessage(Bukkit.getOfflinePlayer(placeholderTarget?.uniqueId ?: receiver.uniqueId), (party.conf().getProperty(PluginSettings.PREFIX) ?: PREFIX) + msg))
+}
+
+internal fun msgAsString(issuer: CommandIssuer, key: MessageKeyProvider) : String
+{
+	return issuer.manager.getLocales().getMessage(issuer, key)
 }
 
 
