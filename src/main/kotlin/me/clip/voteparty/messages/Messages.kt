@@ -41,7 +41,12 @@ enum class Messages : MessageKeyProvider
 	DESCRIPTIONS__CHECKVOTES,
 	DESCRIPTIONS__TOTALVOTES,
 	DESCRIPTIONS__RESETVOTES,
-	DESCRIPTIONS__CLAIM;
+	DESCRIPTIONS__CLAIM,
+	
+	HELP__HEADER,
+	HELP__LINE_TEXT,
+	HELP__LINE_HOVER,
+	HELP__FOOTER;
 	
 	
 	private val key = MessageKey.of(name.toLowerCase().replace("__", ".").replace('_', '-'))

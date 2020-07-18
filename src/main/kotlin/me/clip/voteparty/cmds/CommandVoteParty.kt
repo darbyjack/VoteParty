@@ -17,12 +17,11 @@ import me.clip.voteparty.conf.sections.PartySettings
 import me.clip.voteparty.events.VoteReceivedEvent
 import me.clip.voteparty.exte.ADMIN_PERM
 import me.clip.voteparty.exte.CLAIM_PERM
-import me.clip.voteparty.exte.display
+import me.clip.voteparty.exte.helpMenu
 import me.clip.voteparty.exte.sendMessage
 import me.clip.voteparty.messages.Messages
 import me.clip.voteparty.plugin.VotePartyPlugin
 import org.bukkit.OfflinePlayer
-import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import java.util.concurrent.TimeUnit
 
@@ -190,9 +189,9 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 	@Subcommand("help")
 	@Description("Help")
 	@CommandPermission("voteparty.help")
-	fun help(sender: CommandSender)
+	fun help(issuer: CommandIssuer)
 	{
-		display(sender, currentCommandManager)
+		party.audiences().audience(issuer.getIssuer()).sendMessage(helpMenu(issuer))
 	}
 	
 	@Default
