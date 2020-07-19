@@ -36,3 +36,9 @@ claim:
   success: "&fVous avez réclamé les récompenses pour un vote hors ligne ! Il vous reste &d{claim} &fà récupérer."
   none: "&fVous n'avez aucune récompense à réclamer pour des votes hors ligne !"
   notify: "&fHé là! Vous semblez avoir voté pendant que vous étiez hors ligne! Vous pouvez réclamer des récompenses! Collectez-les avec &d/vp claim&f!"
+help:
+  header: "<strikethrough><dark_purple>      </strikethrough> <light_purple>VoteParty Help <strikethrough><dark_purple>      </dark_purple></strikethrough>"
+  line-text: "<dark_gray>• <hover:show_text:'{line-hover}'><light_purple>/vp</light_purple> <white>{cmd}</white></hover>\n"
+  line-hover: "<light_purple>{text}\n<white>{desc}\n\n<gray>/vp {cmd} <white>{args}\n<dark_gray>{perm}</dark_gray>"
+  footer: "<strikethrough><dark_purple>                               </strikethrough></dark_purple>\n<italic><gray>Hover for more info</gray></italic>"
+
