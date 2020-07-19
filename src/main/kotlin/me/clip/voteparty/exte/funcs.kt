@@ -7,7 +7,7 @@ import me.clip.placeholderapi.PlaceholderAPI
 import me.clip.voteparty.base.Addon
 import me.clip.voteparty.conf.objects.Command
 import me.clip.voteparty.conf.sections.PluginSettings
-import me.clip.voteparty.messages.Messages
+import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Material
@@ -37,10 +37,19 @@ internal fun Addon.sendMessage(receiver: CommandIssuer, message: MessageKeyProvi
 		msg = ACFUtil.replaceStrings(msg, *replacements.map(Any::toString).toTypedArray())
 	}
 	
-	receiver.sendMessage(formMessage(Bukkit.getOfflinePlayer(placeholderTarget?.uniqueId ?: receiver.uniqueId), (party.conf().getProperty(PluginSettings.PREFIX) ?: PREFIX) + msg))
+	val result = formMessage(Bukkit.getOfflinePlayer(placeholderTarget?.uniqueId ?: receiver.uniqueId), (party.conf().getProperty(PluginSettings.PREFIX) ?: PREFIX) + msg)
+	if (!receiver.isPlayer)
+	{
+		receiver.sendMessage(result)
+	}
+	else
+	{
+		party.audiences().audience(receiver.getIssuer()).sendMessage(MiniMessage.get().parse(result))
+	}
+	
 }
 
-internal fun msgAsString(issuer: CommandIssuer, key: MessageKeyProvider) : String
+internal fun msgAsString(issuer: CommandIssuer, key: MessageKeyProvider): String
 {
 	return issuer.manager.getLocales().getMessage(issuer, key)
 }
