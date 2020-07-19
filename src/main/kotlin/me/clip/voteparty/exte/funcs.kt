@@ -38,15 +38,8 @@ internal fun Addon.sendMessage(receiver: CommandIssuer, message: MessageKeyProvi
 	}
 	
 	val result = formMessage(Bukkit.getOfflinePlayer(placeholderTarget?.uniqueId ?: receiver.uniqueId), (party.conf().getProperty(PluginSettings.PREFIX) ?: PREFIX) + msg)
-	if (!receiver.isPlayer)
-	{
-		receiver.sendMessage(result)
-	}
-	else
-	{
-		party.audiences().audience(receiver.getIssuer()).sendMessage(MiniMessage.get().parse(result))
-	}
 	
+	party.audiences().audience(receiver.getIssuer()).sendMessage(if (receiver.isPlayer) MiniMessage.get().parse(result) else MiniMessage.get().parse(MiniMessage.get().stripTokens(result)))
 }
 
 internal fun msgAsString(issuer: CommandIssuer, key: MessageKeyProvider): String
