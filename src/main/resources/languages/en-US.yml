@@ -35,3 +35,9 @@ claim:
   success: "&fYou successfully claimed the rewards from an offline vote! You have &d{claim} &fleft to claim."
   none: "&fYou don't have any rewards to claim from offline votes!"
   notify: "&fHey there! You seemed to have voted while offline! You have some claiming rewards! Collect them by using &d/vp claim&f!"
+help:
+  header: "<strikethrough><dark_purple>      </strikethrough> <light_purple>VoteParty Help <strikethrough><dark_purple>      </dark_purple></strikethrough>"
+  line-text: "<dark_gray>• <hover:show_text:'{line-hover}'><light_purple>/vp</light_purple> <white>{cmd}</white></hover>\n"
+  line-hover: "<light_purple>{text}\n<white>{desc}\n\n<gray>/vp {cmd} <white>{args}\n<dark_gray>{perm}</dark_gray>"
+  footer: "<strikethrough><dark_purple>                               </strikethrough></dark_purple>\n<italic><gray>Hover for more info</gray></italic>"
+

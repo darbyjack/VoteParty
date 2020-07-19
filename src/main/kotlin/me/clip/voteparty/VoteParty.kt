@@ -27,6 +27,7 @@ import me.clip.voteparty.util.UpdateChecker
 import me.clip.voteparty.version.VersionHook
 import me.clip.voteparty.version.VersionHookNew
 import me.clip.voteparty.version.VersionHookOld
+import net.kyori.adventure.platform.bukkit.BukkitAudiences
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.command.ConsoleCommandSender
@@ -49,6 +50,7 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 	
 	private var conf = null as? SettingsManager?
 	private var voteData = null as? SettingsManager?
+	private var audiences = null as? BukkitAudiences?
 	private val cmds = PaperCommandManager(plugin)
 	
 	private val crateListener = CrateListener(plugin)
@@ -62,6 +64,8 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 	override fun load()
 	{
 		logo(plugin.server.consoleSender)
+		
+		this.audiences = BukkitAudiences.create(plugin)
 		
 		loadConf()
 		loadVoteData()
@@ -292,6 +296,10 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 		return cmds
 	}
 	
+	fun audiences(): BukkitAudiences
+	{
+		return checkNotNull(audiences)
+	}
 	
 	fun getVotes(): Int
 	{
