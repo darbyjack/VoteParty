@@ -16,6 +16,8 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.plugin.Plugin
 import org.bukkit.scheduler.BukkitRunnable
+import java.time.LocalDateTime
+import java.util.concurrent.TimeUnit
 
 
 internal fun color(message: String): String
@@ -45,6 +47,11 @@ internal fun Addon.sendMessage(receiver: CommandIssuer, message: MessageKeyProvi
 internal fun msgAsString(issuer: CommandIssuer, key: MessageKeyProvider): String
 {
 	return issuer.manager.getLocales().getMessage(issuer, key)
+}
+
+internal fun toMillis(time: LocalDateTime): Long
+{
+	return TimeUnit.MILLISECONDS.convert(time.toLocalTime().toNanoOfDay(), TimeUnit.NANOSECONDS)
 }
 
 
