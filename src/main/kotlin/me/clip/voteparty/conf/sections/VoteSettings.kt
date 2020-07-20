@@ -25,7 +25,13 @@ internal object VoteSettings : SettingsHolder
 	val PERMISSION_VOTE_REWARDS: Property<PermRewards> = newBeanProperty(PermRewards::class.java, "voting.permission-rewards", PermRewards(true, listOf(PermCommands("my.special.permission", listOf("eco give %player_name% 500")))))
 	
 	@JvmField
-	@Comment("Configuration for extra commands to be executed on players who voted on a specific website")
+	@Comment("Configuration for extra commands to be executed on players who voted on a specific website",
+	        "Known Service Names:",
+	        "TopG.com",
+	        "PlanetMinecraft.com",
+	        "Minecraft-MP.com",
+	        "MinecraftServers.org",
+	        "Minecraft-Server.net")
 	val VOTESITE_VOTE_REWARDS: Property<VotesiteRewards> = newBeanProperty(VotesiteRewards::class.java, "voting.votesite-rewards", VotesiteRewards(false, listOf(VotesiteCommands("TestVote", listOf("eco give %player_name% 500")))))
 	
 	@JvmField
