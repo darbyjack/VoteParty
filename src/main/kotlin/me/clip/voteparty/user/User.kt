@@ -17,6 +17,11 @@ data class User(val uuid: UUID, var name: String, private val data: MutableList<
 		return data
 	}
 	
+	fun hasVotedBefore(): Boolean
+	{
+		return data.isNotEmpty()
+	}
+	
 	fun reset()
 	{
 		data.clear()

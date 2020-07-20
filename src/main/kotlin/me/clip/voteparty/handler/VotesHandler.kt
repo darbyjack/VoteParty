@@ -4,7 +4,6 @@ import me.clip.voteparty.base.Addon
 import me.clip.voteparty.base.State
 import me.clip.voteparty.conf.sections.EffectsSettings
 import me.clip.voteparty.conf.sections.PartySettings
-import me.clip.voteparty.conf.sections.PluginSettings
 import me.clip.voteparty.conf.sections.VoteData
 import me.clip.voteparty.conf.sections.VoteSettings
 import me.clip.voteparty.exte.formMessage
@@ -90,6 +89,38 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon, State
 			{ command ->
 				server.dispatchCommand(server.consoleSender, formMessage(player, command))
 			}
+		}
+	}
+	
+	fun giveVotesiteVoteRewards(player: Player, serviceName: String)
+	{
+		val settings = party.conf().getProperty(VoteSettings.VOTESITE_VOTE_REWARDS)
+		
+		if (!settings.enabled || settings.votesiteCommands.isEmpty())
+		{
+			return
+		}
+		
+		val first = settings.votesiteCommands.firstOrNull { serviceName == it.serviceName }
+		
+		first?.commands?.forEach()
+		{
+			server.dispatchCommand(server.consoleSender, formMessage(player, it))
+		}
+	}
+	
+	fun giveFirstTimeVoteRewards(player: Player)
+	{
+		val settings = party.conf().getProperty(VoteSettings.FIRST_TIME_REWARDS)
+		
+		if (!settings.enabled || settings.commands.isEmpty())
+		{
+			return
+		}
+		
+		settings.commands.forEach()
+		{ command ->
+			server.dispatchCommand(server.consoleSender, formMessage(player, command))
 		}
 	}
 	
