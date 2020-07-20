@@ -10,6 +10,8 @@ import me.clip.voteparty.conf.objects.Commands
 import me.clip.voteparty.conf.objects.PermCommands
 import me.clip.voteparty.conf.objects.PermRewards
 import me.clip.voteparty.conf.objects.RewardsPerEvent
+import me.clip.voteparty.conf.objects.VotesiteCommands
+import me.clip.voteparty.conf.objects.VotesiteRewards
 
 internal object VoteSettings : SettingsHolder
 {
@@ -21,6 +23,10 @@ internal object VoteSettings : SettingsHolder
 	@JvmField
 	@Comment("Configuration for extra commands to be executed on players who have specific permission nodes")
 	val PERMISSION_VOTE_REWARDS: Property<PermRewards> = newBeanProperty(PermRewards::class.java, "voting.permission-rewards", PermRewards(true, listOf(PermCommands("my.special.permission", listOf("eco give %player_name% 500")))))
+	
+	@JvmField
+	@Comment("Configuration for extra commands to be executed on players who voted on a specific website")
+	val VOTESITE_VOTE_REWARDS: Property<VotesiteRewards> = newBeanProperty(VotesiteRewards::class.java, "voting.votesite-rewards", VotesiteRewards(false, listOf(VotesiteCommands("TestVote", listOf("eco give %player_name% 500")))))
 	
 	@JvmField
 	@Comment("A list of rewards that will ALWAYS be given to a player for voting")

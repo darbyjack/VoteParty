@@ -14,7 +14,7 @@ internal class HooksListenerNuVotifier(override val plugin: VotePartyPlugin) : V
 	{
 		val player = server.getOfflinePlayer(vote.username)
 		
-		val event = VoteReceivedEvent(player)
+		val event = VoteReceivedEvent(player, vote)
 		server.pluginManager.callEvent(event)
 	}
 	
