@@ -25,18 +25,22 @@ internal object VoteSettings : SettingsHolder
 	val PERMISSION_VOTE_REWARDS: Property<PermRewards> = newBeanProperty(PermRewards::class.java, "voting.permission-rewards", PermRewards(true, listOf(PermCommands("my.special.permission", listOf("eco give %player_name% 500")))))
 	
 	@JvmField
-	@Comment("Configuration for extra commands to be executed on players who voted on a specific website",
-	        "Known Service Names:",
-	        "TopG.com",
-	        "PlanetMinecraft.com",
-	        "Minecraft-MP.com",
-	        "MinecraftServers.org",
-	        "Minecraft-Server.net")
-	val VOTESITE_VOTE_REWARDS: Property<VotesiteRewards> = newBeanProperty(VotesiteRewards::class.java, "voting.votesite-rewards", VotesiteRewards(false, listOf(VotesiteCommands("TestVote", listOf("eco give %player_name% 500")))))
-	
-	@JvmField
 	@Comment("A list of rewards that will ALWAYS be given to a player for voting")
 	val GUARANTEED_REWARDS: Property<Commands> = newBeanProperty(Commands::class.java, "voting.guaranteed_rewards", Commands(true, listOf("eco give %player_name% 10", "give %player_name% STEAK 8")))
+	
+	@JvmField
+	@Comment("A list of commands to run when it's the first time a player has voted (only works for online players)")
+	val FIRST_TIME_REWARDS: Property<Commands> = newBeanProperty(Commands::class.java, "voting.first_time_rewards", Commands(false, listOf("eco give %player_name% 100", "give %player_name% STEAK 10")))
+	
+	@JvmField
+	@Comment("Configuration for extra commands to be executed on players who voted on a specific website (only works for online players)",
+	         "Known Service Names:",
+	         "TopG.com",
+	         "PlanetMinecraft.com",
+	         "Minecraft-MP.com",
+	         "MinecraftServers.org",
+	         "Minecraft-Server.net")
+	val VOTESITE_VOTE_REWARDS: Property<VotesiteRewards> = newBeanProperty(VotesiteRewards::class.java, "voting.votesite-rewards", VotesiteRewards(false, listOf(VotesiteCommands("TestVote", listOf("eco give %player_name% 500")))))
 	
 	@JvmField
 	@Comment("Global commands (such as a broadcast message) to be executed when a player votes")

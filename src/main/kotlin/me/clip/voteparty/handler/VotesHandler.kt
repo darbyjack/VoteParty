@@ -109,6 +109,21 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon, State
 		}
 	}
 	
+	fun giveFirstTimeVoteRewards(player: Player)
+	{
+		val settings = party.conf().getProperty(VoteSettings.FIRST_TIME_REWARDS)
+		
+		if (!settings.enabled || settings.commands.isEmpty())
+		{
+			return
+		}
+		
+		settings.commands.forEach()
+		{ command ->
+			server.dispatchCommand(server.consoleSender, formMessage(player, command))
+		}
+	}
+	
 	fun giveRandomVoteRewards(player: Player)
 	{
 		val settings = party.conf().getProperty(VoteSettings.PER_VOTE_REWARDS)
