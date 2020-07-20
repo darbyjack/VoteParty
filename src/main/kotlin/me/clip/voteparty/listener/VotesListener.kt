@@ -23,7 +23,13 @@ internal class VotesListener(override val plugin: VotePartyPlugin) : VotePartyLi
 			return
 		}
 		
+		var first = false
+		
 		val user = party.usersHandler[player]
+		if (!user.hasVotedBefore())
+		{
+			first = true
+		}
 		user.voted()
 		
 		if (!player.isOnline && party.conf().getProperty(VoteSettings.OFFLINE_VOTE_CLAIMING))
@@ -37,6 +43,17 @@ internal class VotesListener(override val plugin: VotePartyPlugin) : VotePartyLi
 		
 		party.votesHandler.runGlobalCommands(online)
 		party.votesHandler.runAll(online)
+		
+		if (vote != null)
+		{
+			party.votesHandler.giveVotesiteVoteRewards(online, vote.serviceName)
+		}
+		
+		if (first)
+		{
+			party.votesHandler.giveFirstTimeVoteRewards(online)
+		}
+		
 		party.votesHandler.playerVoteEffects(online)
 	}
 	
