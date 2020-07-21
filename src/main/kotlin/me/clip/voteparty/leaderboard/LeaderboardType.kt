@@ -5,10 +5,10 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.temporal.TemporalAdjusters
 
-enum class LeaderboardType(val time: Long)
+enum class LeaderboardType(val time: () -> Long)
 {
-	DAILY(toMillis(LocalDate.now().atStartOfDay())),
-	WEEKLY(toMillis(LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)).atStartOfDay())),
-	MONTHLY(toMillis(LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()).atStartOfDay())),
-	ALLTIME(toMillis(LocalDate.now().with(TemporalAdjusters.firstDayOfYear()).atStartOfDay()));
+	DAILY({ toMillis(LocalDate.now().atStartOfDay()) }),
+	WEEKLY({ toMillis(LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)).atStartOfDay()) }),
+	MONTHLY({ toMillis(LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()).atStartOfDay()) }),
+	ALLTIME({ toMillis(LocalDate.now().with(TemporalAdjusters.firstDayOfYear()).atStartOfDay()) });
 }
