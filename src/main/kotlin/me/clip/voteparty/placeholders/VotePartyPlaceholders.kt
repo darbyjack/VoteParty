@@ -93,7 +93,7 @@ class VotePartyPlaceholders(private val voteParty: VoteParty) : PlaceholderExpan
 	 */
 	private fun getVotes(input: String, player: OfflinePlayer): String
 	{
-		return LeaderboardType.find(input)?.let { voteParty.usersHandler.getVotesWithinRange(player, it.duration) }?.toString() ?: ""
+		return LeaderboardType.find(input)?.let { voteParty.usersHandler.getVotesWithinRange(player, it.time.invoke()) }?.toString() ?: ""
 	}
 	
 }

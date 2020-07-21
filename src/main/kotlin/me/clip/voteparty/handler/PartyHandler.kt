@@ -43,7 +43,10 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 			}
 			
 			runPartyCommandEffects(player)
-			server.dispatchCommand(server.consoleSender, formMessage(player, iter.next().command))
+			iter.next().command.forEach()
+			{ command ->
+				server.dispatchCommand(server.consoleSender, formMessage (player, command))
+			}
 		}
 	}
 	
