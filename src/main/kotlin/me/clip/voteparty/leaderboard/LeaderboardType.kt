@@ -11,4 +11,15 @@ enum class LeaderboardType(val time: () -> Long)
 	WEEKLY({ toMillis(LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)).atStartOfDay()) }),
 	MONTHLY({ toMillis(LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()).atStartOfDay()) }),
 	ALLTIME({ toMillis(LocalDate.now().with(TemporalAdjusters.firstDayOfYear()).atStartOfDay()) });
+	
+	companion object
+	{
+		internal val values = values()
+		
+		internal fun find(name: String): LeaderboardType?
+		{
+			return values.find { it.name.equals(name, true) }
+		}
+	}
+
 }
