@@ -29,19 +29,21 @@ class VotePartyPlaceholders(private val voteParty: VoteParty) : PlaceholderExpan
 	}
 	
 	
-	override fun onRequest(offlinePlayer: OfflinePlayer, arg: String): String
+	override fun onRequest(player: OfflinePlayer?, arg: String): String
 	{
-
-		if (arg.startsWith("top_")) {
+		if (arg.startsWith("top_"))
+		{
 			return getTop(arg.replace("top_", "").toLowerCase())
 		}
-
-		if (arg.startsWith("placement_")) {
-			return getPlacement(arg.replace("placement_", "").toLowerCase(), offlinePlayer)
+		
+		if (arg.startsWith("placement_"))
+		{
+			return getPlacement(arg.replace("placement_", "").toLowerCase(), player ?: return "")
 		}
-
-		if (arg.startsWith("totalvotes_")) {
-			return getVotes(arg.replace("totalvotes_", "").toLowerCase(), offlinePlayer)
+		
+		if (arg.startsWith("totalvotes_"))
+		{
+			return getVotes(arg.replace("totalvotes_", "").toLowerCase(), player ?: return "")
 		}
 		
 		return when (arg.toLowerCase())
@@ -49,7 +51,7 @@ class VotePartyPlaceholders(private val voteParty: VoteParty) : PlaceholderExpan
 			"votes_recorded"       -> voteParty.getVotes().toString()
 			"votes_required_party" -> voteParty.getVotesNeeded().minus(voteParty.getVotes()).toString()
 			"votes_required_total" -> voteParty.getVotesNeeded().toString()
-			"player_votes"         -> voteParty.getPlayerVotes(offlinePlayer).toString()
+			"player_votes"         -> voteParty.usersHandler[player ?: return ""].votes().size.toString()
 			else                   -> ""
 		}
 	}
@@ -59,44 +61,39 @@ class VotePartyPlaceholders(private val voteParty: VoteParty) : PlaceholderExpan
 	 */
 	private fun getTop(input: String): String
 	{
-		// Split it by the _
-		val split = input.split('_')
-		
-		// Return empty if not enough data given
-		if (split.size < 3) {
-			return ""
-		}
+		val (type, info, placement) = input.split('_').takeIf { it.size >= 3 } ?: return ""
 		
 		// Get the leaderboard type but return empty if invalid type
-		val leaderboard = voteParty.leaderboardHandler.getLeaderboard(LeaderboardType.valueOf(split[0].toUpperCase())) ?: return ""
-		// Get the info type
-		val type = split[1]
-		// Get the placeholder
-		val index = split[2]
+		val leaderboard = LeaderboardType.find(type)?.let(voteParty.leaderboardHandler::getLeaderboard) ?: return ""
+		
 		// Get the user if the placeholder isn't null
-		val user = leaderboard.getEntry(Integer.parseInt(index)) ?: return ""
+		val user = placement.toIntOrNull()?.let(leaderboard::getEntry) ?: return ""
+		
 		// Return the correct data
-		return if (type == "name") user.name() else user.votes.toString()
+		return when (info)
+		{
+			"name"  -> user.name()
+			"votes" -> user.votes.toString()
+			else    -> ""
+		}
 	}
-
+	
 	/**
 	 * Get the placement of a player based on the given leaderboard type
 	 */
-	private fun getPlacement(input: String, offlinePlayer: OfflinePlayer) : String
+	private fun getPlacement(input: String, player: OfflinePlayer): String
 	{
-		val leaderboard = voteParty.leaderboardHandler.getLeaderboard(LeaderboardType.valueOf(input.toUpperCase())) ?: return ""
-		val user = voteParty.usersHandler[offlinePlayer]
-		val placement = leaderboard.getPlacement(user) ?: return ""
-		return placement.plus(1).toString()
+		val leaderboard = LeaderboardType.find(input)?.let(voteParty.leaderboardHandler::getLeaderboard) ?: return ""
+		
+		return leaderboard.getPlacement(voteParty.usersHandler[player])?.plus(1)?.toString() ?: ""
 	}
-
+	
 	/**
 	 * Get the amount of votes a player has based on the given leaderboard type
 	 */
-	private fun getVotes(input: String, offlinePlayer: OfflinePlayer) : String
+	private fun getVotes(input: String, player: OfflinePlayer): String
 	{
-		val type = LeaderboardType.valueOf(input.toUpperCase())
-		return voteParty.usersHandler.getVotesWithinRange(offlinePlayer, type.time.invoke()).toString()
+		return LeaderboardType.find(input)?.let { voteParty.usersHandler.getVotesWithinRange(player, it.time.invoke()) }?.toString() ?: ""
 	}
 	
 }
