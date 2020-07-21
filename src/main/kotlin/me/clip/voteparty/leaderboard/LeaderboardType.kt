@@ -1,13 +1,16 @@
 package me.clip.voteparty.leaderboard
 
-import java.time.Duration
+import me.clip.voteparty.exte.toMillis
+import java.time.DayOfWeek
+import java.time.LocalDate
+import java.time.temporal.TemporalAdjusters
 
-enum class LeaderboardType(val duration: Duration)
+enum class LeaderboardType(val time: () -> Long)
 {
-	DAILY(Duration.ofDays(1)),
-	WEEKLY(Duration.ofDays(7)),
-	MONTHLY(Duration.ofDays(30)),
-	ALLTIME(Duration.ofDays(365));
+	DAILY({ toMillis(LocalDate.now().atStartOfDay()) }),
+	WEEKLY({ toMillis(LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)).atStartOfDay()) }),
+	MONTHLY({ toMillis(LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()).atStartOfDay()) }),
+	ALLTIME({ toMillis(LocalDate.now().with(TemporalAdjusters.firstDayOfYear()).atStartOfDay()) });
 	
 	companion object
 	{
@@ -18,4 +21,5 @@ enum class LeaderboardType(val duration: Duration)
 			return values.find { it.name.equals(name, true) }
 		}
 	}
+
 }
