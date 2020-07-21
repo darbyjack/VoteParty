@@ -96,7 +96,7 @@ class VotePartyPlaceholders(private val voteParty: VoteParty) : PlaceholderExpan
 	private fun getVotes(input: String, offlinePlayer: OfflinePlayer) : String
 	{
 		val type = LeaderboardType.valueOf(input.toUpperCase())
-		return voteParty.usersHandler.getVotesWithinRange(offlinePlayer, type.time).toString()
+		return voteParty.usersHandler.getVotesWithinRange(offlinePlayer, type.time.invoke()).toString()
 	}
 	
 }
