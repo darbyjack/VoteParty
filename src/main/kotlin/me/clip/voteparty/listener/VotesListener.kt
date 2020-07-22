@@ -44,9 +44,9 @@ internal class VotesListener(override val plugin: VotePartyPlugin) : VotePartyLi
 		party.votesHandler.runGlobalCommands(online)
 		party.votesHandler.runAll(online)
 		
-		if (vote != null)
+		if (vote != "")
 		{
-			party.votesHandler.giveVotesiteVoteRewards(online, vote.serviceName)
+			party.votesHandler.giveVotesiteVoteRewards(online, vote)
 		}
 		
 		if (first)
