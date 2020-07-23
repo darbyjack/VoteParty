@@ -11,6 +11,8 @@ import org.bukkit.event.HandlerList
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 
@@ -84,7 +86,6 @@ class UsersHandler(override val plugin: VotePartyPlugin) : Addon, State, Listene
 
 	fun getVotesWithinRange(offlinePlayer: OfflinePlayer, epoch: Long) : Int
 	{
-		
 		return get(offlinePlayer).votes().count { it > epoch }
 	}
 	
@@ -96,6 +97,41 @@ class UsersHandler(override val plugin: VotePartyPlugin) : Addon, State, Listene
 				.sortedByDescending { it.votes }
 				.toList()
 	}
+	
+	fun getVotesSince(time: LocalDateTime): List<LeaderboardUser>
+	{
+		val timeEpoch = time.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+		
+		return cached.values.asSequence()
+				.distinct()
+				.filter()
+				{ user ->
+					user.votes().isNotEmpty()
+				}
+				.map()
+				{ user ->
+					
+					val votes = user.votes().count()
+					{ voteEpoch ->
+						voteEpoch >= timeEpoch
+					}
+					
+					LeaderboardUser(user, votes)
+				}
+				.sortedByDescending()
+				{ user ->
+					user.votes
+				}
+				.toList()
+	}
+	
+	fun getVotesSince(user: OfflinePlayer, time: LocalDateTime): Int
+	{
+		val timeEpoch = time.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+		
+		return get(user).votes().count { voteEpoch -> voteEpoch > timeEpoch }
+	}
+	
 	
 	@EventHandler
 	fun PlayerJoinEvent.onJoin()
