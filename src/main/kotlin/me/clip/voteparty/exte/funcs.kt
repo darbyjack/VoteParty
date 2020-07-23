@@ -49,11 +49,6 @@ internal fun msgAsString(issuer: CommandIssuer, key: MessageKeyProvider): String
 	return issuer.manager.getLocales().getMessage(issuer, key)
 }
 
-internal fun toMillis(time: LocalDateTime): Long
-{
-	return TimeUnit.MILLISECONDS.convert(time.toLocalTime().toNanoOfDay(), TimeUnit.NANOSECONDS)
-}
-
 
 internal fun Plugin.runTaskTimer(period: Long, task: BukkitRunnable.() -> Unit)
 {
