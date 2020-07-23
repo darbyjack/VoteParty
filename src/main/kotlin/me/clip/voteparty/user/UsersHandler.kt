@@ -10,7 +10,6 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.HandlerList
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
-import java.time.Duration
 import java.time.Instant
 import java.util.UUID
 import java.util.concurrent.TimeUnit
@@ -83,19 +82,17 @@ class UsersHandler(override val plugin: VotePartyPlugin) : Addon, State, Listene
 		return get(offlinePlayer).votes().count { it > time }
 	}
 
-	fun getVotesWithinRange(offlinePlayer: OfflinePlayer, amount: Long) : Int
+	fun getVotesWithinRange(offlinePlayer: OfflinePlayer, epoch: Long) : Int
 	{
-		val time = Instant.now().minusMillis(amount).toEpochMilli()
-		return get(offlinePlayer).votes().count { it > time }
+		
+		return get(offlinePlayer).votes().count { it > epoch }
 	}
 	
-	fun getVotesWithinRange(amount: Long) : List<LeaderboardUser>
+	fun getVotesWithinRange(epoch: Long) : List<LeaderboardUser>
 	{
-		val time = Instant.now().minusMillis(amount).toEpochMilli()
-		
 		return cached.values.asSequence().distinct()
 				.filter { it.votes().isNotEmpty() }
-				.map { LeaderboardUser(it, it.votes().count { it >= time }) }
+				.map { LeaderboardUser(it, it.votes().count { it >= epoch }) }
 				.sortedByDescending { it.votes }
 				.toList()
 	}
