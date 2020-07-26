@@ -9,6 +9,7 @@ depend:
   - 'PlaceholderAPI'
 softdepend:
   - 'Votifier'
+  - 'Plan'
 
 api-version: '1.13'
 description: 'Reward players with random commands being executed for them when the server gets x amount of votes'

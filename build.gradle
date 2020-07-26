@@ -18,6 +18,7 @@ allprojects {
 		maven { url = "https://dl.bintray.com/ichbinjoe/public/" }
 		maven { url = 'https://repo.aikar.co/content/groups/aikar/' }
 		maven { url = "https://repo.glaremasters.me/repository/public/" }
+		maven { url = "https://dl.bintray.com/rsl1122/Plan-repository/" }
 	}
 	
 	dependencies {
@@ -83,6 +84,9 @@ dependencies {
 
 	// NuVotifier hook
 	compileOnly "com.vexsoftware:nuvotifier-universal:2.6.0"
+	
+	// Plan extension
+	compileOnly "com.djrapitops:Plan-api:5.1-R0.4"
 
 	// command handler
 	implementation "co.aikar:acf-paper:0.5.0-SNAPSHOT"

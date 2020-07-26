@@ -2,6 +2,7 @@ package me.clip.voteparty
 
 import ch.jalu.configme.SettingsManager
 import co.aikar.commands.PaperCommandManager
+import com.djrapitops.plan.extension.ExtensionService
 import com.google.gson.Gson
 import me.clip.voteparty.base.State
 import me.clip.voteparty.cmds.CommandVoteParty
@@ -21,6 +22,7 @@ import me.clip.voteparty.listener.HooksListenerNuVotifier
 import me.clip.voteparty.listener.VotesListener
 import me.clip.voteparty.placeholders.VotePartyPlaceholders
 import me.clip.voteparty.plugin.VotePartyPlugin
+import me.clip.voteparty.plugin.extension.VotePartyExtensionFactory
 import me.clip.voteparty.user.UsersHandler
 import me.clip.voteparty.util.JarFileWalker
 import me.clip.voteparty.util.UpdateChecker
@@ -98,6 +100,12 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 		plugin.runTaskTimerAsync(conf().getProperty(PluginSettings.SAVE_INTERVAL).toLong() * 20L)
 		{
 			saveVotes()
+		}
+		
+		// plan extension
+		val extension = VotePartyExtensionFactory(this)
+		extension.createExtension().ifPresent {
+			ExtensionService.getInstance().register(it)
 		}
 	}
 	
