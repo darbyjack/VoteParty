@@ -12,7 +12,6 @@ import co.aikar.commands.annotation.Subcommand
 import co.aikar.commands.annotation.Syntax
 import co.aikar.commands.annotation.Values
 import co.aikar.commands.bukkit.contexts.OnlinePlayer
-import com.vexsoftware.votifier.model.Vote
 import me.clip.voteparty.base.Addon
 import me.clip.voteparty.conf.sections.PartySettings
 import me.clip.voteparty.events.VoteReceivedEvent
@@ -179,6 +178,11 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 		if (user.claimable <= 0)
 		{
 			return sendMessage(currentCommandIssuer, Messages.CLAIM__NONE)
+		}
+		
+		if (player.inventory.firstEmpty() == -1)
+		{
+			return sendMessage(currentCommandIssuer, Messages.CLAIM__FULL)
 		}
 		
 		party.votesHandler.runAll(player)
