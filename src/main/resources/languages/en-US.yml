@@ -28,6 +28,7 @@ votes:
   private-party-given: "&fYou've given a private &dVote Party &fto &d%player_name%&f!"
   private-party-received: "&fYou've received a private &dVote Party&f!"
   added-to-player: "&fYou've given {count} votes to %player_name%!"
+  inventory-full: "&fYour inventory seems to be full! We've put this vote in your claimables! Do /vp claim once your inventory isn't full!"
 crate:
   crate-given: "&fYou've given &d%player_name% &fvote crate(s)!"
   crate-received: "&fYou've received a vote crate!"
@@ -35,6 +36,7 @@ claim:
   success: "&fYou successfully claimed the rewards from an offline vote! You have &d{claim} &fleft to claim."
   none: "&fYou don't have any rewards to claim from offline votes!"
   notify: "&fHey there! You seemed to have voted while offline! You have some claiming rewards! Collect them by using &d/vp claim&f!"
+  full: "&aYour inventory is full! Make some space and try again!"
 help:
   header: "<strikethrough><dark_purple>      </strikethrough> <light_purple>VoteParty Help <strikethrough><dark_purple>      </dark_purple></strikethrough>"
   line-text: "<dark_gray>• <hover:show_text:'{line-hover}'><light_purple>/vp</light_purple> <white>{cmd}</white></hover>\n"
