@@ -29,6 +29,7 @@ votes:
   private-party-given: "&fDu har skänkt ett privat &dVote Party &ftill &d%player_name%&f!"
   private-party-received: "&fDu har fått ett privat &dVote Party&f!"
   added-to-player: "&fDu har gett {count} röster till %player_name%!"
+  inventory-full: "&fYour inventory seems to be full! We've put this vote in your claimables! Do /vp claim once your inventory isn't full!"
 crate:
   crate-given: "&fDu har gett &d%player_name% röstlådor!"
   crate-received: "&fDu har fått en röstlåda!"
@@ -36,6 +37,7 @@ claim:
   success: "&fDu har lyckats hämtat belöningarna från en offlineröst! Du har &d{claim} &fkvar att hämta."
   none: "&fDu har inga belöningar från offlineröster att hämta!"
   notify: "&fHej där! Du har röstat när du varit offline! Du har belöningar att hämta! Samla in dem genom kommandot &d/vp claim&f!"
+  full: "&aYour inventory is full! Make some space and try again!"
 help:
   header: "<strikethrough><dark_purple>      </strikethrough> <light_purple>VoteParty Help <strikethrough><dark_purple>      </dark_purple></strikethrough>"
   line-text: "<dark_gray>• <hover:show_text:'{line-hover}'><light_purple>/vp</light_purple> <white>{cmd}</white></hover>\n"

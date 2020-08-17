@@ -29,6 +29,7 @@ votes:
   private-party-given: "&f Vous avex donne des &dcaisse de votes &fa %player_name%&f!"
   private-party-received: "&fVous avez reçu un &dVote Party&f!"
   added-to-player: "&fVous avez donné {count} votes à %player_name%!"
+  inventory-full: "&fYour inventory seems to be full! We've put this vote in your claimables! Do /vp claim once your inventory isn't full!"
 crate:
   crate-given: "&fVous avez donné à &d%player_name% &f une vote crate(s)!"
   crate-received: "&fVous avez reçu une caisse de vote !"
@@ -36,6 +37,7 @@ claim:
   success: "&fVous avez réclamé les récompenses pour un vote hors ligne ! Il vous reste &d{claim} &fà récupérer."
   none: "&fVous n'avez aucune récompense à réclamer pour des votes hors ligne !"
   notify: "&fHé là! Vous semblez avoir voté pendant que vous étiez hors ligne! Vous pouvez réclamer des récompenses! Collectez-les avec &d/vp claim&f!"
+  full: "&aYour inventory is full! Make some space and try again!"
 help:
   header: "<strikethrough><dark_purple>      </strikethrough> <light_purple>VoteParty Help <strikethrough><dark_purple>      </dark_purple></strikethrough>"
   line-text: "<dark_gray>• <hover:show_text:'{line-hover}'><light_purple>/vp</light_purple> <white>{cmd}</white></hover>\n"
