@@ -4,7 +4,7 @@ version '2.0'
 
 repositories {
 	maven {
-		url = "https://repo.inventivetalent.org/content/groups/public/"
+		url = "https://repo.glaremasters.me/repository/public/"
 	}
 }
 
