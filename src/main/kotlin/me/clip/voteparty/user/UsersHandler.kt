@@ -142,6 +142,7 @@ class UsersHandler(override val plugin: VotePartyPlugin) : Addon, State, Listene
 		{
 			cached -= old.name.toLowerCase()
 			cached[player.name.toLowerCase()] = old
+			old.name = player.name
 		}
 		
 		if (old == null)

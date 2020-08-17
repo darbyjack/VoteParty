@@ -41,6 +41,12 @@ internal class VotesListener(override val plugin: VotePartyPlugin) : VotePartyLi
 		
 		val online = player.player ?: return
 		
+		if (online.inventory.firstEmpty() == -1)
+		{
+			user.claimable++
+			return sendMessage(party.manager().getCommandIssuer(online), Messages.VOTES__INVENTORY_FULL)
+		}
+		
 		party.votesHandler.runGlobalCommands(online)
 		party.votesHandler.runAll(online)
 		
