@@ -29,6 +29,7 @@ votes:
   private-party-given: "&fJe hebt een privé &dVote Party &fgegeven aan &d%player_name%&f!"
   private-party-received: "&fJe hebt een privé &dVote Party&f ontvangen!"
   added-to-player: "&fYou've given {count} votes to %player_name%!"
+  inventory-full: "&fYour inventory seems to be full! We've put this vote in your claimables! Do /vp claim once your inventory isn't full!"
 crate:
   crate-given: "&fJe hebt &d%player_name% &fvote crate(s) gegeven!"
   crate-received: "&fJe hebt een vote crate ontvangen!"
@@ -36,6 +37,7 @@ claim:
   success: "&fJe hebt succesvol de beloningen geclaimd van een offline stem! Je hebt &d{claim} &fover om te claimen."
   none: "&fJe hebt geen beloningen die je kunt claimen van offline stemmen!"
   notify: "&fHey daar! Je leek te hebben gestemd terwijl je offline was! Je hebt enkele claim beloningen beschikbaar! Verzamel ze met behulp van &d/vp claim&f!"
+  full: "&aYour inventory is full! Make some space and try again!"
 help:
   header: "<strikethrough><dark_purple>      </strikethrough> <light_purple>VoteParty Help <strikethrough><dark_purple>      </dark_purple></strikethrough>"
   line-text: "<dark_gray>• <hover:show_text:'{line-hover}'><light_purple>/vp</light_purple> <white>{cmd}</white></hover>\n"
