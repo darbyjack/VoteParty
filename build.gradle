@@ -1,5 +1,5 @@
 plugins {
-	id 'org.jetbrains.kotlin.jvm' version '1.4.0'
+	id 'org.jetbrains.kotlin.jvm' version '1.4.10'
 	id 'com.github.johnrengelman.shadow' version '6.0.0' apply false
 	id "org.sonarqube" version "2.7"
 }
@@ -8,7 +8,7 @@ allprojects {
 	apply plugin: 'org.jetbrains.kotlin.jvm'
 	
 	group 'me.clip'
-	version '2.19'
+	version '2.20-DEV'
 	
 	repositories {
 		mavenCentral()
@@ -16,7 +16,8 @@ allprojects {
 		maven { url = "https://oss.sonatype.org/content/repositories/snapshots/" }
 		maven { url = "https://papermc.io/repo/repository/maven-public/" }
 		maven { url = "https://dl.bintray.com/ichbinjoe/public/" }
-		maven { url = 'https://repo.aikar.co/content/groups/aikar/' }
+		maven { url = "https://repo.aikar.co/content/groups/aikar/" }
+		maven { url = "https://repo.extendedclip.com/content/repositories/placeholderapi/" }
 		maven { url = "https://repo.glaremasters.me/repository/public/" }
 	}
 	
@@ -79,7 +80,7 @@ dependencies {
 	implementation "ch.jalu:configme:1.2.0-SNAPSHOT"
 
 	// placeholderapi
-	compileOnly "me.clip:placeholderapi:2.10.6"
+	compileOnly "me.clip:placeholderapi:2.10.9"
 
 	// NuVotifier hook
 	compileOnly "com.vexsoftware:nuvotifier-universal:2.6.0"
@@ -89,7 +90,7 @@ dependencies {
 
 	// json stuff
 	implementation "net.kyori:adventure-platform-bukkit:4.0.0-SNAPSHOT"
-	implementation "net.kyori:adventure-text-minimessage:3.0.0-SNAPSHOT"
+	implementation "net.kyori:adventure-text-minimessage:4.0.0-SNAPSHOT"
 	
 	implementation project(":version")
 	implementation project(":version_old")
