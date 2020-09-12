@@ -70,6 +70,7 @@ shadowJar {
 	relocate("co.aikar.locales", "me.clip.voteparty.libs.locales")
 	relocate("ch.jalu.configme", "me.clip.voteparty.libs.configme")
 	relocate("net.kyori", "me.clip.voteparty.libs.kyori")
+	relocate("kotlin", "me.clip.voteparty.libs.kotlin")
 	archiveFileName = "VoteParty-${project.version}.jar"
 }
 
