@@ -24,7 +24,7 @@ allprojects {
 	dependencies {
 		// kotlin
 		implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-
+		
 		// spigot
 		compileOnly "org.spigotmc:spigot-api:+"
 		
@@ -69,6 +69,7 @@ shadowJar {
 	relocate("co.aikar.commands", "me.clip.voteparty.libs.acf")
 	relocate("co.aikar.locales", "me.clip.voteparty.libs.locales")
 	relocate("ch.jalu.configme", "me.clip.voteparty.libs.configme")
+	relocate("org.inventivetalent", "me.clip.voteparty.libs.inventivetalent")
 	relocate("net.kyori", "me.clip.voteparty.libs.kyori")
 	relocate("kotlin", "me.clip.voteparty.libs.kotlin")
 	archiveFileName = "VoteParty-${project.version}.jar"
@@ -76,19 +77,19 @@ shadowJar {
 
 
 dependencies {
-
+	
 	// config
 	implementation "ch.jalu:configme:1.2.0-SNAPSHOT"
-
+	
 	// placeholderapi
 	compileOnly "me.clip:placeholderapi:2.10.9"
-
+	
 	// NuVotifier hook
 	compileOnly "com.vexsoftware:nuvotifier-universal:2.6.0"
-
+	
 	// command handler
 	implementation "co.aikar:acf-paper:0.5.0-SNAPSHOT"
-
+	
 	// json stuff
 	implementation "net.kyori:adventure-platform-bukkit:4.0.0-SNAPSHOT"
 	implementation "net.kyori:adventure-text-minimessage:4.0.0-SNAPSHOT"
