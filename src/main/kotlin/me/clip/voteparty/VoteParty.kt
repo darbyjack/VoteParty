@@ -183,6 +183,11 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 	
 	private fun loadCmds()
 	{
+		if (conf().getProperty(PluginSettings.BRIGADIER))
+		{
+			cmds.enableUnstableAPI("brigadier")
+		}
+		
 		cmds.locales.defaultLocale = Locale.forLanguageTag(conf().getProperty(PluginSettings.LANGUAGE) ?: "en-US")
 		
 		cmds.commandCompletions.registerCompletion("online")

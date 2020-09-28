@@ -21,6 +21,10 @@ internal object PluginSettings : SettingsHolder
 	@Comment("How often to save the current amount of votes (in seconds)")
 	val SAVE_INTERVAL: Property<Int> = newProperty("settings.counter.save-interval", 300)
 	
+	@JvmField
+	@Comment("Would you like to enable Brigadier command support? (I think it does more than just pretty colors) 1.13+")
+	val BRIGADIER: Property<Boolean> = newProperty("settings.brigadier", false);
+	
 	
 	override fun registerComments(conf: CommentsConfiguration)
 	{
