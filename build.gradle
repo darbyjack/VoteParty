@@ -8,7 +8,7 @@ allprojects {
 	apply plugin: 'org.jetbrains.kotlin.jvm'
 	
 	group 'me.clip'
-	version '2.20'
+	version '2.21-DEV'
 	
 	repositories {
 		mavenCentral()
