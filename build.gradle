@@ -79,7 +79,7 @@ shadowJar {
 dependencies {
 	
 	// config
-	implementation "ch.jalu:configme:1.2.0-SNAPSHOT"
+	implementation "ch.jalu:configme:1.2.0"
 	
 	// placeholderapi
 	compileOnly "me.clip:placeholderapi:2.10.9"
