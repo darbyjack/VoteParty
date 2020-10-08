@@ -196,7 +196,7 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 	@CommandPermission("voteparty.help")
 	fun help(issuer: CommandIssuer)
 	{
-		party.audiences().audience(issuer.getIssuer()).sendMessage(helpMenu(issuer))
+		party.audiences().sender(issuer.getIssuer()).sendMessage(helpMenu(issuer))
 	}
 	
 	@Default
