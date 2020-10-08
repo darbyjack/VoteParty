@@ -3,7 +3,7 @@ package me.clip.voteparty.conf.sections
 import ch.jalu.configme.SettingsHolder
 import ch.jalu.configme.properties.Property
 import ch.jalu.configme.properties.PropertyInitializer.*
-import me.clip.voteparty.plugin.XMaterial
+import com.cryptomorin.xseries.XMaterial
 
 internal object CrateSettings : SettingsHolder
 {

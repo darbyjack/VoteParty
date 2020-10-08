@@ -1,6 +1,6 @@
 plugins {
 	id 'org.jetbrains.kotlin.jvm' version '1.4.10'
-	id 'com.github.johnrengelman.shadow' version '6.0.0' apply false
+	id 'com.github.johnrengelman.shadow' version '6.1.0' apply false
 	id "org.sonarqube" version "2.7"
 }
 
@@ -71,6 +71,7 @@ shadowJar {
 	relocate("ch.jalu.configme", "me.clip.voteparty.libs.configme")
 	relocate("org.inventivetalent", "me.clip.voteparty.libs.inventivetalent")
 	relocate("net.kyori", "me.clip.voteparty.libs.kyori")
+	relocate("com.cryptomorin.xseries", "me.clip.voteparty.libs.xseries")
 	relocate("kotlin", "me.clip.voteparty.libs.kotlin")
 	archiveFileName = "VoteParty-${project.version}.jar"
 }
@@ -89,6 +90,9 @@ dependencies {
 	
 	// command handler
 	implementation "co.aikar:acf-paper:0.5.0-SNAPSHOT"
+	
+	// Support for materials across all versions
+	implementation "com.github.cryptomorin:XSeries:7.5.3"
 	
 	// json stuff
 	implementation "net.kyori:adventure-platform-bukkit:4.0.0-SNAPSHOT"
