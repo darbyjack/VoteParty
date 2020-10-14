@@ -7,6 +7,7 @@ import me.clip.placeholderapi.PlaceholderAPI
 import me.clip.voteparty.base.Addon
 import me.clip.voteparty.conf.objects.Command
 import me.clip.voteparty.conf.sections.PluginSettings
+import net.kyori.adventure.identity.Identity
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
@@ -16,8 +17,6 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.plugin.Plugin
 import org.bukkit.scheduler.BukkitRunnable
-import java.time.LocalDateTime
-import java.util.concurrent.TimeUnit
 
 
 internal fun color(message: String): String
@@ -41,7 +40,7 @@ internal fun Addon.sendMessage(receiver: CommandIssuer, message: MessageKeyProvi
 	
 	val result = formMessage(Bukkit.getOfflinePlayer(placeholderTarget?.uniqueId ?: receiver.uniqueId), (party.conf().getProperty(PluginSettings.PREFIX) ?: PREFIX) + msg)
 	
-	party.audiences().sender(receiver.getIssuer()).sendMessage(if (receiver.isPlayer) MiniMessage.get().parse(result) else MiniMessage.get().parse(MiniMessage.get().stripTokens(result)))
+	party.audiences().sender(receiver.getIssuer()).sendMessage(Identity.nil(), if (receiver.isPlayer) MiniMessage.get().parse(result) else MiniMessage.get().parse(MiniMessage.get().stripTokens(result)))
 }
 
 internal fun msgAsString(issuer: CommandIssuer, key: MessageKeyProvider): String

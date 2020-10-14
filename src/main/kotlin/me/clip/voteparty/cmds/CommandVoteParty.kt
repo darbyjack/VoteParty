@@ -21,6 +21,7 @@ import me.clip.voteparty.exte.helpMenu
 import me.clip.voteparty.exte.sendMessage
 import me.clip.voteparty.messages.Messages
 import me.clip.voteparty.plugin.VotePartyPlugin
+import net.kyori.adventure.identity.Identity
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import java.util.concurrent.TimeUnit
@@ -196,7 +197,7 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 	@CommandPermission("voteparty.help")
 	fun help(issuer: CommandIssuer)
 	{
-		party.audiences().sender(issuer.getIssuer()).sendMessage(helpMenu(issuer))
+		party.audiences().sender(issuer.getIssuer()).sendMessage(Identity.nil(), helpMenu(issuer))
 	}
 	
 	@Default
