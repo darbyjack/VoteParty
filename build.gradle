@@ -92,7 +92,7 @@ dependencies {
 	implementation "co.aikar:acf-paper:0.5.0-SNAPSHOT"
 	
 	// Support for materials across all versions
-	implementation "com.github.cryptomorin:XSeries:7.5.3"
+	implementation "com.github.cryptomorin:XSeries:7.5.4"
 	
 	// json stuff
 	implementation "net.kyori:adventure-platform-bukkit:4.0.0-SNAPSHOT"
