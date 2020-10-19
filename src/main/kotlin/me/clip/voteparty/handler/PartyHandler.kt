@@ -26,6 +26,10 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 	
 	fun giveRandomPartyRewards(player: Player)
 	{
+		if (player.world.name in party.conf().getProperty(PartySettings.DISABLED_WORLDS)) {
+			return
+		}
+		
 		val settings = party.conf().getProperty(PartySettings.REWARD_COMMANDS)
 		
 		if (!settings.enabled || settings.max_possible <= 0 || settings.commands.isEmpty())
@@ -59,6 +63,10 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 	
 	fun givePermissionPartyRewards(player: Player)
 	{
+		if (player.world.name in party.conf().getProperty(PartySettings.DISABLED_WORLDS)) {
+			return
+		}
+		
 		val settings = party.conf().getProperty(PartySettings.PERMISSION_PARTY_REWARDS)
 		
 		if (!settings.enabled || settings.permCommands.isEmpty())
