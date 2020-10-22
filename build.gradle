@@ -1,14 +1,13 @@
 plugins {
 	id 'org.jetbrains.kotlin.jvm' version '1.4.10'
 	id 'com.github.johnrengelman.shadow' version '6.1.0' apply false
-	id "org.sonarqube" version "2.7"
 }
 
 allprojects {
 	apply plugin: 'org.jetbrains.kotlin.jvm'
 	
 	group 'me.clip'
-	version '2.21'
+	version '2.22-DEV'
 	
 	repositories {
 		mavenCentral()
