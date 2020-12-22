@@ -37,6 +37,10 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 			return
 		}
 		
+		if (player.world.name in party.conf().getProperty(PartySettings.DISABLED_WORLDS)) {
+			return
+		}
+		
 		val iter = settings.commands.takeRandomly(settings.max_possible).iterator()
 		
 		plugin.runTaskTimer(party.conf().getProperty(PartySettings.COMMAND_DELAY).toLong() * 20L)
@@ -71,6 +75,10 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 		
 		if (!settings.enabled || settings.permCommands.isEmpty())
 		{
+			return
+		}
+		
+		if (player.world.name in party.conf().getProperty(PartySettings.DISABLED_WORLDS)) {
 			return
 		}
 		
