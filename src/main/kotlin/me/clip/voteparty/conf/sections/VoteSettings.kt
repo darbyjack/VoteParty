@@ -9,9 +9,7 @@ import ch.jalu.configme.properties.PropertyInitializer.newProperty
 import me.clip.voteparty.conf.mapper.SingleValueToCollectionMapper
 import me.clip.voteparty.conf.objects.Command
 import me.clip.voteparty.conf.objects.Commands
-import me.clip.voteparty.conf.objects.CumulativeType
-import me.clip.voteparty.conf.objects.CumulativeVoteCommands
-import me.clip.voteparty.conf.objects.CumulativeVoteRewards
+import me.clip.voteparty.conf.objects.CumulativeVoting
 import me.clip.voteparty.conf.objects.PermCommands
 import me.clip.voteparty.conf.objects.PermRewards
 import me.clip.voteparty.conf.objects.RewardsPerEvent
@@ -62,6 +60,6 @@ internal object VoteSettings : SettingsHolder
 	
 	@JvmField
 	@Comment("Configuration for extra commands to be executed on players who have voted a specific amount of times in the past day, week, and month.")
-	val CUMULATIVE_VOTE_REWARDS: Property<CumulativeVoteRewards> = newBeanProperty(CumulativeVoteRewards::class.java, "voting.cumulative-rewards", CumulativeVoteRewards(CumulativeType.DAILY,false, listOf(CumulativeVoteCommands(5, listOf("eco give %player_name% 500")))))
+	val CUMULATIVE_VOTE_REWARDS: Property<CumulativeVoting> = newBeanProperty(CumulativeVoting::class.java, "voting.cumulative-rewards", CumulativeVoting())
 	
 }
