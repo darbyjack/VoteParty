@@ -134,7 +134,7 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 	
 	fun buildCrate(amount: Int): ItemStack
 	{
-		val item = party.conf().getProperty(CrateSettings.MATERIAL).parseItem(true) ?: ItemStack(Material.CHEST, 1)
+		val item = party.conf().getProperty(CrateSettings.MATERIAL).parseItem() ?: ItemStack(Material.CHEST, 1)
 		item.amount = amount
 		
 		return item.meta()
