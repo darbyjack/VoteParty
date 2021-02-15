@@ -8,6 +8,7 @@ import me.clip.voteparty.conf.sections.VoteData
 import me.clip.voteparty.conf.sections.VoteSettings
 import me.clip.voteparty.exte.formMessage
 import me.clip.voteparty.exte.takeRandomly
+import me.clip.voteparty.leaderboard.LeaderboardType
 import me.clip.voteparty.plugin.VotePartyPlugin
 import me.clip.voteparty.version.EffectType
 import org.bukkit.entity.Player
@@ -86,6 +87,74 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon, State
 		settings.permCommands.filter { player.hasPermission(it.permission) }.forEach()
 		{ perm ->
 			perm.commands.forEach()
+			{ command ->
+				server.dispatchCommand(server.consoleSender, formMessage(player, command))
+			}
+		}
+	}
+
+	fun checkDailyCumulative(player: Player)
+	{
+		val settings = party.conf().getProperty(VoteSettings.CUMULATIVE_VOTE_REWARDS)
+
+		if (!settings.daily.enabled || settings.daily.entries.isEmpty())
+		{
+			return
+		}
+
+		settings.daily.entries.filter { entry -> entry.votes == party.usersHandler.getVotesSince(player, LeaderboardType.DAILY.time.invoke()) }.forEach { entry ->
+			entry.commands.forEach()
+			{ command ->
+				server.dispatchCommand(server.consoleSender, formMessage(player, command))
+			}
+		}
+	}
+
+	fun checkWeeklyCumulative(player: Player)
+	{
+		val settings = party.conf().getProperty(VoteSettings.CUMULATIVE_VOTE_REWARDS)
+
+		if (!settings.weekly.enabled || settings.weekly.entries.isEmpty())
+		{
+			return
+		}
+
+		settings.weekly.entries.filter { entry -> entry.votes == party.usersHandler.getVotesSince(player, LeaderboardType.WEEKLY.time.invoke()) }.forEach { entry ->
+			entry.commands.forEach()
+			{ command ->
+				server.dispatchCommand(server.consoleSender, formMessage(player, command))
+			}
+		}
+	}
+
+	fun checkMonthlyCumulative(player: Player)
+	{
+		val settings = party.conf().getProperty(VoteSettings.CUMULATIVE_VOTE_REWARDS)
+
+		if (!settings.monthly.enabled || settings.monthly.entries.isEmpty())
+		{
+			return
+		}
+
+		settings.monthly.entries.filter { entry -> entry.votes == party.usersHandler.getVotesSince(player, LeaderboardType.MONTHLY.time.invoke()) }.forEach { entry ->
+			entry.commands.forEach()
+			{ command ->
+				server.dispatchCommand(server.consoleSender, formMessage(player, command))
+			}
+		}
+	}
+
+	fun checkTotalCumulative(player: Player)
+	{
+		val settings = party.conf().getProperty(VoteSettings.CUMULATIVE_VOTE_REWARDS)
+
+		if (!settings.total.enabled || settings.total.entries.isEmpty())
+		{
+			return
+		}
+
+		settings.total.entries.filter { entry -> entry.votes == party.usersHandler.getVotesSince(player, LeaderboardType.ALLTIME.time.invoke()) }.forEach { entry ->
+			entry.commands.forEach()
 			{ command ->
 				server.dispatchCommand(server.consoleSender, formMessage(player, command))
 			}
