@@ -12,7 +12,7 @@ import me.clip.voteparty.conf.sections.PluginSettings
 import me.clip.voteparty.conf.sections.VoteSettings
 import java.io.File
 
-internal class VotePartyConfiguration(file: File) : SettingsManagerImpl(YamlFileResource(file), ConfigurationDataBuilder.createConfiguration(SECTIONS), VoteMigrationService())
+internal class VotePartyConfiguration(file: File) : SettingsManagerImpl(YamlFileResource(file.toPath()), ConfigurationDataBuilder.createConfiguration(SECTIONS), VoteMigrationService())
 {
 	
 	private companion object
