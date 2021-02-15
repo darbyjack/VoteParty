@@ -144,6 +144,23 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon, State
 		}
 	}
 
+	fun checkYearlyCumulative(player: Player)
+	{
+		val settings = party.conf().getProperty(VoteSettings.CUMULATIVE_VOTE_REWARDS)
+
+		if (!settings.yearly.enabled || settings.yearly.entries.isEmpty())
+		{
+			return
+		}
+
+		settings.yearly.entries.filter { entry -> entry.votes == party.usersHandler.getVotesSince(player, LeaderboardType.ANNUALLY.time.invoke()) }.forEach { entry ->
+			entry.commands.forEach()
+			{ command ->
+				server.dispatchCommand(server.consoleSender, formMessage(player, command))
+			}
+		}
+	}
+
 	fun checkTotalCumulative(player: Player)
 	{
 		val settings = party.conf().getProperty(VoteSettings.CUMULATIVE_VOTE_REWARDS)

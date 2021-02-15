@@ -59,7 +59,7 @@ internal object VoteSettings : SettingsHolder
 	val OFFLINE_VOTE_CLAIMING_NOTIFY: Property<Boolean> = newProperty("voting.offline_vote_claiming.notify", false)
 	
 	@JvmField
-	@Comment("Configuration for extra commands to be executed on players who have voted a specific amount of times in the past day, week, month, and all time.")
+	@Comment("Configuration for extra commands to be executed on players who have voted a specific amount of times in the past day, week, month, year, and all time.")
 	val CUMULATIVE_VOTE_REWARDS: Property<CumulativeVoting> = newBeanProperty(CumulativeVoting::class.java, "voting.cumulative-rewards", CumulativeVoting())
 	
 }
