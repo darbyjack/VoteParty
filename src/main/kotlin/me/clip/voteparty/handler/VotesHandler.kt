@@ -143,6 +143,23 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon, State
 			}
 		}
 	}
+
+	fun checkTotalCumulative(player: Player)
+	{
+		val settings = party.conf().getProperty(VoteSettings.CUMULATIVE_VOTE_REWARDS)
+
+		if (!settings.total.enabled || settings.total.entries.isEmpty())
+		{
+			return
+		}
+
+		settings.daily.entries.filter { entry -> entry.votes == party.usersHandler[player].votes().size }.forEach { entry ->
+			entry.commands.forEach()
+			{ command ->
+				server.dispatchCommand(server.consoleSender, formMessage(player, command))
+			}
+		}
+	}
 	
 	fun giveVotesiteVoteRewards(player: Player, serviceName: String)
 	{
