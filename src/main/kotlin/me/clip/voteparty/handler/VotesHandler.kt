@@ -153,7 +153,7 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon, State
 			return
 		}
 
-		settings.daily.entries.filter { entry -> entry.votes == party.usersHandler[player].votes().size }.forEach { entry ->
+		settings.total.entries.filter { entry -> entry.votes == party.usersHandler.getVotesSince(player, LeaderboardType.ALLTIME.time.invoke()) }.forEach { entry ->
 			entry.commands.forEach()
 			{ command ->
 				server.dispatchCommand(server.consoleSender, formMessage(player, command))
