@@ -9,6 +9,7 @@ import ch.jalu.configme.properties.PropertyInitializer.newProperty
 import me.clip.voteparty.conf.mapper.SingleValueToCollectionMapper
 import me.clip.voteparty.conf.objects.Command
 import me.clip.voteparty.conf.objects.Commands
+import me.clip.voteparty.conf.objects.CumulativeVoting
 import me.clip.voteparty.conf.objects.PermCommands
 import me.clip.voteparty.conf.objects.PermRewards
 import me.clip.voteparty.conf.objects.RewardsPerEvent
@@ -56,5 +57,9 @@ internal object VoteSettings : SettingsHolder
 	@JvmField
 	@Comment("Would you like to notify the player when they login that they have votes to claim?")
 	val OFFLINE_VOTE_CLAIMING_NOTIFY: Property<Boolean> = newProperty("voting.offline_vote_claiming.notify", false)
+	
+	@JvmField
+	@Comment("Configuration for extra commands to be executed on players who have voted a specific amount of times in the past day, week, month, and all time.")
+	val CUMULATIVE_VOTE_REWARDS: Property<CumulativeVoting> = newBeanProperty(CumulativeVoting::class.java, "voting.cumulative-rewards", CumulativeVoting())
 	
 }
