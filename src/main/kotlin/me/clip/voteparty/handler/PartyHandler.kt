@@ -37,6 +37,10 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 			return
 		}
 		
+		if (player.world.name in party.conf().getProperty(PartySettings.DISABLED_WORLDS)) {
+			return
+		}
+		
 		val iter = settings.commands.takeRandomly(settings.max_possible).iterator()
 		
 		plugin.runTaskTimer(party.conf().getProperty(PartySettings.COMMAND_DELAY).toLong() * 20L)
@@ -71,6 +75,10 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 		
 		if (!settings.enabled || settings.permCommands.isEmpty())
 		{
+			return
+		}
+		
+		if (player.world.name in party.conf().getProperty(PartySettings.DISABLED_WORLDS)) {
 			return
 		}
 		
@@ -126,7 +134,7 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 	
 	fun buildCrate(amount: Int): ItemStack
 	{
-		val item = party.conf().getProperty(CrateSettings.MATERIAL).parseItem(true) ?: ItemStack(Material.CHEST, 1)
+		val item = party.conf().getProperty(CrateSettings.MATERIAL).parseItem() ?: ItemStack(Material.CHEST, 1)
 		item.amount = amount
 		
 		return item.meta()

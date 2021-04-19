@@ -59,6 +59,12 @@ internal class VotesListener(override val plugin: VotePartyPlugin) : VotePartyLi
 		{
 			party.votesHandler.giveFirstTimeVoteRewards(online)
 		}
+
+		party.votesHandler.checkDailyCumulative(online)
+		party.votesHandler.checkWeeklyCumulative(online)
+		party.votesHandler.checkMonthlyCumulative(online)
+		party.votesHandler.checkYearlyCumulative(online)
+		party.votesHandler.checkTotalCumulative(online)
 		
 		party.votesHandler.playerVoteEffects(online)
 	}
