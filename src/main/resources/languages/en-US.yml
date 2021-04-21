@@ -10,6 +10,7 @@ descriptions:
   totalvotes: "Get the total amount of votes a player has."
   resetvotes: "Reset the amount of votes a player has."
   claim: "Claim rewards from offline votes."
+  claimall: "Claim all rewards from offline votes at once."
 error:
   invalid-number: "&fSorry, but this number must be positive in order to work correctly!"
   disabled-world: "&fSorry, but this player is currently in a disabled world!"
@@ -34,9 +35,11 @@ crate:
   crate-received: "&fYou've received a vote crate!"
 claim:
   success: "&fYou successfully claimed the rewards from an offline vote! You have &d{claim} &fleft to claim."
+  success-all: "&fYou successfully claimed the rewards for all offline votes!"
   none: "&fYou don't have any rewards to claim from offline votes!"
   notify: "&fHey there! You seemed to have voted while offline! You have some claiming rewards! Collect them by using &d/vp claim&f!"
   full: "&aYour inventory is full! Make some space and try again!"
+  full-all: "&aYour inventory is full! Make some space and try again! You have claimed &d{claimed} &aoffline rewards. You have &d{claim} &aleft to claim."
 help:
   header: "<strikethrough><dark_purple>      </strikethrough> <light_purple>VoteParty Help <strikethrough><dark_purple>      </dark_purple></strikethrough>"
   line-text: "<dark_gray>• <hover:show_text:'{line-hover}'><light_purple>/vp</light_purple> <white>{cmd}</white></hover>\n"
