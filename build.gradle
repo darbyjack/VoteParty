@@ -1,57 +1,56 @@
 plugins {
-	id 'org.jetbrains.kotlin.jvm' version '1.4.31'
-	id 'com.github.johnrengelman.shadow' version '6.1.0' apply false
+	id 'org.jetbrains.kotlin.jvm' version '1.5.10'
+	id 'com.github.johnrengelman.shadow' version '7.0.0' apply false
 }
 
 allprojects {
 	apply plugin: 'org.jetbrains.kotlin.jvm'
-	
+
+	archivesBaseName = 'VoteParty'
 	group 'me.clip'
-	version '2.24'
-	
+	version '2.25'
+
 	repositories {
 		mavenCentral()
-		
+
 		maven { url = "https://oss.sonatype.org/content/repositories/snapshots/" }
 		maven { url = "https://papermc.io/repo/repository/maven-public/" }
-		maven { url = "https://dl.bintray.com/ichbinjoe/public/" }
 		maven { url = "https://repo.aikar.co/content/groups/aikar/" }
 		maven { url = "https://repo.extendedclip.com/content/repositories/placeholderapi/" }
 		maven { url = "https://repo.glaremasters.me/repository/public/" }
 	}
-	
+
 	dependencies {
 		// kotlin
 		implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-		
+
 		// spigot
 		compileOnly "org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT"
-		
+
 		// testing
 		compileOnly "org.jetbrains.kotlin:kotlin-reflect"
-		testCompile "org.junit.jupiter:junit-jupiter-engine:5.6.0"
-		testRuntime "org.junit.jupiter:junit-jupiter-engine:5.6.0"
+		testImplementation "org.junit.jupiter:junit-jupiter-engine:5.6.0"
+		testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.6.0"
 	}
-	
-	
+
 	test {
 		useJUnitPlatform()
 	}
-	
+
 	sourceSets {
 		test.compileClasspath += configurations.compileOnly
 		test.runtimeClasspath += configurations.compileOnly
 	}
-	
+
 	sourceCompatibility = JavaVersion.VERSION_1_8
 	targetCompatibility = JavaVersion.VERSION_1_8
-	
+
 	compileJava {
 		options.compilerArgs += ["-parameters"]
 		options.fork = true
 		options.forkOptions.executable = 'javac'
 	}
-	
+
 	compileKotlin {
 		kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8
 		kotlinOptions.javaParameters = true
@@ -77,36 +76,31 @@ shadowJar {
 
 
 dependencies {
-	
+
 	// config
 	implementation "ch.jalu:configme:1.2.0"
-	
+
 	// placeholderapi
 	compileOnly "me.clip:placeholderapi:2.10.9"
-	
+
 	// NuVotifier hook
-	compileOnly "com.vexsoftware:nuvotifier-universal:2.6.0"
-	
+	compileOnly files("libs/nuvotifier-2.7.1.jar")
+
 	// command handler
 	implementation "co.aikar:acf-paper:0.5.0-SNAPSHOT"
-	
+
 	// Support for materials across all versions
-	implementation "com.github.cryptomorin:XSeries:7.8.0"
-	
+	implementation "com.github.cryptomorin:XSeries:7.9.1.1"
+
 	// json stuff
 	implementation "net.kyori:adventure-platform-bukkit:4.0.0-SNAPSHOT"
-	implementation "net.kyori:adventure-text-minimessage:4.0.0-SNAPSHOT"
-	
+	implementation "net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT"
+
 	implementation project(":version")
 	implementation project(":version_old")
 	implementation project(":version_new")
 }
 
-import org.apache.tools.ant.filters.ReplaceTokens
-
-
 processResources {
-	from(sourceSets.main.resources.srcDirs) {
-		filter ReplaceTokens, tokens: [version: version]
-	}
+	filter org.apache.tools.ant.filters.ReplaceTokens, tokens: [version: version]
 }
