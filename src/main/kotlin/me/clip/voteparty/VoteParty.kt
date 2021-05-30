@@ -174,9 +174,11 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 		val new = YamlConfiguration.loadConfiguration(stream.reader())
 		val old = YamlConfiguration.loadConfiguration(outside)
 		
-		for (path in new.getKeys(false))
+		for (path in new.getKeys(true))
 		{
-			old.set(path, old.get(path, new.get(path)))
+			if (!old.contains(path)) {
+				old.set(path, old.get(path, new.get(path)))
+			}
 		}
 		old.save(outside)
 	}

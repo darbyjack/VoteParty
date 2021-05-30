@@ -40,8 +40,9 @@ internal class VotesListener(override val plugin: VotePartyPlugin) : VotePartyLi
 		party.votesHandler.addVotes(1)
 		
 		val online = player.player ?: return
-		
-		if (online.inventory.firstEmpty() == -1)
+
+
+		if (online.inventory.firstEmpty() == -1 && party.conf().getProperty(VoteSettings.CLAIMABLE_IF_FULL))
 		{
 			user.claimable++
 			return sendMessage(party.manager().getCommandIssuer(online), Messages.VOTES__INVENTORY_FULL)

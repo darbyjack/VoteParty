@@ -18,7 +18,11 @@ import me.clip.voteparty.conf.objects.VotesiteRewards
 
 internal object VoteSettings : SettingsHolder
 {
-	
+
+	@JvmField
+	@Comment("If a player's inventory is full when voting, do you want to send the vote to a /vote claim?")
+	val CLAIMABLE_IF_FULL: Property<Boolean> = newProperty("voting.claim_if_full", true)
+
 	@JvmField
 	@Comment("Configuration for chance rewards to be given for voting.", "Add as many commands as you want, set their chance, and choose the max amount a player can earn!")
 	val PER_VOTE_REWARDS: Property<RewardsPerEvent> = BeanProperty(RewardsPerEvent::class.java, "voting.per_vote_rewards", RewardsPerEvent(true, 1, listOf(Command(50, listOf("eco give %player_name% 100")), Command(70, listOf("give %player_name% STEAK 10")))), SingleValueToCollectionMapper())
