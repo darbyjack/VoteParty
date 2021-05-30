@@ -13,7 +13,7 @@ import org.bukkit.event.player.PlayerJoinEvent
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
-import java.util.UUID
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 /**
@@ -23,36 +23,36 @@ import java.util.concurrent.TimeUnit
  */
 class UsersHandler(override val plugin: VotePartyPlugin) : Addon, State, Listener
 {
-	
+
 	private val database = DatabaseVotePlayerGson(plugin)
 	private val cached = mutableMapOf<Any, User>()
-	
-	
+
+
 	override fun load()
 	{
 		database.load()
-		
+
 		database.load(emptyList()).forEach()
 		{ (_, data) ->
 			data ?: return@forEach
-			
+
 			cached[data.uuid] = data
-			cached[data.name.toLowerCase()] = data
+            cached[data.name.lowercase(Locale.getDefault())] = data
 		}
 		server.pluginManager.registerEvents(this, plugin)
 	}
-	
+
 	override fun kill()
 	{
 		database.save(cached.values.distinct())
 		database.kill()
-		
+
 		cached.clear()
-		
+
 		HandlerList.unregisterAll(this)
 	}
-	
-	
+
+
 	operator fun get(uuid: UUID): User
 	{
 		return cached.getOrPut(uuid)
@@ -60,27 +60,27 @@ class UsersHandler(override val plugin: VotePartyPlugin) : Addon, State, Listene
 			User(uuid, "", mutableListOf(), 0)
 		}
 	}
-	
+
 	operator fun get(name: String): User?
 	{
-		return cached[name.toLowerCase()]
+        return cached[name.lowercase(Locale.getDefault())]
 	}
-	
+
 	operator fun get(player: OfflinePlayer): User
 	{
 		return get(player.uniqueId)
 	}
-	
-	
+
+
 	fun reset(player: OfflinePlayer)
 	{
 		get(player).reset()
 	}
-	
+
 	fun getVotesWithinRange(offlinePlayer: OfflinePlayer, amount: Long, unit: TimeUnit): Int
 	{
 		val time = Instant.now().minusMillis(TimeUnit.MILLISECONDS.convert(amount, unit)).toEpochMilli()
-		
+
 		return get(offlinePlayer).votes().count { it > time }
 	}
 
@@ -88,7 +88,7 @@ class UsersHandler(override val plugin: VotePartyPlugin) : Addon, State, Listene
 	{
 		return get(offlinePlayer).votes().count { it > epoch }
 	}
-	
+
 	fun getVotesWithinRange(epoch: Long) : List<LeaderboardUser>
 	{
 		return cached.values.asSequence().distinct()
@@ -97,11 +97,11 @@ class UsersHandler(override val plugin: VotePartyPlugin) : Addon, State, Listene
 				.sortedByDescending { it.votes }
 				.toList()
 	}
-	
+
 	fun getVotesSince(time: LocalDateTime): List<LeaderboardUser>
 	{
 		val timeEpoch = time.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
-		
+
 		return cached.values.asSequence()
 				.distinct()
 				.filter()
@@ -110,12 +110,12 @@ class UsersHandler(override val plugin: VotePartyPlugin) : Addon, State, Listene
 				}
 				.map()
 				{ user ->
-					
+
 					val votes = user.votes().count()
 					{ voteEpoch ->
 						voteEpoch >= timeEpoch
 					}
-					
+
 					LeaderboardUser(user, votes)
 				}
 				.sortedByDescending()
@@ -124,34 +124,33 @@ class UsersHandler(override val plugin: VotePartyPlugin) : Addon, State, Listene
 				}
 				.toList()
 	}
-	
+
 	fun getVotesSince(user: OfflinePlayer, time: LocalDateTime): Int
 	{
 		val timeEpoch = time.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
-		
+
 		return get(user).votes().count { voteEpoch -> voteEpoch > timeEpoch }
 	}
-	
-	
+
+
 	@EventHandler
 	fun PlayerJoinEvent.onJoin()
 	{
 		val old = cached[player.uniqueId]
-		
-		if (old != null && old.name != player.name)
-		{
-			cached -= old.name.toLowerCase()
-			cached[player.name.toLowerCase()] = old
-			old.name = player.name
-		}
-		
+
+		if (old != null && old.name != player.name) {
+            cached -= old.name.lowercase(Locale.getDefault())
+            cached[player.name.lowercase(Locale.getDefault())] = old
+            old.name = player.name
+        }
+
 		if (old == null)
 		{
 			val new = User(player.uniqueId, player.name, mutableListOf(), 0)
-			
+
 			cached[new.uuid] = new
-			cached[new.name.toLowerCase()] = new
+            cached[new.name.lowercase(Locale.getDefault())] = new
 		}
 	}
-	
+
 }

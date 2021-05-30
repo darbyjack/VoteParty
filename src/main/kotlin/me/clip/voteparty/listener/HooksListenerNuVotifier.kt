@@ -8,13 +8,17 @@ import org.bukkit.event.EventHandler
 
 internal class HooksListenerNuVotifier(override val plugin: VotePartyPlugin) : VotePartyListener
 {
-	
+
 	@EventHandler
 	fun VotifierEvent.onVote()
 	{
+		if (vote == null || vote.username.isNullOrEmpty()) {
+			plugin.logger.warning("A vote come through NuVotifier which was null or did not provide a username. Throwing away.")
+			return
+		}
 		val player = server.getOfflinePlayer(vote.username)
 		val event = VoteReceivedEvent(player, vote.serviceName)
 		server.pluginManager.callEvent(event)
 	}
-	
+
 }
