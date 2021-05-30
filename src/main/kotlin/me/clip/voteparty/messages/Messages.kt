@@ -2,37 +2,38 @@ package me.clip.voteparty.messages
 
 import co.aikar.locales.MessageKey
 import co.aikar.locales.MessageKeyProvider
+import java.util.*
 
 enum class Messages : MessageKeyProvider
 {
-	
+
 	ERROR__INVALID_NUMBER,
 	ERROR__DISABLED_WORLD,
 	ERROR__USER_NOT_FOUND,
-	
+
 	INFO__VOTES_NEEDED,
 	INFO__RELOADED,
 	INFO__VOTE_COUNT_RESET,
 	INFO__PLAYER_TOTAL_VOTES,
 	INFO__PLAYER_CHECK_VOTES,
-	
+
 	PARTY__FORCE_START_SUCCESSFUL,
-	
+
 	VOTES__VOTES_NEEDED_UPDATED,
 	VOTES__VOTE_COUNTER_UPDATED,
 	VOTES__PRIVATE_PARTY_GIVEN,
 	VOTES__PRIVATE_PARTY_RECEIVED,
 	VOTES__ADDED_TO_PLAYER,
 	VOTES__INVENTORY_FULL,
-	
+
 	CRATE__CRATE_GIVEN,
 	CRATE__CRATE_RECEIVED,
-	
+
 	CLAIM__SUCCESS,
 	CLAIM__NONE,
 	CLAIM__NOTIFY,
 	CLAIM__FULL,
-	
+
 	DESCRIPTIONS__HELP,
 	DESCRIPTIONS__SETCOUNTER,
 	DESCRIPTIONS__ADDVOTE,
@@ -44,18 +45,18 @@ enum class Messages : MessageKeyProvider
 	DESCRIPTIONS__TOTALVOTES,
 	DESCRIPTIONS__RESETVOTES,
 	DESCRIPTIONS__CLAIM,
-	
+
 	HELP__HEADER,
 	HELP__LINE_TEXT,
 	HELP__LINE_HOVER,
 	HELP__FOOTER;
-	
-	
-	private val key = MessageKey.of(name.toLowerCase().replace("__", ".").replace('_', '-'))
-	
+
+
+	private val key = MessageKey.of(name.lowercase(Locale.getDefault()).replace("__", ".").replace('_', '-'))
+
 	override fun getMessageKey(): MessageKey
 	{
 		return key
 	}
-	
+
 }
