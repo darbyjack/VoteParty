@@ -1,3 +1,5 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
 plugins {
 	id 'org.jetbrains.kotlin.jvm' version '1.5.10'
 	id 'com.github.johnrengelman.shadow' version '7.0.0' apply false
@@ -102,5 +104,5 @@ dependencies {
 }
 
 processResources {
-	filter org.apache.tools.ant.filters.ReplaceTokens, tokens: [version: version]
+	filter ReplaceTokens, tokens: [version: version]
 }
