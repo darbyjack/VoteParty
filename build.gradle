@@ -10,7 +10,7 @@ allprojects {
 
 	archivesBaseName = 'VoteParty'
 	group 'me.clip'
-	version '2.25'
+	version '2.26-DEV'
 
 	repositories {
 		mavenCentral()
@@ -27,7 +27,7 @@ allprojects {
 		implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 
 		// spigot
-		compileOnly "org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT"
+		compileOnly "org.spigotmc:spigot-api:1.17-R0.1-SNAPSHOT"
 
 		// testing
 		compileOnly "org.jetbrains.kotlin:kotlin-reflect"
