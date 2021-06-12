@@ -10,7 +10,7 @@ allprojects {
 
 	archivesBaseName = 'VoteParty'
 	group 'me.clip'
-	version '2.26-DEV'
+	version '2.26'
 
 	repositories {
 		mavenCentral()
@@ -92,7 +92,7 @@ dependencies {
 	implementation "co.aikar:acf-paper:0.5.0-SNAPSHOT"
 
 	// Support for materials across all versions
-	implementation "com.github.cryptomorin:XSeries:7.9.1.1"
+	implementation "com.github.cryptomorin:XSeries:8.0.0"
 
 	// json stuff
 	implementation "net.kyori:adventure-platform-bukkit:4.0.0-SNAPSHOT"
