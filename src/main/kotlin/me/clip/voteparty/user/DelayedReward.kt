@@ -1,6 +1,7 @@
 package me.clip.voteparty.user
 
 /*
+Types:
 0 = daily
 1 = weekly
 2 = monthly

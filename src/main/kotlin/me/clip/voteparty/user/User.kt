@@ -9,13 +9,6 @@ import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import java.util.UUID
 
-/*
-0 = daily
-1 = weekly
-2 = monthly
-3 = yearly
-4 = total
- */
 data class User(val uuid: UUID, var name: String, private val data: MutableList<Long>, private val cumulativeRewards: MutableList<DelayedReward>, var claimable: Int)
 {
 	
@@ -23,9 +16,13 @@ data class User(val uuid: UUID, var name: String, private val data: MutableList<
 	{
 		data += System.currentTimeMillis()
 
+		// Offline cumulative rewards
+
 		// I am so sorry for this...
+
 		val player = player()
 
+		// If the player is online we don't have to bother with this
 		if (!player.isOnline)
 		{
 			// Check for cumulative rewards
@@ -34,6 +31,8 @@ data class User(val uuid: UUID, var name: String, private val data: MutableList<
 
 			val settings = vp.conf().getProperty(VoteSettings.CUMULATIVE_VOTE_REWARDS)
 
+			// Check if each cumulative type is enabled and has rules. If it does, check if the player went over the
+			// amount to trigger a reward. For each rule the player triggers, add a DelayReward object to the list
 			if (settings.daily.enabled && settings.daily.entries.isNotEmpty())
 			{
 				settings.daily.entries.filter { entry -> entry.votes == vp.usersHandler.getVotesSince(player, LeaderboardType.DAILY.time.invoke()) }.forEach { entry ->

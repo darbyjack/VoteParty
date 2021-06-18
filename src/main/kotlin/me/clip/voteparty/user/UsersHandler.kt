@@ -155,13 +155,16 @@ class UsersHandler(override val plugin: VotePartyPlugin) : Addon, State, Listene
 			cached[new.uuid] = new
             cached[new.name.lowercase(Locale.getDefault())] = new
 		} else {
+			// Handle cumulative rewards
 			if (old.hasReward()) {
 				val settings = party.conf().getProperty(VoteSettings.CUMULATIVE_VOTE_REWARDS)
 
 				val rewards = old.rewards()
 
-				// Deep copy rewards so that we can modify it with maybe?
-
+				// Check if each type is enabled and has rules
+				// Filter out all pending rewards by type
+				// For each filtered reward check to see if there is a rule of the specified type with the same number of votes
+				// If there is, trigger the commands for that rule
 				if (settings.daily.enabled && settings.daily.entries.isNotEmpty()) {
 					rewards.filter { reward -> reward.type == 0 }.forEach { reward ->
 						settings.daily.entries.filter { entry -> entry.votes == reward.votes }.forEach { entry ->
