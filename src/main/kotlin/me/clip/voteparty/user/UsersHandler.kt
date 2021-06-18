@@ -2,9 +2,13 @@ package me.clip.voteparty.user
 
 import me.clip.voteparty.base.Addon
 import me.clip.voteparty.base.State
+import me.clip.voteparty.conf.sections.VoteSettings
 import me.clip.voteparty.data.impl.DatabaseVotePlayerGson
+import me.clip.voteparty.exte.formMessage
+import me.clip.voteparty.leaderboard.LeaderboardType
 import me.clip.voteparty.leaderboard.LeaderboardUser
 import me.clip.voteparty.plugin.VotePartyPlugin
+import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.event.EventHandler
 import org.bukkit.event.HandlerList
@@ -57,7 +61,7 @@ class UsersHandler(override val plugin: VotePartyPlugin) : Addon, State, Listene
 	{
 		return cached.getOrPut(uuid)
 		{
-			User(uuid, "", mutableListOf(), 0)
+			User(uuid, "", mutableListOf(), mutableListOf(), 0)
 		}
 	}
 
@@ -146,10 +150,83 @@ class UsersHandler(override val plugin: VotePartyPlugin) : Addon, State, Listene
 
 		if (old == null)
 		{
-			val new = User(player.uniqueId, player.name, mutableListOf(), 0)
+			val new = User(player.uniqueId, player.name, mutableListOf(), mutableListOf(), 0)
 
 			cached[new.uuid] = new
             cached[new.name.lowercase(Locale.getDefault())] = new
+		} else {
+			if (old.hasReward()) {
+				val settings = party.conf().getProperty(VoteSettings.CUMULATIVE_VOTE_REWARDS)
+
+				val rewards = old.rewards()
+
+				// Deep copy rewards so that we can modify it with maybe?
+
+				if (settings.daily.enabled && settings.daily.entries.isNotEmpty()) {
+					rewards.filter { reward -> reward.type == 0 }.forEach { reward ->
+						settings.daily.entries.filter { entry -> entry.votes == reward.votes }.forEach { entry ->
+							old.removeCumulative(rewards.indexOf(reward)) // I have no idea if this is going to work
+
+							entry.commands.forEach()
+							{ command ->
+								server.dispatchCommand(server.consoleSender, formMessage(player, command))
+							}
+						}
+					}
+				}
+
+				if (settings.weekly.enabled && settings.weekly.entries.isNotEmpty()) {
+					rewards.filter { reward -> reward.type == 1 }.forEach { reward ->
+						settings.weekly.entries.filter { entry -> entry.votes == reward.votes }.forEach { entry ->
+							old.removeCumulative(rewards.indexOf(reward)) // I have no idea if this is going to work
+
+							entry.commands.forEach()
+							{ command ->
+								server.dispatchCommand(server.consoleSender, formMessage(player, command))
+							}
+						}
+					}
+				}
+
+				if (settings.monthly.enabled && settings.monthly.entries.isNotEmpty()) {
+					rewards.filter { reward -> reward.type == 2 }.forEach { reward ->
+						settings.monthly.entries.filter { entry -> entry.votes == reward.votes }.forEach { entry ->
+							old.removeCumulative(rewards.indexOf(reward)) // I have no idea if this is going to work
+
+							entry.commands.forEach()
+							{ command ->
+								server.dispatchCommand(server.consoleSender, formMessage(player, command))
+							}
+						}
+					}
+				}
+
+				if (settings.yearly.enabled && settings.yearly.entries.isNotEmpty()) {
+					rewards.filter { reward -> reward.type == 3 }.forEach { reward ->
+						settings.yearly.entries.filter { entry -> entry.votes == reward.votes }.forEach { entry ->
+							old.removeCumulative(rewards.indexOf(reward)) // I have no idea if this is going to work
+
+							entry.commands.forEach()
+							{ command ->
+								server.dispatchCommand(server.consoleSender, formMessage(player, command))
+							}
+						}
+					}
+				}
+
+				if (settings.total.enabled && settings.total.entries.isNotEmpty()) {
+					rewards.filter { reward -> reward.type == 4 }.forEach { reward ->
+						settings.total.entries.filter { entry -> entry.votes == reward.votes }.forEach { entry ->
+							old.removeCumulative(rewards.indexOf(reward)) // I have no idea if this is going to work
+
+							entry.commands.forEach()
+							{ command ->
+								server.dispatchCommand(server.consoleSender, formMessage(player, command))
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 
