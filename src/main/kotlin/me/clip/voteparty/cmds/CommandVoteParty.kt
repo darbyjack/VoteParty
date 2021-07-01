@@ -214,13 +214,15 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 		{
 			return sendMessage(currentCommandIssuer, Messages.CLAIM__NONE)
 		}
-
-		if (player.inventory.firstEmpty() == -1)
-		{
-			return sendMessage(currentCommandIssuer, Messages.CLAIM__FULL)
-		}
-
+		
 		while (user.claimable > 0) {
+
+			if (player.inventory.firstEmpty() == -1)
+			{
+				sendMessage(currentCommandIssuer, Messages.CLAIM__SUCCESS, null, "{claim}", user.claimable)
+				return sendMessage(currentCommandIssuer, Messages.CLAIM__FULL)
+			}
+
 			party.votesHandler.runAll(player)
 			user.claimable--
 		}
