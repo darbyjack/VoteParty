@@ -203,6 +203,30 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 		sendMessage(currentCommandIssuer, Messages.CLAIM__SUCCESS, null, "{claim}", user.claimable)
 	}
 
+	@Subcommand("claimall")
+	@Description("Claim All")
+	@CommandPermission(CLAIM_PERM)
+	fun claimAll(player: Player)
+	{
+		val user = party.usersHandler[player]
+
+		if (user.claimable <= 0)
+		{
+			return sendMessage(currentCommandIssuer, Messages.CLAIM__NONE)
+		}
+
+		if (player.inventory.firstEmpty() == -1)
+		{
+			return sendMessage(currentCommandIssuer, Messages.CLAIM__FULL)
+		}
+
+		while (user.claimable > 0) {
+			party.votesHandler.runAll(player)
+			user.claimable--
+		}
+		sendMessage(currentCommandIssuer, Messages.CLAIM__SUCCESS, null, "{claim}", user.claimable)
+	}
+
 	@Subcommand("help")
 	@Description("Help")
 	@CommandPermission("voteparty.help")
