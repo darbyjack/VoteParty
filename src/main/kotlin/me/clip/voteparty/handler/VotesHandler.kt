@@ -11,6 +11,7 @@ import me.clip.voteparty.exte.takeRandomly
 import me.clip.voteparty.leaderboard.LeaderboardType
 import me.clip.voteparty.plugin.VotePartyPlugin
 import me.clip.voteparty.version.EffectType
+import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -253,6 +254,21 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon, State
 			return
 		}
 		
+		settings.commands.forEach()
+		{ command ->
+			server.dispatchCommand(server.consoleSender, formMessage(player, command))
+		}
+	}
+
+	fun runGlobalCommandsOffline(player: OfflinePlayer)
+	{
+		val settings = party.conf().getProperty(VoteSettings.GLOBAL_COMMANDS)
+
+		if (!settings.enabled || settings.commands.isEmpty())
+		{
+			return
+		}
+
 		settings.commands.forEach()
 		{ command ->
 			server.dispatchCommand(server.consoleSender, formMessage(player, command))

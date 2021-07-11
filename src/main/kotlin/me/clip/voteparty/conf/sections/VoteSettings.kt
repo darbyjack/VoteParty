@@ -61,9 +61,12 @@ internal object VoteSettings : SettingsHolder
 	@JvmField
 	@Comment("Would you like to notify the player when they login that they have votes to claim?")
 	val OFFLINE_VOTE_CLAIMING_NOTIFY: Property<Boolean> = newProperty("voting.offline_vote_claiming.notify", false)
-	
+
+	@JvmField
+	@Comment("Would you like global commands to be run when an offline player votes?")
+	val OFFLINE_VOTE_GLOBAL_COMMANDS: Property<Boolean> = newProperty("voting.offline_vote_claiming.global_commands", false)
+
 	@JvmField
 	@Comment("Configuration for extra commands to be executed on players who have voted a specific amount of times in the past day, week, month, year, and all time.")
 	val CUMULATIVE_VOTE_REWARDS: Property<CumulativeVoting> = newBeanProperty(CumulativeVoting::class.java, "voting.cumulative-rewards", CumulativeVoting())
-	
 }
