@@ -1,6 +1,7 @@
 package me.clip.voteparty.listener
 
 import me.clip.voteparty.conf.sections.PartySettings
+import me.clip.voteparty.conf.sections.PluginSettings
 import me.clip.voteparty.conf.sections.VoteSettings
 import me.clip.voteparty.events.VoteReceivedEvent
 import me.clip.voteparty.exte.runTaskLater
@@ -14,7 +15,7 @@ import org.bukkit.event.player.PlayerJoinEvent
 
 internal class VotesListener(override val plugin: VotePartyPlugin) : VotePartyListener
 {
-	
+
 	@EventHandler
 	fun VoteReceivedEvent.onReceive()
 	{
@@ -22,23 +23,28 @@ internal class VotesListener(override val plugin: VotePartyPlugin) : VotePartyLi
 		{
 			return
 		}
-		
+
 		var first = false
-		
+
 		val user = party.usersHandler[player]
 		if (!user.hasVotedBefore())
 		{
 			first = true
 		}
 		user.voted()
-		
+
 		if (!player.isOnline && party.conf().getProperty(VoteSettings.OFFLINE_VOTE_CLAIMING))
 		{
 			user.claimable++
 		}
-		
+
 		party.votesHandler.addVotes(1)
-		
+
+		if (party.conf().getProperty(PluginSettings.SAVE_ON_VOTE))
+		{
+			party.usersHandler.save(user)
+		}
+
 		val online = player.player ?: return
 
 
@@ -47,15 +53,15 @@ internal class VotesListener(override val plugin: VotePartyPlugin) : VotePartyLi
 			user.claimable++
 			return sendMessage(party.manager().getCommandIssuer(online), Messages.VOTES__INVENTORY_FULL)
 		}
-		
+
 		party.votesHandler.runGlobalCommands(online)
 		party.votesHandler.runAll(online)
-		
+
 		if (vote != "")
 		{
 			party.votesHandler.giveVotesiteVoteRewards(online, vote)
 		}
-		
+
 		if (first)
 		{
 			party.votesHandler.giveFirstTimeVoteRewards(online)
@@ -66,10 +72,10 @@ internal class VotesListener(override val plugin: VotePartyPlugin) : VotePartyLi
 		party.votesHandler.checkMonthlyCumulative(online)
 		party.votesHandler.checkYearlyCumulative(online)
 		party.votesHandler.checkTotalCumulative(online)
-		
+
 		party.votesHandler.playerVoteEffects(online)
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGH)
 	fun PlayerJoinEvent.onJoin()
 	{
@@ -77,7 +83,7 @@ internal class VotesListener(override val plugin: VotePartyPlugin) : VotePartyLi
 		{
 			return
 		}
-		
+
 		if (party.usersHandler[player].claimable > 0 && party.conf().getProperty(VoteSettings.OFFLINE_VOTE_CLAIMING_NOTIFY))
 		{
 			plugin.runTaskLater(40L)
@@ -86,5 +92,5 @@ internal class VotesListener(override val plugin: VotePartyPlugin) : VotePartyLi
 			}
 		}
 	}
-	
+
 }
