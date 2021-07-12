@@ -69,4 +69,8 @@ internal object VoteSettings : SettingsHolder
 	@JvmField
 	@Comment("Configuration for extra commands to be executed on players who have voted a specific amount of times in the past day, week, month, year, and all time.")
 	val CUMULATIVE_VOTE_REWARDS: Property<CumulativeVoting> = newBeanProperty(CumulativeVoting::class.java, "voting.cumulative-rewards", CumulativeVoting())
+
+	@JvmField
+	@Comment("The number of voters show in the recent command")
+	val RECENT_VOTE_COUNT: Property<Int> = newProperty("voting.recent_count", 5)
 }

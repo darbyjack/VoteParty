@@ -3,9 +3,9 @@ package me.clip.voteparty.user
 import me.clip.voteparty.base.Addon
 import me.clip.voteparty.base.State
 import me.clip.voteparty.conf.sections.VoteSettings
+import me.clip.voteparty.data.impl.DatabaseRecentVotersGson
 import me.clip.voteparty.data.impl.DatabaseVotePlayerGson
 import me.clip.voteparty.exte.formMessage
-import me.clip.voteparty.leaderboard.LeaderboardType
 import me.clip.voteparty.leaderboard.LeaderboardUser
 import me.clip.voteparty.plugin.VotePartyPlugin
 import org.bukkit.Bukkit
@@ -19,6 +19,7 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.*
 import java.util.concurrent.TimeUnit
+import java.util.logging.Level
 
 /**
  *
@@ -29,8 +30,9 @@ class UsersHandler(override val plugin: VotePartyPlugin) : Addon, State, Listene
 {
 
 	private val database = DatabaseVotePlayerGson(plugin)
+	private val recentVotersDatabase = DatabaseRecentVotersGson(plugin)
 	private val cached = mutableMapOf<Any, User>()
-
+	private var recentVoters : RecentVoters? = null
 
 	override fun load()
 	{
@@ -43,6 +45,22 @@ class UsersHandler(override val plugin: VotePartyPlugin) : Addon, State, Listene
 			cached[data.uuid] = data
             cached[data.name.lowercase(Locale.getDefault())] = data
 		}
+
+		recentVotersDatabase.load()
+		recentVoters = recentVotersDatabase.loadVoters()
+
+		val recentCount = party.conf().getProperty(VoteSettings.RECENT_VOTE_COUNT)
+
+		// If there was no file, create an empty object
+		if (recentVoters == null) {
+			recentVoters = RecentVoters(recentCount, mutableMapOf())
+		} else if (recentCount != recentVoters!!.size()) { // We know recentVoters isn't null, so we can cast
+			// Update the size if the config has updated
+			val newVoters = RecentVoters(recentCount, recentVoters!!.recentVoters)
+			recentVoters = newVoters
+		}
+
+
 		server.pluginManager.registerEvents(this, plugin)
 	}
 
@@ -50,6 +68,9 @@ class UsersHandler(override val plugin: VotePartyPlugin) : Addon, State, Listene
 	{
 		database.save(cached.values.distinct())
 		database.kill()
+
+		recentVoters?.let { recentVotersDatabase.save(it) }
+		recentVotersDatabase.kill()
 
 		cached.clear()
 
@@ -134,6 +155,11 @@ class UsersHandler(override val plugin: VotePartyPlugin) : Addon, State, Listene
 		val timeEpoch = time.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
 
 		return get(user).votes().count { voteEpoch -> voteEpoch > timeEpoch }
+	}
+
+	fun getRecentVoters(): RecentVoters?
+	{
+		return recentVoters
 	}
 
 

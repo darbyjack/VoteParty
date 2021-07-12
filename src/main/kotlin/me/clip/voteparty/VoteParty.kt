@@ -69,6 +69,7 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 		
 		loadConf()
 		loadVoteData()
+		createRecents()
 		loadCmds()
 		loadHook()
 		loadPapi()
@@ -139,6 +140,15 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 		}
 		
 		this.voteData = VoteDataConfiguration(file)
+	}
+
+	private fun createRecents() {
+		val file = plugin.dataFolder.resolve("recents.json")
+
+		if (!file.exists()) {
+			file.parentFile.mkdirs()
+			file.createNewFile()
+		}
 	}
 	
 	private fun saveLang()

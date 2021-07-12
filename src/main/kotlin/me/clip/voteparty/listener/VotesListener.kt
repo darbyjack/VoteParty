@@ -8,37 +8,41 @@ import me.clip.voteparty.exte.sendMessage
 import me.clip.voteparty.listener.base.VotePartyListener
 import me.clip.voteparty.messages.Messages
 import me.clip.voteparty.plugin.VotePartyPlugin
+import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.player.PlayerJoinEvent
+import java.util.logging.Level
 
 internal class VotesListener(override val plugin: VotePartyPlugin) : VotePartyListener
 {
-	
+
 	@EventHandler
-	fun VoteReceivedEvent.onReceive()
-	{
-		if (!player.isOnline && !party.conf().getProperty(PartySettings.OFFLINE_VOTES))
-		{
+	fun VoteReceivedEvent.onReceive() {
+		if (!player.isOnline && !party.conf().getProperty(PartySettings.OFFLINE_VOTES)) {
 			return
 		}
-		
+
 		var first = false
-		
+
 		val user = party.usersHandler[player]
-		if (!user.hasVotedBefore())
-		{
+		if (!user.hasVotedBefore()) {
 			first = true
 		}
 		user.voted()
-		
-		if (!player.isOnline && party.conf().getProperty(VoteSettings.OFFLINE_VOTE_CLAIMING))
-		{
+
+		val recentVoters = party.usersHandler.getRecentVoters()
+
+		if (recentVoters != null) {
+			recentVoters.voted(user, System.currentTimeMillis())
+		}
+
+		if (!player.isOnline && party.conf().getProperty(VoteSettings.OFFLINE_VOTE_CLAIMING)) {
 			user.claimable++
 		}
-		
+
 		party.votesHandler.addVotes(1)
-		
+
 		val online = player.player
 
 		if (online == null && party.conf().getProperty(VoteSettings.OFFLINE_VOTE_GLOBAL_COMMANDS)) {
@@ -48,22 +52,19 @@ internal class VotesListener(override val plugin: VotePartyPlugin) : VotePartyLi
 
 		if (online == null) return
 
-		if (online.inventory.firstEmpty() == -1 && party.conf().getProperty(VoteSettings.CLAIMABLE_IF_FULL))
-		{
+		if (online.inventory.firstEmpty() == -1 && party.conf().getProperty(VoteSettings.CLAIMABLE_IF_FULL)) {
 			user.claimable++
 			return sendMessage(party.manager().getCommandIssuer(online), Messages.VOTES__INVENTORY_FULL)
 		}
-		
+
 		party.votesHandler.runGlobalCommands(online)
 		party.votesHandler.runAll(online)
-		
-		if (vote != "")
-		{
+
+		if (vote != "") {
 			party.votesHandler.giveVotesiteVoteRewards(online, vote)
 		}
-		
-		if (first)
-		{
+
+		if (first) {
 			party.votesHandler.giveFirstTimeVoteRewards(online)
 		}
 
@@ -72,7 +73,7 @@ internal class VotesListener(override val plugin: VotePartyPlugin) : VotePartyLi
 		party.votesHandler.checkMonthlyCumulative(online)
 		party.votesHandler.checkYearlyCumulative(online)
 		party.votesHandler.checkTotalCumulative(online)
-		
+
 		party.votesHandler.playerVoteEffects(online)
 	}
 	

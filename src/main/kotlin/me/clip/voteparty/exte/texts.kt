@@ -2,6 +2,7 @@ package me.clip.voteparty.exte
 
 import co.aikar.commands.CommandIssuer
 import me.clip.voteparty.messages.Messages
+import me.clip.voteparty.user.RecentVoters
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import java.util.*
@@ -35,6 +36,30 @@ fun helpMenu(issuer: CommandIssuer): Component
 
 	// Footer
 	builder.append((mini.parse(msgAsString(issuer, Messages.HELP__FOOTER))))
+
+	return builder.build()
+}
+
+fun recentMenu(issuer: CommandIssuer, recentVoters: RecentVoters): Component
+{
+	val mini = MiniMessage.get()
+	val builder = Component.text()
+	val lineText = msgAsString(issuer, Messages.INFO__RECENT_VOTERS_LINE)
+
+	// Header
+	builder.append(mini.parse(msgAsString(issuer, Messages.INFO__RECENT_VOTERS_HEADING))).append(Component.newline())
+
+	// Data
+	val currentTime = System.currentTimeMillis()
+
+	for ((user, time) in recentVoters.voters()) {
+		val timeDiff = currentTime - time
+		val timeDiffHours = timeDiff / (100.0 * 60.0 * 60.0)
+
+		val updatedLine = lineText.replace("{user}", user.name)
+				.replace("{time}", "%.2f".format(timeDiffHours))
+		builder.append(mini.parse(updatedLine))
+	}
 
 	return builder.build()
 }

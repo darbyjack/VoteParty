@@ -3,7 +3,7 @@ main: me.clip.voteparty.plugin.VotePartyPlugin
 
 version: '@version@'
 website: 'https://helpch.at/discord'
-authors: ['Glare', 'Clip', 'Sxtanna']
+authors: ['Glare', 'Clip', 'Sxtanna', 'UnknownSilicon']
 
 depend:
   - 'PlaceholderAPI'
@@ -21,3 +21,6 @@ permissions:
   voteparty.command.claim:
     description: 'Ability to claim offline vote rewards'
     default: true
+  voteparty.recent:
+    description: 'Ability to list recent voters'
+    default: op
