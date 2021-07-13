@@ -52,11 +52,21 @@ fun recentMenu(issuer: CommandIssuer, recentVoters: RecentVoters): Component
 	// Data
 	val currentTime = System.currentTimeMillis()
 
-	for ((user, time) in recentVoters.voters()) {
+	for ((_, userTime) in recentVoters.voters()) {
+		val user = userTime.user
+		val time = userTime.time
 		val timeDiff = currentTime - time
 		val timeDiffHours = timeDiff / (100.0 * 60.0 * 60.0)
 
-		val updatedLine = lineText.replace("{user}", user.name)
+		val name = user.name
+
+		var userStr = name
+
+		if (name.trim() == "") {
+			userStr = user.uuid.toString()
+		}
+
+		val updatedLine = lineText.replace("{user}", userStr)
 				.replace("{time}", "%.2f".format(timeDiffHours))
 		builder.append(mini.parse(updatedLine))
 	}

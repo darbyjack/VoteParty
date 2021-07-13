@@ -1,59 +1,54 @@
 package me.clip.voteparty.user
 
 import org.bukkit.Bukkit
+import java.util.*
 import java.util.logging.Level
 
-data class RecentVoters(private val recentSize: Int, val recentVoters: MutableMap<User, Long>) {
-    fun voters(): Map<User, Long> {
+data class RecentVoters(private val recentSize: Int, val recentVoters: MutableMap<UUID, UserTime>) {
+    fun voters(): Map<UUID, UserTime> {
         return recentVoters
     }
 
     fun voted(user: User, time: Long) {
-        var removeUser: User? = null
-        for ((userList, _) in recentVoters) {
-            Bukkit.getLogger().log(Level.WARNING, "Loop")
-            if (userList.uuid.toString() == user.uuid.toString()) {
-                Bukkit.getLogger().log(Level.WARNING, "Equal")
-                // If they are, replace the old time with the new time
-                removeUser = userList
+        val userTime = recentVoters[user.uuid]
 
-                recentVoters[user] = time
-            }
-        }
+        if (userTime != null) {
+            // It exists, remove it and add the new element
+            val output = recentVoters.remove(user.uuid)
 
-        // TODO: WHY WHY WHY IS THIS NOT REMOVING!!!!!!!!!!!!!!!!!!!!!!!!
-        if (removeUser != null) {
-            val output = recentVoters.remove(removeUser)
-            Bukkit.getLogger().log(Level.WARNING, "" + output)
+            recentVoters[user.uuid] = UserTime(user, time)
+            return
         }
 
 
         if (recentVoters.count() < recentSize) { // If there's still space in the map
             // Just add the user to the map
-            recentVoters[user] = time
+            recentVoters[user.uuid] = UserTime(user, time)
             return
         } else {
             // Otherwise, remove the oldest user and replace with the new user
-            var oldTime: Long? = null;
-            var oldUser: User? = null;
+            var oldTime: Long? = null
+            var oldUser: User? = null
+            var oldUUID: UUID? = null
 
             // Find the oldest user-time pair
             for ((u, t) in recentVoters) {
                 if (oldTime == null) {
-                    oldTime = t;
-                    oldUser = u;
+                    oldUUID = u
+                    oldTime = t.time
+                    oldUser = t.user
                 } else {
-                    if (t < oldTime) {
-                        oldTime = t;
-                        oldUser = u;
+                    if (t.time < oldTime) {
+                        oldTime = t.time;
+                        oldUser = t.user;
                     }
                 }
             }
 
             if (oldUser != null) {
-                recentVoters.remove(oldUser);
+                recentVoters.remove(oldUUID);
             }
-            recentVoters[user] = time
+            recentVoters[user.uuid] = UserTime(user, time)
         }
     }
 

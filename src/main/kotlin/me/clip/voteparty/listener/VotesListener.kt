@@ -8,11 +8,9 @@ import me.clip.voteparty.exte.sendMessage
 import me.clip.voteparty.listener.base.VotePartyListener
 import me.clip.voteparty.messages.Messages
 import me.clip.voteparty.plugin.VotePartyPlugin
-import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.player.PlayerJoinEvent
-import java.util.logging.Level
 
 internal class VotesListener(override val plugin: VotePartyPlugin) : VotePartyListener
 {
@@ -31,11 +29,7 @@ internal class VotesListener(override val plugin: VotePartyPlugin) : VotePartyLi
 		}
 		user.voted()
 
-		val recentVoters = party.usersHandler.getRecentVoters()
-
-		if (recentVoters != null) {
-			recentVoters.voted(user, System.currentTimeMillis())
-		}
+		party.usersHandler.getRecentVoters()?.voted(user, System.currentTimeMillis())
 
 		if (!player.isOnline && party.conf().getProperty(VoteSettings.OFFLINE_VOTE_CLAIMING)) {
 			user.claimable++
