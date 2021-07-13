@@ -66,7 +66,7 @@ class UsersHandler(override val plugin: VotePartyPlugin) : Addon, State, Listene
 
 	override fun kill()
 	{
-		database.save(cached.values.distinct())
+		saveAll()
 		database.kill()
 
 		recentVoters?.let { recentVotersDatabase.save(it) }
@@ -100,6 +100,16 @@ class UsersHandler(override val plugin: VotePartyPlugin) : Addon, State, Listene
 	fun reset(player: OfflinePlayer)
 	{
 		get(player).reset()
+	}
+
+	fun saveAll()
+	{
+		database.save(cached.values.distinct())
+	}
+
+	fun save(user: User)
+	{
+		database.save(user)
 	}
 
 	fun getVotesWithinRange(offlinePlayer: OfflinePlayer, amount: Long, unit: TimeUnit): Int

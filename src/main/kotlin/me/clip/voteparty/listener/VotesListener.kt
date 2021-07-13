@@ -1,6 +1,7 @@
 package me.clip.voteparty.listener
 
 import me.clip.voteparty.conf.sections.PartySettings
+import me.clip.voteparty.conf.sections.PluginSettings
 import me.clip.voteparty.conf.sections.VoteSettings
 import me.clip.voteparty.events.VoteReceivedEvent
 import me.clip.voteparty.exte.runTaskLater
@@ -37,6 +38,11 @@ internal class VotesListener(override val plugin: VotePartyPlugin) : VotePartyLi
 
 		party.votesHandler.addVotes(1)
 
+		if (party.conf().getProperty(PluginSettings.SAVE_ON_VOTE))
+		{
+			party.usersHandler.save(user)
+		}
+
 		val online = player.player
 
 		if (online == null && party.conf().getProperty(VoteSettings.OFFLINE_VOTE_GLOBAL_COMMANDS)) {
@@ -70,7 +76,7 @@ internal class VotesListener(override val plugin: VotePartyPlugin) : VotePartyLi
 
 		party.votesHandler.playerVoteEffects(online)
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGH)
 	fun PlayerJoinEvent.onJoin()
 	{
@@ -78,7 +84,7 @@ internal class VotesListener(override val plugin: VotePartyPlugin) : VotePartyLi
 		{
 			return
 		}
-		
+
 		if (party.usersHandler[player].claimable > 0 && party.conf().getProperty(VoteSettings.OFFLINE_VOTE_CLAIMING_NOTIFY))
 		{
 			plugin.runTaskLater(40L)
@@ -87,5 +93,5 @@ internal class VotesListener(override val plugin: VotePartyPlugin) : VotePartyLi
 			}
 		}
 	}
-	
+
 }
