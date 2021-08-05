@@ -19,10 +19,6 @@ internal class VotesListener(override val plugin: VotePartyPlugin) : VotePartyLi
 	@EventHandler
 	fun VoteReceivedEvent.onReceive()
 	{
-		if (!player.isOnline && !party.conf().getProperty(PartySettings.OFFLINE_VOTES))
-		{
-			return
-		}
 
 		var first = false
 
@@ -38,12 +34,17 @@ internal class VotesListener(override val plugin: VotePartyPlugin) : VotePartyLi
 			user.claimable++
 		}
 
-		party.votesHandler.addVotes(1)
-
 		if (party.conf().getProperty(PluginSettings.SAVE_ON_VOTE))
 		{
 			party.usersHandler.save(user)
 		}
+
+		if (!player.isOnline && !party.conf().getProperty(PartySettings.OFFLINE_VOTES))
+		{
+			return
+		}
+
+		party.votesHandler.addVotes(1)
 
 		val online = player.player ?: return
 
