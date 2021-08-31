@@ -20,6 +20,7 @@ allprojects {
 		maven { url = "https://papermc.io/repo/repository/maven-public/" }
 		maven { url = "https://repo.extendedclip.com/content/repositories/placeholderapi/" }
 		maven { url = "https://repo.glaremasters.me/repository/public/" }
+		maven { url = "https://jitpack.io" }
 	}
 
 	dependencies {
@@ -97,6 +98,9 @@ dependencies {
 	// json stuff
 	implementation "net.kyori:adventure-platform-bukkit:4.0.0-SNAPSHOT"
 	implementation "net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT"
+
+	// converters
+	compileOnly "com.github.astei:SuperbVote:700fca4365"
 
 	implementation project(":version")
 	implementation project(":version_old")

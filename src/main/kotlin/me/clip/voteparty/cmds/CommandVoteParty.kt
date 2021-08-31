@@ -20,6 +20,7 @@ import me.clip.voteparty.exte.CLAIM_PERM
 import me.clip.voteparty.exte.helpMenu
 import me.clip.voteparty.exte.sendMessage
 import me.clip.voteparty.messages.Messages
+import me.clip.voteparty.plugin.SuperbVoteMigration
 import me.clip.voteparty.plugin.VotePartyPlugin
 import net.kyori.adventure.identity.Identity
 import org.bukkit.OfflinePlayer
@@ -202,6 +203,19 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 
 		sendMessage(currentCommandIssuer, Messages.CLAIM__SUCCESS, null, "{claim}", user.claimable)
 	}
+
+
+	@Subcommand("import")
+	@Description("Import")
+	@CommandPermission(ADMIN_PERM)
+	fun import(issuer: CommandIssuer, type: String) {
+		if (type == "superbvote") {
+			val migrate = SuperbVoteMigration(plugin.voteParty)
+			migrate.convert()
+			currentCommandIssuer.sendMessage("Imported: {users} users and {votes} votes from SuperbVote".replace("{users}", migrate.users.toString()).replace("{votes}", migrate.votes.toString()))
+		}
+	}
+
 
 	@Subcommand("help")
 	@Description("Help")
