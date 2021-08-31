@@ -44,6 +44,10 @@ internal class VotesListener(override val plugin: VotePartyPlugin) : VotePartyLi
 			return
 		}
 
+		if (party.conf().getProperty(PartySettings.REQUIRE_VOTES_FOR_PARTY) && !party.partyHandler.voted.contains(user.uuid)) {
+			party.partyHandler.voted.add(user.uuid)
+		}
+
 		party.votesHandler.addVotes(1)
 
 		val online = player.player ?: return

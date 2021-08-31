@@ -32,6 +32,10 @@ internal object PartySettings : SettingsHolder
 	val OFFLINE_VOTES: Property<Boolean> = newProperty("party.offline_votes", true)
 	
 	@JvmField
+	@Comment("Would you like to require players to vote to join the party?")
+	val REQUIRE_VOTES_FOR_PARTY: Property<Boolean> = newProperty("party.require_votes_for_party", false)
+
+	@JvmField
 	@Comment("The amount of time (in seconds) the server will wait to start the party after the amount needed has been achieved")
 	val START_DELAY: Property<Int> = newProperty("party.start_delay", 15)
 	
