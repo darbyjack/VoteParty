@@ -10,7 +10,7 @@ allprojects {
 
 	archivesBaseName = 'VoteParty'
 	group 'me.clip'
-	version '2.29-DEV'
+	version '2.29'
 
 	repositories {
 		mavenCentral()
