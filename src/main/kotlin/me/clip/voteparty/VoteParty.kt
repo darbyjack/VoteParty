@@ -196,6 +196,7 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 		}
 
 		cmds.locales.defaultLocale = Locale.forLanguageTag(conf().getProperty(PluginSettings.LANGUAGE) ?: "en-US")
+		cmds.usePerIssuerLocale(false, false)
 
 		cmds.commandCompletions.registerCompletion("online")
 		{

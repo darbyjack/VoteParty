@@ -10,14 +10,14 @@ allprojects {
 
 	archivesBaseName = 'VoteParty'
 	group 'me.clip'
-	version '2.28'
+	version '2.29-DEV'
 
 	repositories {
 		mavenCentral()
 
 		maven { url = "https://oss.sonatype.org/content/repositories/snapshots/" }
-		maven { url = "https://papermc.io/repo/repository/maven-public/" }
 		maven { url = "https://repo.aikar.co/content/groups/aikar/" }
+		maven { url = "https://papermc.io/repo/repository/maven-public/" }
 		maven { url = "https://repo.extendedclip.com/content/repositories/placeholderapi/" }
 		maven { url = "https://repo.glaremasters.me/repository/public/" }
 	}
