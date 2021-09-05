@@ -10,24 +10,24 @@ import java.util.logging.Level
 
 internal class DatabaseVotePlayerGson(override val plugin: VotePartyPlugin) : DatabaseVotePlayer
 {
-	
+
 	private lateinit var gson: Gson
-	
-	
+
+
 	override fun load()
 	{
 		val builder = GsonBuilder().disableHtmlEscaping().enableComplexMapKeySerialization().setPrettyPrinting().serializeNulls()
 		gson = builder.create()
-		
+
 		plugin.dataFolder.resolve("players").mkdirs()
 	}
-	
+
 	override fun kill()
 	{
-	
+
 	}
-	
-	
+
+
 	override fun load(uuid: UUID): User?
 	{
 		return try
@@ -40,7 +40,7 @@ internal class DatabaseVotePlayerGson(override val plugin: VotePartyPlugin) : Da
 			null
 		}
 	}
-	
+
 	override fun save(data: User)
 	{
 		try
@@ -52,16 +52,21 @@ internal class DatabaseVotePlayerGson(override val plugin: VotePartyPlugin) : Da
 			logger.log(Level.SEVERE, "failed to save player:${data.uuid}", ex)
 		}
 	}
-	
+
+	override fun reset(data: User)
+	{
+		data.reset()
+	}
+
 	override fun load(uuid: Collection<UUID>): Map<UUID, User?>
 	{
 		if (uuid.isNotEmpty())
 		{
 			return super.load(uuid)
 		}
-		
+
 		val files = plugin.dataFolder.resolve("players").listFiles() ?: return emptyMap()
-		
+
 		return files.mapNotNull()
 		{
 			try
@@ -74,5 +79,5 @@ internal class DatabaseVotePlayerGson(override val plugin: VotePartyPlugin) : Da
 			}
 		}.associateWith(::load)
 	}
-	
+
 }

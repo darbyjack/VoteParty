@@ -13,11 +13,13 @@ import java.sql.SQLException
 import java.util.UUID
 import java.util.logging.Level
 
-internal class DatabaseVotePlayerMySQL(override val plugin: VotePartyPlugin) : DatabaseVotePlayer {
+internal class DatabaseVotePlayerMySQL(override val plugin: VotePartyPlugin) : DatabaseVotePlayer
+{
 
     private lateinit var database: Database
 
-    override fun load() {
+    override fun load()
+    {
         val sql = party.conf().getProperty(StorageSettings.SQL)
 
         val options = DatabaseOptions.builder()
@@ -30,7 +32,8 @@ internal class DatabaseVotePlayerMySQL(override val plugin: VotePartyPlugin) : D
 
         DB.setGlobalDatabase(database)
 
-        try {
+        try
+        {
             database.executeUpdate(
                 "CREATE TABLE IF NOT EXISTS `voteparty_players` (" +
                         "  `uuid` varchar(255) NOT NULL," +
@@ -48,7 +51,9 @@ internal class DatabaseVotePlayerMySQL(override val plugin: VotePartyPlugin) : D
                         ") ENGINE=InnoDB DEFAULT CHARSET=utf8;"
             )
 
-        } catch (ex: SQLException) {
+        }
+        catch (ex: SQLException)
+        {
             throw RuntimeException("Error while creating database table:", ex)
         }
     }
@@ -58,8 +63,10 @@ internal class DatabaseVotePlayerMySQL(override val plugin: VotePartyPlugin) : D
         DB.close()
     }
 
-    override fun load(uuid: UUID): User? {
-        return try {
+    override fun load(uuid: UUID): User?
+    {
+        return try
+        {
             val row = database.getFirstRow("SELECT name, claimable FROM voteparty_players WHERE uuid = ?", uuid.toString())
             val user = User(uuid, row.getString("name"), mutableListOf(), row.getInt("claimable"))
 
@@ -76,13 +83,19 @@ internal class DatabaseVotePlayerMySQL(override val plugin: VotePartyPlugin) : D
         }
     }
 
-    override fun save(data: User) {
+    override fun save(data: User)
+    {
         database.executeInsert("INSERT INTO voteparty_players (uuid, name, claimable) VALUES(?, ?, ?) ON DUPLICATE " +
                 "KEY UPDATE name = ?, claimable = ?", data.uuid.toString(), data.name, data.claimable, data.name, data.claimable)
 
         data.votes().forEach { vote ->
             database.executeInsert("INSERT IGNORE INTO voteparty_votes (timestamp, uuid) VALUES(?, ?)", vote, data.uuid.toString())
         }
+    }
+
+    override fun reset(data: User)
+    {
+        database.executeUpdate("DELETE FROM voteparty_votes WHERE UUID = ?", data.uuid.toString())
     }
 
     override fun load(uuid: Collection<UUID>): Map<UUID, User?>

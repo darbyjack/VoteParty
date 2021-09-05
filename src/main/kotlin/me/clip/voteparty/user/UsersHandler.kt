@@ -83,7 +83,7 @@ class UsersHandler(override val plugin: VotePartyPlugin) : Addon, State, Listene
 
 	fun reset(player: OfflinePlayer)
 	{
-		get(player).reset()
+		database.reset(get(player))
 	}
 
 	fun saveAll()
