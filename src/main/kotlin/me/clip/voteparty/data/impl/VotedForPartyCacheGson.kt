@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import me.clip.voteparty.data.base.VotedForPartyCache
 import me.clip.voteparty.plugin.VotePartyPlugin
+import java.io.File
 import java.util.UUID
 import java.util.logging.Level
 
@@ -12,13 +13,14 @@ internal class VotedForPartyCacheGson(override val plugin: VotePartyPlugin) : Vo
 {
 
     private lateinit var gson: Gson
+    private lateinit var file: File
     private val type = object : TypeToken<MutableList<UUID>>() {}.type
 
     override fun load() {
         val builder = GsonBuilder().setPrettyPrinting()
         gson = builder.create()
 
-        val file = plugin.dataFolder.resolve("voted-party-cache.json")
+        file = plugin.dataFolder.resolve("voted-for-party-cache.json")
 
         if (!file.exists()) {
             file.parentFile.mkdirs()
@@ -42,7 +44,7 @@ internal class VotedForPartyCacheGson(override val plugin: VotePartyPlugin) : Vo
     override fun save() {
         try
         {
-            plugin.dataFolder.resolve("voted-party-cache.json").writeText(gson.toJson(party.partyHandler.voted, type))
+            file.writeText(gson.toJson(party.partyHandler.voted, type))
         }
         catch (ex: Exception)
         {
