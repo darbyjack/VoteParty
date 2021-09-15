@@ -172,7 +172,7 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 			runPartyCommands()
 			runPartyStartEffects()
 			
-			val targets = if (party.conf().getProperty(PartySettings.REQUIRE_VOTES_FOR_PARTY))
+			val targets = if (!party.conf().getProperty(PartySettings.REQUIRE_VOTES_FOR_PARTY))
 				server.onlinePlayers else server.onlinePlayers.filter { voted.contains(it.uniqueId) }
 
 			if (party.conf().getProperty(PartySettings.USE_CRATE)) {
