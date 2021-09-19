@@ -19,7 +19,7 @@ info:
   votes-needed: "&d%voteparty_votes_required_party% Votes &fbenötigt für die nächste Party."
   reloaded: "&fDie Kon­fi­gu­ra­ti­on wurde neu geladen!"
   player-total-votes: "&d%player_name% &fhat &d%voteparty_player_votes% &fvote(s)!"
-  player-check-votes: "&d%player_name% &f has voted &d{count} &ftimes in the last &d{amount} {unit}&d!"
+  player-check-votes: "&d%player_name% &f hat in &d{count} &fZeit der letzten &d{amount} {unit}&d &fgevotet!"
   vote-count-reset: "&d%player_name%&f's Stimmenanzahl wurde zurückgesetzt auf &d0&f!"
 party:
   force-start-successful: "&fDu hast eine &dVote Party gestartet &ffür alle Spieler online!"
@@ -42,5 +42,5 @@ help:
   header: "<strikethrough><dark_purple>      </strikethrough> <light_purple>VoteParty Hilfe <strikethrough><dark_purple>      </dark_purple></strikethrough>"
   line-text: "<dark_gray>• <hover:show_text:'{line-hover}'><light_purple>/vp</light_purple> <white>{cmd}</white></hover>\n"
   line-hover: "<light_purple>{text}\n<white>{desc}\n\n<gray>/vp {cmd} <white>{args}\n<dark_gray>{perm}</dark_gray>"
-  footer: "<strikethrough><dark_purple>                               </strikethrough></dark_purple>\n<italic><gray>Hover for more info</gray></italic>"
+  footer: "<strikethrough><dark_purple>                               </strikethrough></dark_purple>\n<italic><gray>Bewegen Sie den Mauszeiger für weitere Informationen</gray></italic>"
 
