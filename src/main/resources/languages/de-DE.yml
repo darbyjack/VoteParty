@@ -1,11 +1,11 @@
 ---
 descriptions:
-  help: "Helpful commands for VoteParty."
-  setcounter: "Set the current vote counter."
-  addvote: "Add votes to the current vote tally."
-  startparty: "Force launch a VoteParty."
+  help: "Hilfreiche Befehle für VoteParty."
+  setcounter: "Setzt den aktuellen Stimmenzähler."
+  addvote: "Fügt Stimmen zu aktuellen Abzählung hinzu."
+  startparty: "Erzwingt eine VoteParty."
   givecrate: "Supply a player with a Vote crate."
-  giveparty: "Host a private Vote Party for a player."
+  giveparty: "Führt eine Private Vote Party für einen Spieler durch."
   reload: "Reload the config and language file."
   checkvotes: "Check the amount of votes a player has."
   totalvotes: "Get the total amount of votes a player has."
