@@ -18,13 +18,13 @@ error:
 info:
   votes-needed: "&d%voteparty_votes_required_party% Votes &fbenötigt für die nächste Party."
   reloaded: "&fDie Kon­fi­gu­ra­ti­on wurde neu geladen!"
-  player-total-votes: "&d%player_name% &fhas a total of &d%voteparty_player_votes% &fvote(s)!"
+  player-total-votes: "&d%player_name% &fhat &d%voteparty_player_votes% &fvote(s)!"
   player-check-votes: "&d%player_name% &f has voted &d{count} &ftimes in the last &d{amount} {unit}&d!"
-  vote-count-reset: "&d%player_name%&f's vote count has been reset to &d0&f!"
+  vote-count-reset: "&d%player_name%&f's Stimmenanzahl wurde zurückgesetzt auf &d0&f!"
 party:
-  force-start-successful: "&fYou've force started a &dVote Party &ffor all online players!"
+  force-start-successful: "&fDu hast eine &dVote Party gestartet &ffür alle Spieler online!"
 votes:
-  votes-needed-updated: "&fNew required votes has been set! &d%voteparty_votes_required_party% Votes &fneeded for the next party."
+  votes-needed-updated: "&fNeue erforderlichen Stimmen wurden gesetzt! &d%voteparty_votes_required_party% Votes &fwerden benötigt für die nächste Party."
   vote-counter-updated: "&fCurrent votes updated to &d%voteparty_votes_recorded%&f!"
   private-party-given: "&fYou've given a private &dVote Party &fto &d%player_name%&f!"
   private-party-received: "&fYou've received a private &dVote Party&f!"
