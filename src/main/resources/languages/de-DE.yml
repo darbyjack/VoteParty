@@ -25,13 +25,13 @@ party:
   force-start-successful: "&fDu hast eine &dVote Party gestartet &ffür alle Spieler online!"
 votes:
   votes-needed-updated: "&fNeue erforderlichen Stimmen wurden gesetzt! &d%voteparty_votes_required_party% Votes &fwerden benötigt für die nächste Party."
-  vote-counter-updated: "&fCurrent votes updated to &d%voteparty_votes_recorded%&f!"
-  private-party-given: "&fYou've given a private &dVote Party &fto &d%player_name%&f!"
-  private-party-received: "&fYou've received a private &dVote Party&f!"
-  added-to-player: "&fYou've given {count} votes to %player_name%!"
-  inventory-full: "&fYour inventory seems to be full! We've put this vote in your claimables! Do /vp claim once your inventory isn't full!"
+  vote-counter-updated: "&fAktuell Votes wurden geupdated zu &d%voteparty_votes_recorded%&f!"
+  private-party-given: "&fDu gibst eine Private &dVote Party &ffür &d%player_name%&f!"
+  private-party-received: "&fDu hast eine private &dVote Party&f erhalten!"
+  added-to-player: "&fDu hast {count} Stimmen für %player_name% gegeben!"
+  inventory-full: "&fDein Inventar scheint voll zu sein! Wir haben deine Vote Belohnung in dein Rucksack gepackt! Mache /vp claim, sobald dein Inventar nicht voll ist!"
 crate:
-  crate-given: "&fYou've given &d%player_name% &fvote crate(s)!"
+  crate-given: "&fDu hast &d%player_name% &fvote bekommen oder erstellt!"
   crate-received: "&fYou've received a vote crate!"
 claim:
   success: "&fYou successfully claimed the rewards from an offline vote! You have &d{claim} &fleft to claim."
