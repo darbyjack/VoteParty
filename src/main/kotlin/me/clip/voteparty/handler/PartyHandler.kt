@@ -20,10 +20,13 @@ import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import java.util.UUID
 
 class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 {
-	
+
+	var voted = mutableListOf<UUID>()
+
 	fun giveRandomPartyRewards(player: Player)
 	{
 		if (player.world.name in party.conf().getProperty(PartySettings.DISABLED_WORLDS)) {
@@ -169,20 +172,24 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 			runPartyCommands()
 			runPartyStartEffects()
 			
+			val targets = if (!party.conf().getProperty(PartySettings.REQUIRE_VOTES_FOR_PARTY))
+				server.onlinePlayers else server.onlinePlayers.filter { voted.contains(it.uniqueId) }
+
 			if (party.conf().getProperty(PartySettings.USE_CRATE)) {
-				server.onlinePlayers.forEach {
+				targets.forEach {
 					it.inventory.addItem(buildCrate(1))
 				}
 			}
 			else {
-				server.onlinePlayers.forEach()
+				targets.forEach()
 				{
 					giveGuaranteedPartyRewards(it)
 					giveRandomPartyRewards(it)
 					givePermissionPartyRewards(it)
 				}
 			}
-			
+
+			voted.clear()
 			val partyEndEvent = PartyEndEvent()
 			Bukkit.getPluginManager().callEvent(partyEndEvent)
 		}
