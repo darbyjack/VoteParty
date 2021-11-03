@@ -47,6 +47,7 @@ class VotePartyPlaceholders(private val voteParty: VoteParty) : PlaceholderExpan
 			"votes_recorded" -> voteParty.getVotes().toString()
 			"votes_required_party" -> voteParty.getVotesNeeded().minus(voteParty.getVotes()).toString()
 			"votes_required_total" -> voteParty.getVotesNeeded().toString()
+			"votes_total" -> voteParty.usersHandler.getTotalVotes().toString()
 			"player_votes" -> voteParty.usersHandler[player ?: return ""].votes().size.toString()
 			else -> ""
 		}

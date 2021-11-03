@@ -142,6 +142,10 @@ class UsersHandler(override val plugin: VotePartyPlugin) : Addon, State, Listene
 		return get(user).votes().count { voteEpoch -> voteEpoch > timeEpoch }
 	}
 
+	fun getTotalVotes(): Int {
+		return cached.values.distinct().sumOf { it.votes().size }
+	}
+
 
 	@EventHandler
 	fun PlayerJoinEvent.onJoin()
