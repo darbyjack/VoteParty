@@ -94,6 +94,11 @@ class UsersHandler(override val plugin: VotePartyPlugin) : Addon, State, Listene
 		return get(offlinePlayer).votes().count { it > time }
 	}
 
+	fun getPlayersVotedWithinRange(amount: Long, unit: TimeUnit) : List<UUID>
+	{
+		return cached.values.distinct().filter { getVotesWithinRange(it.player(), amount, unit) > 0 }.map { it.uuid }
+	}
+
 	fun getVotesWithinRange(offlinePlayer: OfflinePlayer, epoch: Long) : Int
 	{
 		return get(offlinePlayer).votes().count { it > epoch }
