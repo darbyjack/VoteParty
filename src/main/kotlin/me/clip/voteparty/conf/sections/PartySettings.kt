@@ -32,8 +32,14 @@ internal object PartySettings : SettingsHolder
 	val OFFLINE_VOTES: Property<Boolean> = newProperty("party.offline_votes", true)
 
 	@JvmField
-	@Comment("Would you like to require players to vote to join the party?")
-	val REQUIRE_VOTES_FOR_PARTY: Property<Boolean> = newProperty("party.require_votes_for_party", false)
+	@Comment(
+		"There are 3 different ways that a party can work.",
+		"1) \"everyone\" - everyone can join the party whether they voted or not",
+		"2) \"daily\" - everyone who voted in the past 24 hours can join the party",
+		"3) \"party\" - everyone who voted in this specific party can join the party",
+		"Set the mode below to one of the options above to specify how the party should function"
+	)
+	val PARTY_MODE: Property<String> = newProperty("party.party_mode", "everyone")
 
 	@JvmField
 	@Comment("The amount of time (in seconds) the server will wait to start the party after the amount needed has been achieved")

@@ -21,6 +21,7 @@ import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import java.util.UUID
+import java.util.concurrent.TimeUnit
 
 class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 {
@@ -172,8 +173,12 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 			runPartyCommands()
 			runPartyStartEffects()
 
-			val targets = if (!party.conf().getProperty(PartySettings.REQUIRE_VOTES_FOR_PARTY))
-				server.onlinePlayers else server.onlinePlayers.filter { voted.contains(it.uniqueId) }
+			val targets: Collection<Player> = when(party.conf().getProperty(PartySettings.PARTY_MODE)) {
+				"everyone" -> server.onlinePlayers
+				"daily" -> server.onlinePlayers.filter { party.usersHandler.getPlayersVotedWithinRange(1, TimeUnit.DAYS).contains(it.uniqueId) }
+				"party" -> server.onlinePlayers.filter { voted.contains(it.uniqueId) }
+				else -> server.onlinePlayers
+			}
 
 			if (party.conf().getProperty(PartySettings.USE_CRATE)) {
 				val disabledWorlds = party.conf().getProperty(PartySettings.DISABLED_WORLDS)
