@@ -23,6 +23,7 @@ info:
   vote-count-reset: "&d%player_name%&f's Stimmenanzahl wurde zurückgesetzt auf &d0&f!"
 party:
   force-start-successful: "&fDu hast eine &dVote Party gestartet &ffür alle Spieler online!"
+  requirements-not-met: "&fSorry, but you did not meet the requirements to join this party!"
 votes:
   votes-needed-updated: "&fNeue erforderlichen Stimmen wurden gesetzt! &d%voteparty_votes_required_party% Votes &fwerden benötigt für die nächste Party."
   vote-counter-updated: "&fAktuell Votes wurden geupdated zu &d%voteparty_votes_recorded%&f!"
