@@ -23,6 +23,7 @@ info:
   vote-count-reset: "&d%player_name%&f's aantal stemmen is gereset naar &d0&f!"
 party:
   force-start-successful: "&fJe hebt een &dVote Party &fvoor alle online spelers gestart!"
+  requirements-not-met: "&fSorry, but you did not meet the requirements to join this party!"
 votes:
   votes-needed-updated: "&fNieuwe vereiste stemmen zijn ingesteld! &d%voteparty_votes_required_party% Stemmen &zijn nodig voor de volgende party."
   vote-counter-updated: "&fHuidige stemmen bijgewerkt naar &d%voteparty_votes_recorded%&f!"
