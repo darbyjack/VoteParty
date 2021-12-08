@@ -13,7 +13,9 @@ import me.clip.voteparty.exte.meta
 import me.clip.voteparty.exte.name
 import me.clip.voteparty.exte.runTaskLater
 import me.clip.voteparty.exte.runTaskTimer
+import me.clip.voteparty.exte.sendMessage
 import me.clip.voteparty.exte.takeRandomly
+import me.clip.voteparty.messages.Messages
 import me.clip.voteparty.plugin.VotePartyPlugin
 import me.clip.voteparty.version.EffectType
 import org.bukkit.Bukkit
@@ -178,6 +180,10 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 				"daily" -> server.onlinePlayers.filter { party.usersHandler.getPlayersVotedWithinRange(1, TimeUnit.DAYS).contains(it.uniqueId) }
 				"party" -> server.onlinePlayers.filter { voted.contains(it.uniqueId) }
 				else -> server.onlinePlayers
+			}
+
+			server.onlinePlayers.filterNot { it in targets }.forEach {
+				sendMessage(party.manager().getCommandIssuer(it), Messages.PARTY__REQUIREMENTS_NOT_MET)
 			}
 
 			if (party.conf().getProperty(PartySettings.USE_CRATE)) {
