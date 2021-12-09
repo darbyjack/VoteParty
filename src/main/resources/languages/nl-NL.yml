@@ -43,5 +43,5 @@ help:
   header: "<strikethrough><dark_purple>      </strikethrough> <light_purple>VoteParty Hulp <strikethrough><dark_purple>      </dark_purple></strikethrough>"
   line-text: "<dark_gray>• <hover:show_text:'{line-hover}'><light_purple>/vp</light_purple> <white>{cmd}</white></hover>\n"
   line-hover: "<light_purple>{text}\n<white>{desc}\n\n<gray>/vp {cmd} <white>{args}\n<dark_gray>{perm}</dark_gray>"
-  footer: "<strikethrough><dark_purple>                               </strikethrough></dark_purple>\n<italic><gray>Hover for more info</gray></italic>"
+  footer: "<strikethrough><dark_purple>                               </strikethrough></dark_purple>\n<italic><gray>Hover voor meer informatie</gray></italic>"
 
