@@ -27,6 +27,7 @@ info:
   recent-voters-line: "<light_purple>{user} <white>voted <light_purple>{time} <white>hours ago\n"
 party:
   force-start-successful: "&fYou've force started a &dVote Party &ffor all online players!"
+  requirements-not-met: "&fSorry, but you did not meet the requirements to join this party!"
 votes:
   votes-needed-updated: "&fNew required votes has been set! &d%voteparty_votes_required_party% Votes &fneeded for the next party."
   vote-counter-updated: "&fCurrent votes updated to &d%voteparty_votes_recorded%&f!"

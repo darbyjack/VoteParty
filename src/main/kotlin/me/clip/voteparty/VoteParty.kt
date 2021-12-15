@@ -11,6 +11,7 @@ import me.clip.voteparty.conf.sections.HookSettings
 import me.clip.voteparty.conf.sections.PartySettings
 import me.clip.voteparty.conf.sections.PluginSettings
 import me.clip.voteparty.conf.sections.VoteData
+import me.clip.voteparty.data.impl.VotedForPartyCacheGson
 import me.clip.voteparty.exte.color
 import me.clip.voteparty.exte.runTaskTimerAsync
 import me.clip.voteparty.handler.LeaderboardHandler
@@ -56,6 +57,7 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 	private val crateListener = CrateListener(plugin)
 	private val votesListener = VotesListener(plugin)
 	private val hooksListener = HooksListenerNuVotifier(plugin)
+	private val votedForPartyCache = VotedForPartyCacheGson(plugin)
 
 	private var hook = null as? VersionHook?
 	private var papi = null as? VotePartyPlaceholders?
@@ -88,6 +90,9 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 		crateListener.load()
 		votesListener.load()
 
+		// voted for party cache
+		votedForPartyCache.load()
+
 		if (conf().getProperty(HookSettings.NUVOTIFIER))
 		{
 			hooksListener.load()
@@ -104,6 +109,7 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 		plugin.runTaskTimerAsync(conf().getProperty(PluginSettings.PLAYER_SAVE_INTERVAL).toLong() * 20L)
 		{
 			usersHandler.saveAll()
+			votedForPartyCache.save()
 		}
 	}
 
@@ -119,6 +125,7 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 
 		usersHandler.kill()
 		leaderboardHandler.kill()
+		votedForPartyCache.kill()
 	}
 
 
@@ -206,6 +213,7 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 		}
 
 		cmds.locales.defaultLocale = Locale.forLanguageTag(conf().getProperty(PluginSettings.LANGUAGE) ?: "en-US")
+		cmds.usePerIssuerLocale(false, false)
 
 		cmds.commandCompletions.registerCompletion("online")
 		{

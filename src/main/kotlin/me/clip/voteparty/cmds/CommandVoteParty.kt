@@ -82,7 +82,7 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 	@CommandPermission(ADMIN_PERM)
 	fun setCounter(issuer: CommandIssuer, amount: Int)
 	{
-		if (amount <= 0)
+		if (amount < 0)
 		{
 			return sendMessage(issuer, Messages.ERROR__INVALID_NUMBER)
 		}
