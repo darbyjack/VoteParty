@@ -51,7 +51,7 @@ internal class VotesListener(override val plugin: VotePartyPlugin) : VotePartyLi
 
 		party.votesHandler.addVotes(1)
 
-		val online = player.player ?: return
+		val online = player.player
 
 		if (online == null && party.conf().getProperty(VoteSettings.OFFLINE_VOTE_GLOBAL_COMMANDS)) {
 			party.votesHandler.runGlobalCommandsOffline(player)
