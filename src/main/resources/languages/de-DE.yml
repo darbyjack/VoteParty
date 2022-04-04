@@ -11,6 +11,7 @@ descriptions:
   totalvotes: "Erhalte die Gesamtanzahl an Stimmen, die ein Spieler hat."
   resetvotes: "Setze die Anzahl der Stimmen zurück, die ein Spieler hat."
   claim: "Beanspruchen der Belohnung für Offline Votes."
+  claimall: "Claim all rewards from offline votes at once."
 error:
   invalid-number: "&fEntschuldige, aber diese Zahl muss positiv sein, um korrekt zu funktionieren!"
   disabled-world: "&fEntschuldige, aber dieser Spieler ist derzeit in einer deaktivierten Welt!"
@@ -36,12 +37,14 @@ crate:
   crate-received: "Du hast ein Vote erstellt!"
 claim:
   success: "&fDu hast erfolgreich die Belohnungen von deiner Offline-Abstimmung abgeholt! Du hast &d{claim} &fnoch zur abzuholen."
+  success-all: "&fYou successfully claimed the rewards for all offline votes!"
   none: "&fDu hast keine Belohnungen von Offline-Votes!"
   notify: "&fHey! Du scheinst offline abgestimmt zu haben! Du hast eine oder einige Belohnungen! Sammle sie durch die Verwendung von &d/vp claim&f &fein!"
   full: "&aDein Inventar ist voll! Mache platz und versuche es erneut!"
+  full-all: "&aYour inventory is full! Make some space and try again! You have claimed &d{claimed} &aoffline rewards. You have &d{claim} &aleft to claim."
 help:
   header: "<strikethrough><dark_purple>      </strikethrough> <light_purple>VoteParty Hilfe <strikethrough><dark_purple>      </dark_purple></strikethrough>"
   line-text: "<dark_gray>• <hover:show_text:'{line-hover}'><light_purple>/vp</light_purple> <white>{cmd}</white></hover>\n"
   line-hover: "<light_purple>{text}\n<white>{desc}\n\n<gray>/vp {cmd} <white>{args}\n<dark_gray>{perm}</dark_gray>"
-  footer: "<strikethrough><dark_purple>                               </strikethrough></dark_purple>\n<italic><gray>Bewegen Sie den Mauszeiger für weitere Informationen</gray></italic>"
+  footer: "<strikethrough><dark_purple>                               </dark_purple></strikethrough>\n<italic><gray>Hover for more info</gray></italic>"
 
