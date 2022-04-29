@@ -2,7 +2,9 @@ package me.clip.voteparty.version
 
 import org.bukkit.Color
 import org.bukkit.Location
-import org.inventivetalent.particle.ParticleEffect
+import xyz.xenondevs.particle.ParticleBuilder
+import xyz.xenondevs.particle.ParticleEffect
+import xyz.xenondevs.particle.PropertyType
 
 class VersionHookOld : VersionHook
 {
@@ -10,14 +12,31 @@ class VersionHookOld : VersionHook
 	override fun display(type: EffectType, location: Location, offsetX: Double, offsetY: Double, offsetZ: Double, speed: Double, count: Int, color: Color?)
 	{
 		val effect = resolve(type) ?: return
-		
-		if (color != null && effect.hasFeature(ParticleEffect.Feature.COLOR))
+
+		if (color != null && effect.hasProperty(PropertyType.COLORABLE))
 		{
-			effect.sendColor(location.world.players, location, color)
+			ParticleBuilder(effect)
+				.setLocation(location)
+				.setColor(java.awt.Color(color.red, color.green, color.blue))
+				.display(location.world.players)
+
+			//effect.display(location, RegularColor(color.red, color.green, color.blue), location.world.players)
+			//effect.sendColor(location.world.players, location, color)
 		}
 		else
 		{
-			effect.send(location.world.players, location, offsetX, offsetY, offsetZ, speed, count)
+			ParticleBuilder(effect)
+				.setLocation(location)
+				.setOffsetX(offsetX.toFloat())
+				.setOffsetY(offsetY.toFloat())
+				.setOffsetZ(offsetZ.toFloat())
+				.setSpeed(speed.toFloat())
+				.setAmount(count)
+				.display(location.world.players)
+
+
+			//effect.display(location, offsetX.toFloat(), offsetY.toFloat(), offsetZ.toFloat(), speed.toFloat(), count, null, location.world.players)
+			//effect.send(location.world.players, location, offsetX, offsetY, offsetZ, speed, count)
 		}
 	}
 	

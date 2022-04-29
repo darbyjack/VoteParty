@@ -3,6 +3,7 @@ version '2.0'
 
 
 repositories {
+	mavenCentral()
 	maven {
 		url = "https://repo.glaremasters.me/repository/public/"
 	}
@@ -10,7 +11,7 @@ repositories {
 
 dependencies {
 	implementation project(":version")
-	implementation "org.inventivetalent:particleapi:+"
+	implementation "xyz.xenondevs:particle:1.7.1"
 	
 	compileOnly("org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT") {
 		force = true
