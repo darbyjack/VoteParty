@@ -16,7 +16,9 @@ internal class HooksListenerNuVotifier(override val plugin: VotePartyPlugin) : V
 			plugin.logger.warning("A vote come through NuVotifier which was null or did not provide a username. Throwing away.")
 			return
 		}
-		val player = server.getOfflinePlayer(vote.username)
+
+		// Try pulling the username from the user cache first before querying Bukkit / Mojang
+		val player = party.usersHandler[vote.username]?.player() ?: server.getOfflinePlayer(vote.username)
 		val event = VoteReceivedEvent(player, vote.serviceName)
 		server.pluginManager.callEvent(event)
 	}
