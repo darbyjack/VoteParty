@@ -30,7 +30,7 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 
 	var voted = mutableListOf<UUID>()
 
-	fun giveRandomPartyRewards(player: Player)
+	fun giveRandomPartyRewards(player: Player, amount: Int = 1)
 	{
 		if (player.world.name in party.conf().getProperty(PartySettings.DISABLED_WORLDS)) {
 			return
@@ -47,7 +47,7 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 			return
 		}
 
-		val iter = settings.commands.takeRandomly(settings.max_possible).iterator()
+		val iter = settings.commands.takeRandomly(settings.max_possible * amount).iterator()
 
 		plugin.runTaskTimer(party.conf().getProperty(PartySettings.COMMAND_DELAY).toLong() * 20L)
 		{
@@ -150,7 +150,7 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 		}
 	}
 
-	fun startParty()
+	fun startParty(amount: Int = 1)
 	{
 
 		val prePartyEvent = PrePartyEvent()
@@ -189,14 +189,14 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 			if (party.conf().getProperty(PartySettings.USE_CRATE)) {
 				val disabledWorlds = party.conf().getProperty(PartySettings.DISABLED_WORLDS)
 				targets.filterNot { it.world.name in disabledWorlds  }.forEach {
-					it.inventory.addItem(buildCrate(1))
+					it.inventory.addItem(buildCrate(amount))
 				}
 			}
 			else {
 				targets.forEach()
 				{
 					giveGuaranteedPartyRewards(it)
-					giveRandomPartyRewards(it)
+					giveRandomPartyRewards(it, amount)
 					givePermissionPartyRewards(it)
 				}
 			}
