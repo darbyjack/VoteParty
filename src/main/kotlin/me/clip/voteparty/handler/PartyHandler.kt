@@ -188,7 +188,8 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 
 			if (party.conf().getProperty(PartySettings.USE_CRATE)) {
 				val disabledWorlds = party.conf().getProperty(PartySettings.DISABLED_WORLDS)
-				targets.filter { it.world.name !in disabledWorlds  }.forEach {
+				targets.filterNot { it.world.name in disabledWorlds  }.forEach {
+
 					it.inventory.addItem(buildCrate(1))
 				}
 			}
