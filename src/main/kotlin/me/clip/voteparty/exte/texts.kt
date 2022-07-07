@@ -42,12 +42,12 @@ fun helpMenu(issuer: CommandIssuer): Component
 
 fun recentMenu(issuer: CommandIssuer, recentVoters: RecentVoters): Component
 {
-	val mini = MiniMessage.get()
+	val mini = MiniMessage.miniMessage()
 	val builder = Component.text()
 	val lineText = msgAsString(issuer, Messages.INFO__RECENT_VOTERS_LINE)
 
 	// Header
-	builder.append(mini.parse(msgAsString(issuer, Messages.INFO__RECENT_VOTERS_HEADING))).append(Component.newline())
+	builder.append(mini.deserialize(msgAsString(issuer, Messages.INFO__RECENT_VOTERS_HEADING))).append(Component.newline())
 
 	// Data
 	val currentTime = System.currentTimeMillis()
@@ -68,7 +68,7 @@ fun recentMenu(issuer: CommandIssuer, recentVoters: RecentVoters): Component
 
 		val updatedLine = lineText.replace("{user}", userStr)
 				.replace("{time}", "%.2f".format(timeDiffHours))
-		builder.append(mini.parse(updatedLine))
+		builder.append(mini.deserialize(updatedLine))
 	}
 
 	return builder.build()
