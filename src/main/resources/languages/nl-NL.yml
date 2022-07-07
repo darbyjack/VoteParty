@@ -11,10 +11,11 @@ descriptions:
   totalvotes: "Haal het totale aantal stemmen op die een speler heeft."
   resetvotes: "Reset het aantal stemmen dat een speler heeft."
   claim: "Claim beloningen bij offline stemmen."
+  claimall: "Claim all rewards from offline votes at once."
 error:
   invalid-number: "&fSorry, maar dit nummer moet positief zijn om goed te werken!"
   disabled-world: "&fSorry, maar deze speler bevindt zich momenteel in een uitgeschakelde wereld!"
-  user-not-found: "&fSorry, but this player could not be found!"
+  user-not-found: "&fSorry, deze speler kon niet gevonded worden!"
 info:
   votes-needed: "&d%voteparty_votes_required_party% stemmen zijn nodig voor de volgende party."
   reloaded: "&fDe configuratie is herladen!"
@@ -23,25 +24,27 @@ info:
   vote-count-reset: "&d%player_name%&f's aantal stemmen is gereset naar &d0&f!"
 party:
   force-start-successful: "&fJe hebt een &dVote Party &fvoor alle online spelers gestart!"
-  requirements-not-met: "&fSorry, but you did not meet the requirements to join this party!"
+  requirements-not-met: "&fSorry, je voldeed niet aan de vereisten om deel te nemen aan deze VoteParty!"
 votes:
   votes-needed-updated: "&fNieuwe vereiste stemmen zijn ingesteld! &d%voteparty_votes_required_party% Stemmen &zijn nodig voor de volgende party."
   vote-counter-updated: "&fHuidige stemmen bijgewerkt naar &d%voteparty_votes_recorded%&f!"
   private-party-given: "&fJe hebt een privé &dVote Party &fgegeven aan &d%player_name%&f!"
   private-party-received: "&fJe hebt een privé &dVote Party&f ontvangen!"
-  added-to-player: "&fYou've given {count} votes to %player_name%!"
-  inventory-full: "&fYour inventory seems to be full! We've put this vote in your claimables! Do /vp claim once your inventory isn't full!"
+  added-to-player: "&fJe hebt {count} stemmen aan %player_name% gegeven!"
+  inventory-full: "&fJou inventaris is vol! We hebben deze stem in je claimables geplaats! Doe /vp claim wanneer je inventaris niet vol is!"
 crate:
   crate-given: "&fJe hebt &d%player_name% &fvote crate(s) gegeven!"
   crate-received: "&fJe hebt een vote crate ontvangen!"
 claim:
   success: "&fJe hebt succesvol de beloningen geclaimd van een offline stem! Je hebt &d{claim} &fover om te claimen."
+  success-all: "&fYou successfully claimed the rewards for all offline votes!"
   none: "&fJe hebt geen beloningen die je kunt claimen van offline stemmen!"
   notify: "&fHey daar! Je leek te hebben gestemd terwijl je offline was! Je hebt enkele claim beloningen beschikbaar! Verzamel ze met behulp van &d/vp claim&f!"
-  full: "&aYour inventory is full! Make some space and try again!"
+  full: "&aJou inventaris is vol! Maak wat plaats en probeer opnieuw!"
+  full-all: "&aYour inventory is full! Make some space and try again! You have claimed &d{claimed} &aoffline rewards. You have &d{claim} &aleft to claim."
 help:
-  header: "<strikethrough><dark_purple>      </strikethrough> <light_purple>VoteParty Help <strikethrough><dark_purple>      </dark_purple></strikethrough>"
+  header: "<strikethrough><dark_purple>      </strikethrough> <light_purple>VoteParty Hulp <strikethrough><dark_purple>      </dark_purple></strikethrough>"
   line-text: "<dark_gray>• <hover:show_text:'{line-hover}'><light_purple>/vp</light_purple> <white>{cmd}</white></hover>\n"
   line-hover: "<light_purple>{text}\n<white>{desc}\n\n<gray>/vp {cmd} <white>{args}\n<dark_gray>{perm}</dark_gray>"
-  footer: "<strikethrough><dark_purple>                               </strikethrough></dark_purple>\n<italic><gray>Hover for more info</gray></italic>"
+  footer: "<strikethrough><dark_purple>                               </dark_purple></strikethrough>\n<italic><gray>Hover for more info</gray></italic>"
 

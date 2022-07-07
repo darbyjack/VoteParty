@@ -14,6 +14,7 @@ import co.aikar.commands.annotation.Values
 import co.aikar.commands.bukkit.contexts.OnlinePlayer
 import me.clip.voteparty.base.Addon
 import me.clip.voteparty.conf.sections.PartySettings
+import me.clip.voteparty.conf.sections.VoteSettings
 import me.clip.voteparty.events.VoteReceivedEvent
 import me.clip.voteparty.exte.*
 import me.clip.voteparty.exte.ADMIN_PERM
@@ -192,7 +193,7 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 			return sendMessage(currentCommandIssuer, Messages.CLAIM__NONE)
 		}
 
-		if (player.inventory.firstEmpty() == -1)
+		if (player.inventory.firstEmpty() == -1 && party.conf().getProperty(VoteSettings.CLAIMABLE_IF_FULL))
 		{
 			return sendMessage(currentCommandIssuer, Messages.CLAIM__FULL)
 		}
@@ -214,19 +215,20 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 		{
 			return sendMessage(currentCommandIssuer, Messages.CLAIM__NONE)
 		}
-		
-		while (user.claimable > 0) {
 
-			if (player.inventory.firstEmpty() == -1)
+		for (i in 1..user.claimable)
+		{
+			if (player.inventory.firstEmpty() == -1 && party.conf().getProperty(VoteSettings.CLAIMABLE_IF_FULL))
 			{
-				sendMessage(currentCommandIssuer, Messages.CLAIM__SUCCESS, null, "{claim}", user.claimable)
-				return sendMessage(currentCommandIssuer, Messages.CLAIM__FULL)
+				return sendMessage(currentCommandIssuer, Messages.CLAIM__FULL_ALL, null, "{claimed}", i, "{claim}", user.claimable)
+
 			}
 
 			party.votesHandler.runAll(player)
 			user.claimable--
 		}
-		sendMessage(currentCommandIssuer, Messages.CLAIM__SUCCESS, null, "{claim}", user.claimable)
+
+		sendMessage(currentCommandIssuer, Messages.CLAIM__SUCCESS_ALL)
 	}
 
 	@Subcommand("recent")

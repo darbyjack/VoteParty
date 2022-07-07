@@ -9,13 +9,13 @@ import java.util.*
 
 fun helpMenu(issuer: CommandIssuer): Component
 {
-	val mini = MiniMessage.get()
+	val mini = MiniMessage.miniMessage()
 	val builder = Component.text()
 	val lineText = msgAsString(issuer, Messages.HELP__LINE_TEXT)
 	val lineHoverTemplate = msgAsString(issuer, Messages.HELP__LINE_HOVER)
 
 	// Header
-	builder.append(mini.parse(msgAsString(issuer, Messages.HELP__HEADER))).append(Component.newline())
+	builder.append(mini.deserialize(msgAsString(issuer, Messages.HELP__HEADER))).append(Component.newline())
 
 	// Commands
 	issuer.manager.getRootCommand("vp").subCommands.entries().forEach {
@@ -30,12 +30,12 @@ fun helpMenu(issuer: CommandIssuer): Component
 					.replace("{args}", cmd.syntaxText)
 					.replace("{perm}", if (key == "help") "" else ADMIN_PERM)
 
-			builder.append(mini.parse(lineText.replace("{cmd}", it.key).replace("{line-hover}", updatedHover)))
+			builder.append(mini.deserialize(lineText.replace("{cmd}", it.key).replace("{line-hover}", updatedHover)))
 		}
 	}
 
 	// Footer
-	builder.append((mini.parse(msgAsString(issuer, Messages.HELP__FOOTER))))
+	builder.append((mini.deserialize(msgAsString(issuer, Messages.HELP__FOOTER))))
 
 	return builder.build()
 }

@@ -8,7 +8,7 @@ internal data class Command(var chance: Double = 50.0,
 
 	fun shouldExecute(): Boolean
 	{
-		return chance >= ThreadLocalRandom.current().nextInt(100)
+		return chance >= ThreadLocalRandom.current().nextDouble(100.0)
 	}
 
 }
