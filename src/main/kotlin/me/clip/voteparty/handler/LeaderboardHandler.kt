@@ -13,27 +13,27 @@ import java.util.concurrent.TimeUnit
 class LeaderboardHandler(override val plugin: VotePartyPlugin) : Addon, State
 {
 	private val cache: LoadingCache<LeaderboardType, Leaderboard> = CacheBuilder.newBuilder().refreshAfterWrite(2, TimeUnit.MINUTES)
-			.build(object : CacheLoader<LeaderboardType, Leaderboard>()
-			       {
-				       override fun load(key: LeaderboardType): Leaderboard
-				       {
-					       return Leaderboard(key, plugin.voteParty?.usersHandler?.getVotesSince(key.time.invoke()) ?: emptyList())
-				       }
-			       })
-	
+		.build(object : CacheLoader<LeaderboardType, Leaderboard>()
+		{
+			override fun load(key: LeaderboardType): Leaderboard
+			{
+				return Leaderboard(key, plugin.voteParty?.usersHandler?.getVotesWithinRange(key.start.invoke(), key.end.invoke()) ?: emptyList())
+			}
+		})
+
 	override fun load()
 	{
 		LeaderboardType.values.forEach()
 		{ type ->
-			cache.put(type, Leaderboard(type, plugin.voteParty?.usersHandler?.getVotesSince(type.time.invoke()) ?: emptyList()))
+			cache.put(type, Leaderboard(type, plugin.voteParty?.usersHandler?.getVotesWithinRange(type.start.invoke(), type.end.invoke()) ?: emptyList()))
 		}
 	}
-	
+
 	override fun kill()
 	{
 		cache.invalidateAll()
 	}
-	
+
 	fun getLeaderboard(type: LeaderboardType): Leaderboard?
 	{
 		return cache.get(type)

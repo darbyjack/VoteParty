@@ -102,7 +102,7 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon, State
 			return
 		}
 
-		settings.daily.entries.filter { entry -> entry.votes == party.usersHandler.getVotesSince(player, LeaderboardType.DAILY.time.invoke()) }.forEach { entry ->
+		settings.daily.entries.filter { entry -> entry.votes == party.usersHandler.getVotesSince(player, LeaderboardType.DAILY.start.invoke()) }.forEach { entry ->
 			entry.commands.forEach()
 			{ command ->
 				server.dispatchCommand(server.consoleSender, formMessage(player, command))
@@ -119,7 +119,7 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon, State
 			return
 		}
 
-		settings.weekly.entries.filter { entry -> entry.votes == party.usersHandler.getVotesSince(player, LeaderboardType.WEEKLY.time.invoke()) }.forEach { entry ->
+		settings.weekly.entries.filter { entry -> entry.votes == party.usersHandler.getVotesSince(player, LeaderboardType.WEEKLY.start.invoke()) }.forEach { entry ->
 			entry.commands.forEach()
 			{ command ->
 				server.dispatchCommand(server.consoleSender, formMessage(player, command))
@@ -136,7 +136,7 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon, State
 			return
 		}
 
-		settings.monthly.entries.filter { entry -> entry.votes == party.usersHandler.getVotesSince(player, LeaderboardType.MONTHLY.time.invoke()) }.forEach { entry ->
+		settings.monthly.entries.filter { entry -> entry.votes == party.usersHandler.getVotesSince(player, LeaderboardType.MONTHLY.start.invoke()) }.forEach { entry ->
 			entry.commands.forEach()
 			{ command ->
 				server.dispatchCommand(server.consoleSender, formMessage(player, command))
@@ -153,7 +153,7 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon, State
 			return
 		}
 
-		settings.yearly.entries.filter { entry -> entry.votes == party.usersHandler.getVotesSince(player, LeaderboardType.ANNUALLY.time.invoke()) }.forEach { entry ->
+		settings.yearly.entries.filter { entry -> entry.votes == party.usersHandler.getVotesSince(player, LeaderboardType.ANNUALLY.start.invoke()) }.forEach { entry ->
 			entry.commands.forEach()
 			{ command ->
 				server.dispatchCommand(server.consoleSender, formMessage(player, command))
@@ -170,7 +170,7 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon, State
 			return
 		}
 
-		settings.total.entries.filter { entry -> entry.votes == party.usersHandler.getVotesSince(player, LeaderboardType.ALLTIME.time.invoke()) }.forEach { entry ->
+		settings.total.entries.filter { entry -> entry.votes == party.usersHandler.getVotesSince(player, LeaderboardType.ALLTIME.start.invoke()) }.forEach { entry ->
 			entry.commands.forEach()
 			{ command ->
 				server.dispatchCommand(server.consoleSender, formMessage(player, command))

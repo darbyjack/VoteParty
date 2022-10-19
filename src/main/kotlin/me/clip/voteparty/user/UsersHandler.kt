@@ -87,21 +87,19 @@ class UsersHandler(override val plugin: VotePartyPlugin) : Addon, State, Listene
 		database.save(user)
 	}
 
-	fun getVotesWithinRange(offlinePlayer: OfflinePlayer, amount: Long, unit: TimeUnit): Int
+	fun getVoteCountSince(offlinePlayer: OfflinePlayer, amount: Long, unit: TimeUnit): Int
 	{
-		val time = Instant.now().minusMillis(TimeUnit.MILLISECONDS.convert(amount, unit)).toEpochMilli()
+		return getVoteCountSince(offlinePlayer, Instant.now().minusMillis(TimeUnit.MILLISECONDS.convert(amount, unit)).toEpochMilli())
+	}
 
-		return get(offlinePlayer).votes().count { it > time }
+	fun getVoteCountSince(offlinePlayer: OfflinePlayer, epoch: Long) : Int
+	{
+		return get(offlinePlayer).votes().count { it > epoch }
 	}
 
 	fun getPlayersVotedWithinRange(amount: Long, unit: TimeUnit) : List<UUID>
 	{
-		return cached.values.distinct().filter { getVotesWithinRange(it.player(), amount, unit) > 0 }.map { it.uuid }
-	}
-
-	fun getVotesWithinRange(offlinePlayer: OfflinePlayer, epoch: Long) : Int
-	{
-		return get(offlinePlayer).votes().count { it > epoch }
+		return cached.values.distinct().filter { getVoteCountSince(it.player(), amount, unit) > 0 }.map { it.uuid }
 	}
 
 	fun getVotesWithinRange(epoch: Long) : List<LeaderboardUser>
@@ -111,6 +109,34 @@ class UsersHandler(override val plugin: VotePartyPlugin) : Addon, State, Listene
 				.map { LeaderboardUser(it, it.votes().count { it >= epoch }) }
 				.sortedByDescending { it.votes }
 				.toList()
+	}
+
+	fun getVotesWithinRange(start: LocalDateTime, end: LocalDateTime): List<LeaderboardUser>
+	{
+		val startEpoch = start.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+		val endEpoch = end.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+
+		return cached.values.asSequence()
+			.distinct()
+			.filter()
+			{ user ->
+				user.votes().isNotEmpty()
+			}
+			.map()
+			{ user ->
+
+				val votes = user.votes().count()
+				{ voteEpoch ->
+					voteEpoch in startEpoch until endEpoch
+				}
+
+				LeaderboardUser(user, votes)
+			}
+			.sortedByDescending()
+			{ user ->
+				user.votes
+			}
+			.toList()
 	}
 
 	fun getVotesSince(time: LocalDateTime): List<LeaderboardUser>
@@ -138,6 +164,14 @@ class UsersHandler(override val plugin: VotePartyPlugin) : Addon, State, Listene
 					user.votes
 				}
 				.toList()
+	}
+
+	fun getVotesWithinRange(user: OfflinePlayer, start: LocalDateTime, end: LocalDateTime): Int
+	{
+		val startEpoch = start.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+		val endEpoch = end.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+
+		return get(user).votes().count { voteEpoch -> voteEpoch in startEpoch until endEpoch }
 	}
 
 	fun getVotesSince(user: OfflinePlayer, time: LocalDateTime): Int
