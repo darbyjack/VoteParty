@@ -22,7 +22,7 @@ internal class HooksListenerNuVotifier(override val plugin: VotePartyPlugin) : V
 		}
 
 		if (party.conf().getProperty(VoteSettings.VALIDATE_NAMES) && !usernameRegex.matcher(vote.username).matches()) {
-			plugin.logger.warning("A vote came through NuVotifier which did not match the username regex. Throwing away.")
+			plugin.logger.warning("A vote came through NuVotifier (username: ${vote.username}) which did not match the username regex. Throwing away.")
 			return
 		}
 
