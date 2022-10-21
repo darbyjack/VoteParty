@@ -4,6 +4,7 @@ descriptions:
   setcounter: "Stel de huidige stem teller in."
   addvote: "Voeg stemmen toe aan de huidige stemmentelling."
   startparty: "Forceer het starten van een VoteParty."
+  startmulti: "Force launch a multi-crate/reward party."
   givecrate: "Voorzie een speler van een Vote crate."
   giveparty: "Organiseer een privé Vote Party voor een speler."
   reload: "Herlaad het configuratie- en taalbestand."

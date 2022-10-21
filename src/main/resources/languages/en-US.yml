@@ -3,6 +3,7 @@ descriptions:
   setcounter: "Set the current vote counter."
   addvote: "Add votes to the current vote tally."
   startparty: "Force launch a VoteParty."
+  startmulti: "Force launch a multi-crate/reward party."
   givecrate: "Supply a player with a Vote crate."
   giveparty: "Host a private Vote Party for a player."
   reload: "Reload the config and language file."

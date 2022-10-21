@@ -169,6 +169,16 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 		sendMessage(issuer, Messages.PARTY__FORCE_START_SUCCESSFUL)
 	}
 
+	@Subcommand("startmulti")
+	@Description("Start Multi")
+	@Syntax("<amount>")
+	@CommandPermission(ADMIN_PERM)
+	fun startMulti(issuer: CommandIssuer, amount: Int)
+	{
+		party.partyHandler.startParty(amount)
+		sendMessage(issuer, Messages.PARTY__FORCE_START_SUCCESSFUL)
+	}
+
 	@Subcommand("giveparty")
 	@CommandCompletion("@players")
 	@Description("Give Party")

@@ -4,6 +4,7 @@ descriptions:
   setcounter: "Setzt den aktuellen Stimmenzähler."
   addvote: "Fügt Stimmen zu aktuellen Abzählung hinzu."
   startparty: "Erzwingt eine VoteParty."
+  startmulti: "Force launch a multi-crate/reward party."
   givecrate: "Versorge ein Player mit einem Vote."
   giveparty: "Führt eine Private Vote Party für einen Spieler durch."
   reload: "Lädt die Kon­fi­gu­ra­ti­on und die Sprach Daten erneut."

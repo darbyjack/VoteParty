@@ -4,6 +4,7 @@ descriptions:
   setcounter: "Ange nuvarande röstantal."
   addvote: "Lägg till röster i nuvarande rösträkning."
   startparty: "Tvångs kör ett VoteParty."
+  startmulti: "Force launch a multi-crate/reward party."
   givecrate: "Förse en spelare med en röstlåda."
   giveparty: "Aktivera ett privat Vote Party för en spelare."
   reload: "Ladda om konfigurations filerna."

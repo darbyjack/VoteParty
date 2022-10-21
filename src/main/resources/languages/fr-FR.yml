@@ -4,6 +4,7 @@ descriptions:
   setcounter: "Régler le compteur de vote actuel."
   addvote: "Ajouter les votes au décompte actuel."
   startparty: "Forcer le lancement d'un VoteParty."
+  startmulti: "Force launch a multi-crate/reward party."
   givecrate: "Fournir une caisse de vote à un joueur."
   giveparty: "Organiser un VoteParty privée pour un joueur."
   reload: "Rechargez le fichier de configuration."
