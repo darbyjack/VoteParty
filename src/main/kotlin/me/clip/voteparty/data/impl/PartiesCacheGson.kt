@@ -33,15 +33,14 @@ class PartiesCacheGson(override val plugin: VotePartyPlugin) : PartiesCache {
         }
         catch (exception: Exception)
         {
-            logger.log(
-                Level.SEVERE,
-                "failed to load voted for party cache. This can end up in data loss!" + System.lineSeparator() +
-                        "A backup of the ${file.name} file was saved to: ${backupFile.name}",
-                exception
-            )
+
+            logger.log(Level.WARNING,
+                "failed to load past party records file, if this is the first time you are using this version v2.33 or newer of VoteParty, this is normal. " +
+                "Just to be safe, a backup of ${file.name} was saved to: ${backupFile.name}")
+
+            party.partyHandler.setParties(mutableListOf())
 
             if (!backupFile.exists()) {
-                backupFile.mkdirs()
                 backupFile.createNewFile()
             }
 

@@ -113,6 +113,7 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 		{
 			usersHandler.saveAll()
 			votedForPartyCache.save()
+			partiesCache.save()
 		}
 	}
 
