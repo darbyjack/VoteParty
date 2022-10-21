@@ -10,8 +10,11 @@ import java.util.regex.Pattern
 
 internal class HooksListenerNuVotifier(override val plugin: VotePartyPlugin) : VotePartyListener
 {
-
-	private val usernameRegex = Pattern.compile(party.conf().getProperty(VoteSettings.NAME_REGEX))
+	private lateinit var usernameRegex: Pattern
+	override fun load() {
+		super.load()
+		usernameRegex = Pattern.compile(party.conf().getProperty(VoteSettings.NAME_REGEX))
+	}
 
 	@EventHandler
 	fun VotifierEvent.onVote()
