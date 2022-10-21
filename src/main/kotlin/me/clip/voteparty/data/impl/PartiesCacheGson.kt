@@ -15,32 +15,42 @@ class PartiesCacheGson(override val plugin: VotePartyPlugin) : PartiesCache {
     private lateinit var backupFile: File
     private val type = object : TypeToken<MutableList<Long>>() {}.type
 
-    override fun load() {
+    override fun load()
+    {
         val builder = GsonBuilder().setPrettyPrinting()
         gson = builder.create()
 
         file = plugin.dataFolder.resolve("parties.json")
         backupFile = plugin.dataFolder.resolve("parties.json.bak")
 
-        if (!file.exists()) {
+        if (!file.exists())
+        {
             file.parentFile.mkdirs()
             file.createNewFile()
         }
 
         try
         {
-            party.partyHandler.setParties(gson.fromJson(file.readText(), type))
+            if (file.length() == 0L)
+            {
+                party.partyHandler.setParties(mutableListOf())
+            }
+            else
+            {
+                party.partyHandler.setParties(gson.fromJson(file.readText(), type))
+            }
         }
         catch (exception: Exception)
         {
+            logger.log(
+                Level.SEVERE,
+                "failed to load voted for party cache. This can end up in data loss!" + System.lineSeparator() +
+                        "A backup of the ${file.name} file was saved to: ${backupFile.name}",
+                exception
+            )
 
-            logger.log(Level.WARNING,
-                "failed to load past party records file, if this is the first time you are using this version v2.33 or newer of VoteParty, this is normal. " +
-                "Just to be safe, a backup of ${file.name} was saved to: ${backupFile.name}")
-
-            party.partyHandler.setParties(mutableListOf())
-
-            if (!backupFile.exists()) {
+            if (!backupFile.exists())
+            {
                 backupFile.createNewFile()
             }
 
@@ -48,11 +58,13 @@ class PartiesCacheGson(override val plugin: VotePartyPlugin) : PartiesCache {
         }
     }
 
-    override fun kill() {
+    override fun kill()
+    {
         save()
     }
 
-    override fun save() {
+    override fun save()
+    {
         try
         {
             file.writeText(gson.toJson(party.partyHandler.getParties(), type))
