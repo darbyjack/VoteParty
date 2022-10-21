@@ -11,6 +11,7 @@ import me.clip.voteparty.conf.sections.HookSettings
 import me.clip.voteparty.conf.sections.PartySettings
 import me.clip.voteparty.conf.sections.PluginSettings
 import me.clip.voteparty.conf.sections.VoteData
+import me.clip.voteparty.data.impl.PartiesCacheGson
 import me.clip.voteparty.data.impl.VotedForPartyCacheGson
 import me.clip.voteparty.exte.color
 import me.clip.voteparty.exte.runTaskTimerAsync
@@ -39,7 +40,6 @@ import java.io.InputStream
 import java.util.Locale
 import java.util.logging.Level
 
-
 class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : State
 {
 
@@ -58,6 +58,7 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 	private val votesListener = VotesListener(plugin)
 	private val hooksListener = HooksListenerNuVotifier(plugin)
 	private val votedForPartyCache = VotedForPartyCacheGson(plugin)
+	private val partiesCache = PartiesCacheGson(plugin)
 
 	private var hook = null as? VersionHook?
 	private var papi = null as? VotePartyPlaceholders?
@@ -92,6 +93,9 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 		// voted for party cache
 		votedForPartyCache.load()
 
+		// parties cache
+		partiesCache.load()
+
 		if (conf().getProperty(HookSettings.NUVOTIFIER))
 		{
 			hooksListener.load()
@@ -125,6 +129,7 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 		usersHandler.kill()
 		leaderboardHandler.kill()
 		votedForPartyCache.kill()
+		partiesCache.kill()
 	}
 
 
