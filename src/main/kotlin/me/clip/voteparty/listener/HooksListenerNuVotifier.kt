@@ -1,19 +1,28 @@
 package me.clip.voteparty.listener
 
 import com.vexsoftware.votifier.model.VotifierEvent
+import me.clip.voteparty.conf.sections.VoteSettings
 import me.clip.voteparty.events.VoteReceivedEvent
 import me.clip.voteparty.listener.base.VotePartyListener
 import me.clip.voteparty.plugin.VotePartyPlugin
 import org.bukkit.event.EventHandler
+import java.util.regex.Pattern
 
 internal class HooksListenerNuVotifier(override val plugin: VotePartyPlugin) : VotePartyListener
 {
+
+	private val usernameRegex = Pattern.compile(party.conf().getProperty(VoteSettings.NAME_REGEX))
 
 	@EventHandler
 	fun VotifierEvent.onVote()
 	{
 		if (vote == null || vote.username.isNullOrEmpty()) {
 			plugin.logger.warning("A vote come through NuVotifier which was null or did not provide a username. Throwing away.")
+			return
+		}
+
+		if (party.conf().getProperty(VoteSettings.VALIDATE_NAMES) && !usernameRegex.matcher(vote.username).matches()) {
+			plugin.logger.warning("A vote came through NuVotifier which did not match the username regex. Throwing away.")
 			return
 		}
 

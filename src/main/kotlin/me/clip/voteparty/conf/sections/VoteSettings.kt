@@ -20,6 +20,14 @@ internal object VoteSettings : SettingsHolder
 {
 
 	@JvmField
+	@Comment("Would you like to validate the usernames being sent from voting sites?")
+	val VALIDATE_NAMES: Property<Boolean> = newProperty("voting.validate_names", false)
+
+	@JvmField
+	@Comment("This is the regex for username checking. The default should apply to most accounts, but you are given access to modify in case you need to.")
+	val NAME_REGEX: Property<String> = newProperty("voting.name_regex", "^[a-zA-Z0-9_]{2,16}$")
+
+	@JvmField
 	@Comment("If a player's inventory is full when voting, do you want to send the vote to a /vote claim?")
 	val CLAIMABLE_IF_FULL: Property<Boolean> = newProperty("voting.claim_if_full", true)
 
