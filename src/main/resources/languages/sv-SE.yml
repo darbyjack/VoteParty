@@ -2,7 +2,8 @@
 descriptions:
   help: "Hjälpsamma kommandon till VoteParty."
   setcounter: "Ange nuvarande röstantal."
-  addvote: "Lägg till röster i nuvarande rösträkning."
+  addvote: "Add a vote to a player with the ability to trigger or not the rewards."
+  addpartyvote: "Add a vote to the party"
   startparty: "Tvångs kör ett VoteParty."
   givecrate: "Förse en spelare med en röstlåda."
   giveparty: "Aktivera ett privat Vote Party för en spelare."
