@@ -2,7 +2,8 @@
 descriptions:
   help: "Hilfreiche Befehle für VoteParty."
   setcounter: "Setzt den aktuellen Stimmenzähler."
-  addvote: "Fügt Stimmen zu aktuellen Abzählung hinzu."
+  addvote: "Add a vote to a player with the ability to trigger or not the rewards."
+  addpartyvote: "Add a vote to the party"
   startparty: "Erzwingt eine VoteParty."
   givecrate: "Versorge ein Player mit einem Vote."
   giveparty: "Führt eine Private Vote Party für einen Spieler durch."
