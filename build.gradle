@@ -26,12 +26,15 @@ allprojects {
 		// kotlin
 		implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 
+		// paper
+		compileOnly "io.papermc.paper:paper-api:1.19.2-R0.1-SNAPSHOT"
+
 		// spigot
 		compileOnly "org.spigotmc:spigot-api:1.19.2-R0.1-SNAPSHOT"
 	}
 
-	sourceCompatibility = JavaVersion.VERSION_1_8
-	targetCompatibility = JavaVersion.VERSION_1_8
+	sourceCompatibility = JavaVersion.VERSION_17
+	targetCompatibility = JavaVersion.VERSION_17
 
 	compileJava {
 		options.compilerArgs += ["-parameters"]
