@@ -33,7 +33,8 @@ internal object VoteSettings : SettingsHolder
 
 	@JvmField
 	@Comment("This is how many votes the plugin should check that a user has in the last X amount of time (defined above) before reminding them to vote.",
-		"For example, if you set the reminder interval to 24 hours, and the reminder threshold to 3, the plugin will check if the user has voted 3 times in the last 24 hours.")
+		"For example, if you set the reminder interval to 24 hours, and the reminder threshold to 3, the plugin will check if the user has voted 3 times in the last 24 hours.",
+		"If they have, they will not be reminded to vote until they have voted 3 times in the last 24 hours.")
 	val REMINDER_THRESHOLD: Property<Int> = newProperty("voting.reminder_threshold", 3)
 
 	@JvmField
