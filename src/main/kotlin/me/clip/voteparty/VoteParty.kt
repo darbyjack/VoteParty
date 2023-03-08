@@ -4,6 +4,7 @@ import ch.jalu.configme.SettingsManager
 import co.aikar.commands.PaperCommandManager
 import com.google.gson.Gson
 import me.clip.voteparty.base.State
+import me.clip.voteparty.bungee.NuVotifierBungeeHandler
 import me.clip.voteparty.cmds.CommandVoteParty
 import me.clip.voteparty.conf.VoteDataConfiguration
 import me.clip.voteparty.conf.VotePartyConfiguration
@@ -96,9 +97,13 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 		// parties cache
 		partiesCache.load()
 
-		if (conf().getProperty(HookSettings.NUVOTIFIER))
+		if (conf().getProperty(HookSettings.NUVOTIFIER).backend)
 		{
 			hooksListener.load()
+		}
+
+		if (conf().getProperty(HookSettings.NUVOTIFIER).pluginMessaging) {
+			NuVotifierBungeeHandler(plugin).load()
 		}
 
 		// votes
@@ -120,7 +125,7 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 	override fun kill()
 	{
 		saveVotes()
-		if (conf().getProperty(HookSettings.NUVOTIFIER))
+		if (conf().getProperty(HookSettings.NUVOTIFIER).backend)
 		{
 			hooksListener.kill()
 		}

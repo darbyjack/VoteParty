@@ -7,7 +7,6 @@ import org.jetbrains.annotations.Nullable;
 
 public final class VotePartyPlugin extends JavaPlugin
 {
-
 	private VoteParty voteParty;
 
 	@Override
