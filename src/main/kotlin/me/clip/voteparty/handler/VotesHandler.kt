@@ -7,11 +7,15 @@ import me.clip.voteparty.conf.sections.PartySettings
 import me.clip.voteparty.conf.sections.VoteData
 import me.clip.voteparty.conf.sections.VoteSettings
 import me.clip.voteparty.exte.formMessage
+import me.clip.voteparty.exte.sendMessage
 import me.clip.voteparty.exte.takeRandomly
 import me.clip.voteparty.leaderboard.LeaderboardType
+import me.clip.voteparty.messages.Messages
 import me.clip.voteparty.plugin.VotePartyPlugin
 import me.clip.voteparty.version.EffectType
+import org.bukkit.Bukkit
 import org.bukkit.entity.Player
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 
 class VotesHandler(override val plugin: VotePartyPlugin) : Addon, State
@@ -256,6 +260,21 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon, State
 		settings.commands.forEach()
 		{ command ->
 			server.dispatchCommand(server.consoleSender, formMessage(player, command))
+		}
+	}
+
+	fun sendVoteReminders()
+	{
+		val players = Bukkit.getOnlinePlayers().filter {
+			party.usersHandler.getVotesWithinRange(
+				it,
+				party.conf().getProperty(VoteSettings.REMINDER_INTERVAL).toLong(),
+				TimeUnit.HOURS
+			) < party.conf().getProperty(VoteSettings.REMINDER_THRESHOLD)
+		}
+
+		players.forEach {
+			sendMessage(party.manager().getCommandIssuer(it), Messages.VOTES__REMINDER)
 		}
 	}
 	

@@ -8,6 +8,7 @@ import me.clip.voteparty.bungee.NuVotifierBungeeHandler
 import me.clip.voteparty.cmds.CommandVoteParty
 import me.clip.voteparty.conf.VoteDataConfiguration
 import me.clip.voteparty.conf.VotePartyConfiguration
+import me.clip.voteparty.conf.sections.VoteSettings
 import me.clip.voteparty.conf.sections.HookSettings
 import me.clip.voteparty.conf.sections.PartySettings
 import me.clip.voteparty.conf.sections.PluginSettings
@@ -15,6 +16,7 @@ import me.clip.voteparty.conf.sections.VoteData
 import me.clip.voteparty.data.impl.PartiesCacheGson
 import me.clip.voteparty.data.impl.VotedForPartyCacheGson
 import me.clip.voteparty.exte.color
+import me.clip.voteparty.exte.runTaskTimer
 import me.clip.voteparty.exte.runTaskTimerAsync
 import me.clip.voteparty.handler.LeaderboardHandler
 import me.clip.voteparty.handler.PartyHandler
@@ -119,6 +121,11 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 			usersHandler.saveAll()
 			votedForPartyCache.save()
 			partiesCache.save()
+		}
+
+		plugin.runTaskTimer(conf().getProperty(VoteSettings.REMINDER_INTERVAL_SECONDS).toLong() * 20L)
+		{
+			votesHandler.sendVoteReminders()
 		}
 	}
 
