@@ -33,6 +33,7 @@ votes:
   private-party-received: "&fDu hast eine private &dVote Party&f erhalten!"
   added-to-player: "&fDu hast {count} Stimmen für %player_name% gegeben!"
   inventory-full: "&fDein Inventar scheint voll zu sein! Wir haben deine Vote Belohnung in dein Rucksack gepackt! Mache /vp claim, sobald dein Inventar nicht voll ist!"
+  reminder: "&fDon't forget to vote for our server!"
 crate:
   crate-given: "&fDu hast &d%player_name% &fvote bekommen oder erstellt!"
   crate-received: "Du hast ein Vote erstellt!"
