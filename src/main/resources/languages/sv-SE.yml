@@ -33,6 +33,7 @@ votes:
   private-party-received: "&fDu har fått ett privat &dVote Party&f!"
   added-to-player: "&fDu har gett {count} röster till %player_name%!"
   inventory-full: "&fYour inventory seems to be full! We've put this vote in your claimables! Do /vp claim once your inventory isn't full!"
+  reminder: "&fDon't forget to vote for our server!"
 crate:
   crate-given: "&fDu har gett &d%player_name% röstlådor!"
   crate-received: "&fDu har fått en röstlåda!"
