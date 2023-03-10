@@ -2,7 +2,10 @@ package me.clip.voteparty.user
 
 import me.clip.voteparty.base.Addon
 import me.clip.voteparty.base.State
+import me.clip.voteparty.conf.sections.StorageSettings
+import me.clip.voteparty.data.base.DatabaseVotePlayer
 import me.clip.voteparty.data.impl.DatabaseVotePlayerGson
+import me.clip.voteparty.data.impl.DatabaseVotePlayerMySQL
 import me.clip.voteparty.leaderboard.LeaderboardUser
 import me.clip.voteparty.plugin.VotePartyPlugin
 import org.bukkit.OfflinePlayer
@@ -24,12 +27,18 @@ import java.util.concurrent.TimeUnit
 class UsersHandler(override val plugin: VotePartyPlugin) : Addon, State, Listener
 {
 
-	private val database = DatabaseVotePlayerGson(plugin)
+	private lateinit var database : DatabaseVotePlayer
 	private val cached = mutableMapOf<Any, User>()
 
 
 	override fun load()
 	{
+		database = if (party.conf().getProperty(StorageSettings.BACKEND).equals("mysql", true)) {
+			DatabaseVotePlayerMySQL(plugin)
+		} else {
+			DatabaseVotePlayerGson(plugin)
+		}
+
 		database.load()
 
 		database.load(emptyList()).forEach()
@@ -74,7 +83,7 @@ class UsersHandler(override val plugin: VotePartyPlugin) : Addon, State, Listene
 
 	fun reset(player: OfflinePlayer)
 	{
-		get(player).reset()
+		database.reset(get(player))
 	}
 
 	fun saveAll()

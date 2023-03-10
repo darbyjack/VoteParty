@@ -57,6 +57,8 @@ shadowJar {
 	relocate("net.kyori", "me.clip.voteparty.libs.kyori")
 	relocate("com.cryptomorin.xseries", "me.clip.voteparty.libs.xseries")
 	relocate("kotlin", "me.clip.voteparty.libs.kotlin")
+	relocate("co.aikar.idb", "me.clip.voteparty.libs.idb")
+	relocate("com.zaxxer", "me.clip.voteparty.libs.hikari")
 	archiveFileName = "VoteParty-${project.version}.jar"
 }
 
@@ -82,6 +84,10 @@ dependencies {
 	implementation 'net.kyori:adventure-platform-bukkit:4.2.0'
 	implementation 'net.kyori:adventure-api:4.12.0'
 	implementation 'net.kyori:adventure-text-minimessage:4.12.0'
+
+	// MySQL?
+	implementation "co.aikar:idb-core:1.0.0-SNAPSHOT"
+	implementation "com.zaxxer:HikariCP:4.0.3"
 
 	implementation project(":version")
 	implementation project(":version_old")
