@@ -13,6 +13,7 @@ descriptions:
   resetvotes: "Nollställ antalet röster en spelare har."
   claim: "Hämta belöningar från offline röster."
   claimall: "Claim all rewards from offline votes at once."
+  top: "List top voters."
 error:
   leaderboard-not-found: "&fSorry, but could not find a leaderboard of type: {type}!"
   invalid-page-number: "&fSorry, but this page number is invalid! Please use a number between &d1 &fand &d{max}&f!"
