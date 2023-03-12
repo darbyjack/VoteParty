@@ -13,6 +13,7 @@ descriptions:
   resetvotes: "Réinitialisez le nombre de votes d'un joueur."
   claim: "Réclamez les récompenses pour vos votes hors ligne."
   claimall: "Claim all rewards from offline votes at once."
+  top: "List top voters."
 error:
   leaderboard-not-found: "&fSorry, but could not find a leaderboard of type: {type}!"
   invalid-page-number: "&fSorry, but this page number is invalid! Please use a number between &d1 &fand &d{max}&f!"
