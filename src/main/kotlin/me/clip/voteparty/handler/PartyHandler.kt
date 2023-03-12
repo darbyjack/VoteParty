@@ -202,7 +202,7 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 
 			val targets: Collection<Player> = when(party.conf().getProperty(PartySettings.PARTY_MODE)) {
 				"everyone" -> server.onlinePlayers
-				"daily" -> server.onlinePlayers.filter { party.usersHandler.getPlayersVotedWithinRange(1, TimeUnit.DAYS).contains(it.uniqueId) }
+				"daily" -> server.onlinePlayers.filter { party.usersHandler.getPlayersWhoVotedSince(1, TimeUnit.DAYS).contains(it.uniqueId) }
 				"party" -> server.onlinePlayers.filter { voted.contains(it.uniqueId) }
 				else -> server.onlinePlayers
 			}

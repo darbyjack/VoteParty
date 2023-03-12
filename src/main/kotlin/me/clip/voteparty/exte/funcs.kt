@@ -8,6 +8,7 @@ import me.clip.voteparty.base.Addon
 import me.clip.voteparty.conf.objects.Command
 import me.clip.voteparty.conf.sections.PluginSettings
 import net.kyori.adventure.identity.Identity
+import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
@@ -23,6 +24,11 @@ private val serializer = LegacyComponentSerializer.legacyAmpersand()
 internal fun color(message: String): String
 {
 	return ChatColor.translateAlternateColorCodes('&', message)
+}
+
+internal fun deserialize(message: String): Component
+{
+	return serializer.deserialize(color(message))
 }
 
 internal fun formMessage(player: OfflinePlayer, message: String): String
