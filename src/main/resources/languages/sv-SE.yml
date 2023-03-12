@@ -14,6 +14,8 @@ descriptions:
   claim: "Hämta belöningar från offline röster."
   claimall: "Claim all rewards from offline votes at once."
 error:
+  leaderboard-not-found: "&fSorry, but could not find a leaderboard of type: {type}!"
+  invalid-page-number: "&fSorry, but this page number is invalid! Please use a number between &d1 &fand &d{max}&f!"
   invalid-number: "&fTyvärr, men det måste vara ett positivt heltal för att det ska fungera korrekt!"
   disabled-world: "&fTyvärr, men den spelaren är i en avstängd värld!"
   user-not-found: "&fTyvärr, men spelaren hittades ej!"
@@ -33,6 +35,7 @@ votes:
   private-party-received: "&fDu har fått ett privat &dVote Party&f!"
   added-to-player: "&fDu har gett {count} röster till %player_name%!"
   inventory-full: "&fYour inventory seems to be full! We've put this vote in your claimables! Do /vp claim once your inventory isn't full!"
+  reminder: "&fDon't forget to vote for our server!"
 crate:
   crate-given: "&fDu har gett &d%player_name% röstlådor!"
   crate-received: "&fDu har fått en röstlåda!"
@@ -43,6 +46,10 @@ claim:
   notify: "&fHej där! Du har röstat när du varit offline! Du har belöningar att hämta! Samla in dem genom kommandot &d/vp claim&f!"
   full: "&aYour inventory is full! Make some space and try again!"
   full-all: "&aYour inventory is full! Make some space and try again! You have claimed &d{claimed} &aoffline rewards. You have &d{claim} &aleft to claim."
+top:
+  header: "&fTop Voters - {type}"
+  line: "&e{position}. &fUser: &d{player} &f- Votes: &d{votes}"
+  footer: "&fPage: &d{page} &f/ &d{total}"
 help:
   header: "<strikethrough><dark_purple>      </strikethrough> <light_purple>VoteParty Help <strikethrough><dark_purple>      </dark_purple></strikethrough>"
   line-text: "<dark_gray>• <hover:show_text:'{line-hover}'><light_purple>/vp</light_purple> <white>{cmd}</white></hover>\n"
