@@ -13,6 +13,8 @@ descriptions:
   claim: "Claim rewards from offline votes."
   claimall: "Claim all rewards from offline votes at once."
 error:
+  leaderboard-not-found: "&fSorry, but could not find a leaderboard of type: {type}!"
+  invalid-page-number: "&fSorry, but this page number is invalid! Please use a number between &d1 &fand &d{max}&f!"
   invalid-number: "&fSorry, but this number must be positive in order to work correctly!"
   disabled-world: "&fSorry, but this player is currently in a disabled world!"
   user-not-found: "&fSorry, but this player could not be found!"
@@ -43,6 +45,10 @@ claim:
   notify: "&fHey there! You seemed to have voted while offline! You have some claiming rewards! Collect them by using &d/vp claim&f!"
   full: "&aYour inventory is full! Make some space and try again!"
   full-all: "&aYour inventory is full! Make some space and try again! You have claimed &d{claimed} &aoffline rewards. You have &d{claim} &aleft to claim."
+top:
+  header: "&fTop Voters - {type}"
+  line: "&e{position}. &fUser: &d{player} &f- Votes: &d{votes}"
+  footer: "&fPage: &d{page} &f/ &d{total}"
 help:
   header: "<strikethrough><dark_purple>      </strikethrough> <light_purple>VoteParty Help <strikethrough><dark_purple>      </dark_purple></strikethrough>"
   line-text: "<dark_gray>• <hover:show_text:'{line-hover}'><light_purple>/vp</light_purple> <white>{cmd}</white></hover>\n"
