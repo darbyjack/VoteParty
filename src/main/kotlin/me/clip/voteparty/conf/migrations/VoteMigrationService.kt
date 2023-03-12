@@ -14,7 +14,7 @@ internal class VoteMigrationService : PlainMigrationService()
 	
 	private fun hasDeprecatedProperties(reader: PropertyReader): Boolean
 	{
-		val deprecatedProperties = arrayOf("settings.counter.votes")
+		val deprecatedProperties = arrayOf("settings.counter.votes", "hooks.nuvotifier")
 		for (deprecatedPath in deprecatedProperties)
 		{
 			if (reader.contains(deprecatedPath))

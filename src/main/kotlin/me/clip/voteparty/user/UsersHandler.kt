@@ -185,7 +185,6 @@ class UsersHandler(override val plugin: VotePartyPlugin) : Addon, State, Listene
 		return cached.values.distinct().sumOf { it.votes().size }
 	}
 
-
 	@EventHandler
 	fun PlayerJoinEvent.onJoin()
 	{

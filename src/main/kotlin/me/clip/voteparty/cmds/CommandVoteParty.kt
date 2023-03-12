@@ -7,6 +7,7 @@ import co.aikar.commands.annotation.CommandCompletion
 import co.aikar.commands.annotation.CommandPermission
 import co.aikar.commands.annotation.Default
 import co.aikar.commands.annotation.Description
+import co.aikar.commands.annotation.Name
 import co.aikar.commands.annotation.Optional
 import co.aikar.commands.annotation.Subcommand
 import co.aikar.commands.annotation.Syntax
@@ -33,26 +34,49 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 {
 
 	@Subcommand("addvote")
-	@Syntax("<amount> [player]")
-	@Description("Add Vote")
+	@Syntax("<player> <silent> [amount]")
+	@Description("Add a vote to a player with the ability to trigger or not the rewards.")
 	@CommandPermission(ADMIN_PERM)
-	fun addVote(issuer: CommandIssuer, @Default("1") amount: Int, @Optional name: String?)
+	fun addVote(
+		issuer: CommandIssuer,
+		@Name("target") target: String,
+		@Name("silent") @Default("false") silent: Boolean,
+		@Name("amount") @Optional @Default("1") amount: Int
+    ) {
+
+        if (amount <= 0)
+        {
+            return sendMessage(issuer, Messages.ERROR__INVALID_NUMBER)
+        }
+
+        val user = party.usersHandler[target] ?: return sendMessage(issuer, Messages.ERROR__USER_NOT_FOUND)
+
+		if (silent)
+		{
+            repeat(amount) {
+                user.voted()
+            }
+
+            return sendMessage(issuer, Messages.VOTES__ADDED_TO_PLAYER, user.player(), "{count}", amount)
+		}
+
+        repeat(amount) {
+            plugin.server.pluginManager.callEvent(VoteReceivedEvent(user.player(), ""))
+        }
+
+        return sendMessage(issuer, Messages.VOTES__ADDED_TO_PLAYER, user.player(), "{count}", amount)
+	}
+
+	@Subcommand("addpartyvote")
+	@Syntax("<amount>")
+	@Description("Add a Vote to the party")
+	@CommandPermission(ADMIN_PERM)
+	fun addPartyVote(issuer: CommandIssuer, @Default("1") amount: Int)
 	{
 
 		if (amount <= 0)
 		{
 			return sendMessage(issuer, Messages.ERROR__INVALID_NUMBER)
-		}
-
-		if (!name.isNullOrEmpty())
-		{
-			val user = party.usersHandler[name] ?: return sendMessage(issuer, Messages.ERROR__USER_NOT_FOUND)
-
-			repeat(amount) {
-				server.pluginManager.callEvent(VoteReceivedEvent(user.player(), ""))
-			}
-
-			return sendMessage(issuer, Messages.VOTES__ADDED_TO_PLAYER, user.player(), "{count}", amount)
 		}
 
 		party.votesHandler.addVotes(amount)

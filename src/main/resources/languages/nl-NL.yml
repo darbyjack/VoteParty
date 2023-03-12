@@ -2,7 +2,8 @@
 descriptions:
   help: "Behulpzame commands voor VoteParty."
   setcounter: "Stel de huidige stem teller in."
-  addvote: "Voeg stemmen toe aan de huidige stemmentelling."
+  addvote: "Add a vote to a player with the ability to trigger or not the rewards."
+  addpartyvote: "Add a vote to the party"
   startparty: "Forceer het starten van een VoteParty."
   givecrate: "Voorzie een speler van een Vote crate."
   giveparty: "Organiseer een privé Vote Party voor een speler."

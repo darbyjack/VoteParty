@@ -43,6 +43,10 @@ class VotePartyPlaceholders(private val voteParty: VoteParty) : PlaceholderExpan
 			return getVotes(arg.replace("totalvotes_", "").lowercase(Locale.getDefault()), player ?: return "")
 		}
 
+		if (arg.startsWith("totalparties_")) {
+			return getParties(arg.replace("totalparties_", "").lowercase(Locale.getDefault()))
+		}
+
 		return when (arg.lowercase(Locale.getDefault())) {
 			"votes_recorded" -> voteParty.getVotes().toString()
 			"votes_required_party" -> voteParty.getVotesNeeded().minus(voteParty.getVotes()).toString()
@@ -91,6 +95,14 @@ class VotePartyPlaceholders(private val voteParty: VoteParty) : PlaceholderExpan
 	private fun getVotes(input: String, player: OfflinePlayer): String
 	{
 		return LeaderboardType.find(input)?.let { voteParty.usersHandler.getVotesWithinRange(player, it.start.invoke(), it.end.invoke()) }?.toString() ?: ""
+	}
+
+	/**
+	 * Get the amount of parties that have been triggered based on the given leaderboard type
+	 */
+	private fun getParties(input: String): String
+	{
+		return LeaderboardType.find(input)?.let { voteParty.partyHandler.getPartiesSince(it.time.invoke()) }?.toString() ?: ""
 	}
 
 }

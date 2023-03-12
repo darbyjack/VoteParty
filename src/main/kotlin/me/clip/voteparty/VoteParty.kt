@@ -4,15 +4,19 @@ import ch.jalu.configme.SettingsManager
 import co.aikar.commands.PaperCommandManager
 import com.google.gson.Gson
 import me.clip.voteparty.base.State
+import me.clip.voteparty.bungee.NuVotifierBungeeHandler
 import me.clip.voteparty.cmds.CommandVoteParty
 import me.clip.voteparty.conf.VoteDataConfiguration
 import me.clip.voteparty.conf.VotePartyConfiguration
+import me.clip.voteparty.conf.sections.VoteSettings
 import me.clip.voteparty.conf.sections.HookSettings
 import me.clip.voteparty.conf.sections.PartySettings
 import me.clip.voteparty.conf.sections.PluginSettings
 import me.clip.voteparty.conf.sections.VoteData
+import me.clip.voteparty.data.impl.PartiesCacheGson
 import me.clip.voteparty.data.impl.VotedForPartyCacheGson
 import me.clip.voteparty.exte.color
+import me.clip.voteparty.exte.runTaskTimer
 import me.clip.voteparty.exte.runTaskTimerAsync
 import me.clip.voteparty.handler.LeaderboardHandler
 import me.clip.voteparty.handler.PartyHandler
@@ -39,7 +43,6 @@ import java.io.InputStream
 import java.util.Locale
 import java.util.logging.Level
 
-
 class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : State
 {
 
@@ -58,6 +61,7 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 	private val votesListener = VotesListener(plugin)
 	private val hooksListener = HooksListenerNuVotifier(plugin)
 	private val votedForPartyCache = VotedForPartyCacheGson(plugin)
+	private val partiesCache = PartiesCacheGson(plugin)
 
 	private var hook = null as? VersionHook?
 	private var papi = null as? VotePartyPlaceholders?
@@ -92,9 +96,16 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 		// voted for party cache
 		votedForPartyCache.load()
 
-		if (conf().getProperty(HookSettings.NUVOTIFIER))
+		// parties cache
+		partiesCache.load()
+
+		if (conf().getProperty(HookSettings.NUVOTIFIER).backend)
 		{
 			hooksListener.load()
+		}
+
+		if (conf().getProperty(HookSettings.NUVOTIFIER).pluginMessaging) {
+			NuVotifierBungeeHandler(plugin).load()
 		}
 
 		// votes
@@ -109,13 +120,19 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 		{
 			usersHandler.saveAll()
 			votedForPartyCache.save()
+			partiesCache.save()
+		}
+
+		plugin.runTaskTimer(conf().getProperty(VoteSettings.REMINDER_INTERVAL_SECONDS).toLong() * 20L)
+		{
+			votesHandler.sendVoteReminders()
 		}
 	}
 
 	override fun kill()
 	{
 		saveVotes()
-		if (conf().getProperty(HookSettings.NUVOTIFIER))
+		if (conf().getProperty(HookSettings.NUVOTIFIER).backend)
 		{
 			hooksListener.kill()
 		}
@@ -125,6 +142,7 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 		usersHandler.kill()
 		leaderboardHandler.kill()
 		votedForPartyCache.kill()
+		partiesCache.kill()
 	}
 
 

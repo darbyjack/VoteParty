@@ -2,7 +2,8 @@
 descriptions:
   help: "Commandes utiles pour VoteParty."
   setcounter: "Régler le compteur de vote actuel."
-  addvote: "Ajouter les votes au décompte actuel."
+  addvote: "Add a vote to a player with the ability to trigger or not the rewards."
+  addpartyvote: "Add a vote to the party"
   startparty: "Forcer le lancement d'un VoteParty."
   givecrate: "Fournir une caisse de vote à un joueur."
   giveparty: "Organiser un VoteParty privée pour un joueur."

@@ -20,6 +20,29 @@ internal object VoteSettings : SettingsHolder
 {
 
 	@JvmField
+	@Comment("Would you like to validate the usernames being sent from voting sites?")
+	val VALIDATE_NAMES: Property<Boolean> = newProperty("voting.validate_names", false)
+
+	@JvmField
+	@Comment("This is the regex for username checking. The default should apply to most accounts, but you are given access to modify in case you need to.")
+	val NAME_REGEX: Property<String> = newProperty("voting.name_regex", "^[a-zA-Z0-9_]{2,16}$")
+
+	@JvmField
+	@Comment("This is how long (in hours) the plugin should check that it has been since a user has voted before reminding them to vote.")
+	val REMINDER_INTERVAL: Property<Int> = newProperty("voting.reminder_interval", 24)
+
+	@JvmField
+	@Comment("This is how many votes the plugin should check that a user has in the last X amount of time (defined above) before reminding them to vote.",
+		"For example, if you set the reminder interval to 24 hours, and the reminder threshold to 3, the plugin will check if the user has voted 3 times in the last 24 hours.",
+		"If they have, they will not be reminded to vote until they have voted 3 times in the last 24 hours.")
+	val REMINDER_THRESHOLD: Property<Int> = newProperty("voting.reminder_threshold", 3)
+
+	@JvmField
+	@Comment("How often in seconds should players be reminded to vote? (Default is 10 minutes)",
+		"Note: A FULL reboot is required for this to take effect if changed after the plugin has been loaded.")
+	val REMINDER_INTERVAL_SECONDS: Property<Int> = newProperty("voting.reminder_interval_seconds", 600)
+
+	@JvmField
 	@Comment("If a player's inventory is full when voting, do you want to send the vote to a /vote claim?")
 	val CLAIMABLE_IF_FULL: Property<Boolean> = newProperty("voting.claim_if_full", true)
 

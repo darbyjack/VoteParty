@@ -1,5 +1,7 @@
 package me.clip.voteparty.handler
 
+import java.time.LocalDateTime
+import java.time.ZoneId
 import me.clip.voteparty.base.Addon
 import me.clip.voteparty.conf.sections.CrateSettings
 import me.clip.voteparty.conf.sections.EffectsSettings
@@ -29,6 +31,28 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 {
 
 	var voted = mutableListOf<UUID>()
+	private var parties = mutableListOf<Long>()
+
+	fun getParties(): MutableList<Long> {
+		return parties
+	}
+
+	fun setParties(new: MutableList<Long>)
+	{
+		parties = new
+	}
+
+	fun addParties(vararg new: Long)
+	{
+		new.forEach { parties.add(it) }
+	}
+
+	fun getPartiesSince(time: LocalDateTime): Int
+	{
+		val timeEpoch = time.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+
+		return parties.count { partyEpoch -> partyEpoch > timeEpoch }
+	}
 
 	fun giveRandomPartyRewards(player: Player)
 	{
@@ -172,6 +196,7 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 				return@runTaskLater
 			}
 
+			addParties(System.currentTimeMillis())
 			runPartyCommands()
 			runPartyStartEffects()
 
