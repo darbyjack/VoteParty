@@ -14,6 +14,8 @@ descriptions:
   claim: "Claim beloningen bij offline stemmen."
   claimall: "Claim all rewards from offline votes at once."
 error:
+  leaderboard-not-found: "&fSorry, but could not find a leaderboard of type: {type}!"
+  invalid-page-number: "&fSorry, but this page number is invalid! Please use a number between &d1 &fand &d{max}&f!"
   invalid-number: "&fSorry, maar dit nummer moet positief zijn om goed te werken!"
   disabled-world: "&fSorry, maar deze speler bevindt zich momenteel in een uitgeschakelde wereld!"
   user-not-found: "&fSorry, deze speler kon niet gevonded worden!"
@@ -44,6 +46,10 @@ claim:
   notify: "&fHey daar! Je leek te hebben gestemd terwijl je offline was! Je hebt enkele claim beloningen beschikbaar! Verzamel ze met behulp van &d/vp claim&f!"
   full: "&aJou inventaris is vol! Maak wat plaats en probeer opnieuw!"
   full-all: "&aYour inventory is full! Make some space and try again! You have claimed &d{claimed} &aoffline rewards. You have &d{claim} &aleft to claim."
+top:
+  header: "&fTop Voters - {type}"
+  line: "&e{position}. &fUser: &d{player} &f- Votes: &d{votes}"
+  footer: "&fPage: &d{page} &f/ &d{total}"
 help:
   header: "<strikethrough><dark_purple>      </strikethrough> <light_purple>VoteParty Hulp <strikethrough><dark_purple>      </dark_purple></strikethrough>"
   line-text: "<dark_gray>• <hover:show_text:'{line-hover}'><light_purple>/vp</light_purple> <white>{cmd}</white></hover>\n"
