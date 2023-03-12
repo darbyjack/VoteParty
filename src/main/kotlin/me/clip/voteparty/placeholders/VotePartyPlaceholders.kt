@@ -94,7 +94,9 @@ class VotePartyPlaceholders(private val voteParty: VoteParty) : PlaceholderExpan
 	 */
 	private fun getVotes(input: String, player: OfflinePlayer): String
 	{
-		return LeaderboardType.find(input)?.let { voteParty.usersHandler.getVotesSince(player, it.time.invoke()) }?.toString() ?: ""
+		return LeaderboardType.find(input)?.let {
+			voteParty.usersHandler.getVoteCountWithinRange(player, it.start.invoke(), it.end.invoke())
+		}?.toString() ?: ""
 	}
 
 	/**
@@ -102,7 +104,7 @@ class VotePartyPlaceholders(private val voteParty: VoteParty) : PlaceholderExpan
 	 */
 	private fun getParties(input: String): String
 	{
-		return LeaderboardType.find(input)?.let { voteParty.partyHandler.getPartiesSince(it.time.invoke()) }?.toString() ?: ""
+		return LeaderboardType.find(input)?.let { voteParty.partyHandler.getPartiesSince(it.start.invoke()) }?.toString() ?: ""
 	}
 
 }

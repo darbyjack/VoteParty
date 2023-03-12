@@ -17,7 +17,7 @@ class LeaderboardHandler(override val plugin: VotePartyPlugin) : Addon, State
 			       {
 				       override fun load(key: LeaderboardType): Leaderboard
 				       {
-					       return Leaderboard(key, plugin.voteParty?.usersHandler?.getVotesSince(key.time.invoke()) ?: emptyList())
+					       return Leaderboard(key, plugin.voteParty?.usersHandler?.getUsersWithVotesWithinRange(key.start.invoke(), key.end.invoke()) ?: emptyList())
 				       }
 			       })
 	
@@ -25,7 +25,7 @@ class LeaderboardHandler(override val plugin: VotePartyPlugin) : Addon, State
 	{
 		LeaderboardType.values.forEach()
 		{ type ->
-			cache.put(type, Leaderboard(type, plugin.voteParty?.usersHandler?.getVotesSince(type.time.invoke()) ?: emptyList()))
+			cache.put(type, Leaderboard(type, plugin.voteParty?.usersHandler?.getUsersWithVotesWithinRange(type.start.invoke(), type.end.invoke()) ?: emptyList()))
 		}
 	}
 	

@@ -125,7 +125,7 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 	@CommandPermission(ADMIN_PERM)
 	fun checkVotes(issuer: CommandIssuer, offlinePlayer: OfflinePlayer, amount: Long, unit: TimeUnit)
 	{
-		val count = party.usersHandler.getVotesWithinRange(offlinePlayer, amount, unit)
+		val count = party.usersHandler.getVoteCountSince(offlinePlayer, amount, unit)
 		sendMessage(
 			issuer,
 			Messages.INFO__PLAYER_CHECK_VOTES,
