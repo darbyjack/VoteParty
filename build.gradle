@@ -57,6 +57,7 @@ shadowJar {
 	relocate("net.kyori", "me.clip.voteparty.libs.kyori")
 	relocate("com.cryptomorin.xseries", "me.clip.voteparty.libs.xseries")
 	relocate("kotlin", "me.clip.voteparty.libs.kotlin")
+	relocate("org.bstats", "me.clip.voteparty.libs.bstats")
 	archiveFileName = "VoteParty-${project.version}.jar"
 }
 
@@ -77,6 +78,9 @@ dependencies {
 
 	// Support for materials across all versions
 	implementation 'com.github.cryptomorin:XSeries:9.3.0'
+
+	// bstats
+	implementation 'org.bstats:bstats-bukkit:3.0.1'
 
 	// json stuff
 	implementation 'net.kyori:adventure-platform-bukkit:4.2.0'
