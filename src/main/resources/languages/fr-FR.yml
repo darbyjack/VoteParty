@@ -14,6 +14,8 @@ descriptions:
   claim: "Réclamez les récompenses pour vos votes hors ligne."
   claimall: "Claim all rewards from offline votes at once."
 error:
+  leaderboard-not-found: "&fSorry, but could not find a leaderboard of type: {type}!"
+  invalid-page-number: "&fSorry, but this page number is invalid! Please use a number between &d1 &fand &d{max}&f!"
   invalid-number: "&fDésolé, mais ce numéro doit être positif pour fonctionner correctement !"
   disabled-world: "&fDésolé, mais ce joueur est actuellement dans un monde désactivé !"
   user-not-found: "&fDésolé, mais ce joueur est introuvable!"
@@ -44,6 +46,10 @@ claim:
   notify: "&fHé là! Vous semblez avoir voté pendant que vous étiez hors ligne! Vous pouvez réclamer des récompenses! Collectez-les avec &d/vp claim&f!"
   full: "&aYour inventory is full! Make some space and try again!"
   full-all: "&aYour inventory is full! Make some space and try again! You have claimed &d{claimed} &aoffline rewards. You have &d{claim} &aleft to claim."
+top:
+  header: "&fTop Voters - {type}"
+  line: "&e{position}. &fUser: &d{player} &f- Votes: &d{votes}"
+  footer: "&fPage: &d{page} &f/ &d{total}"
 help:
   header: "<strikethrough><dark_purple>      </strikethrough> <light_purple>VoteParty Help <strikethrough><dark_purple>      </dark_purple></strikethrough>"
   line-text: "<dark_gray>• <hover:show_text:'{line-hover}'><light_purple>/vp</light_purple> <white>{cmd}</white></hover>\n"
