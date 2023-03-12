@@ -13,6 +13,7 @@ descriptions:
   resetvotes: "Reset het aantal stemmen dat een speler heeft."
   claim: "Claim beloningen bij offline stemmen."
   claimall: "Claim all rewards from offline votes at once."
+  top: "List top voters."
 error:
   leaderboard-not-found: "&fSorry, but could not find a leaderboard of type: {type}!"
   invalid-page-number: "&fSorry, but this page number is invalid! Please use a number between &d1 &fand &d{max}&f!"
