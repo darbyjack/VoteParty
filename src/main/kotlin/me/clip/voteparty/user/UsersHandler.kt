@@ -134,6 +134,10 @@ class UsersHandler(override val plugin: VotePartyPlugin) : Addon, State, Listene
 	 */
 	fun getVoteCountWithinRange(offlinePlayer: OfflinePlayer, start: LocalDateTime, end: LocalDateTime): Int
 	{
+		if (end < start) {
+			return getVoteCountSince(offlinePlayer, start)
+		}
+
 		val startEpoch = start.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
 		val endEpoch = end.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
 
@@ -186,6 +190,10 @@ class UsersHandler(override val plugin: VotePartyPlugin) : Addon, State, Listene
 	 */
 	fun getUsersWithVotesWithinRange(start: LocalDateTime, end: LocalDateTime): List<LeaderboardUser>
 	{
+		if (end < start) {
+			return getUsersWithVotesSince(start)
+		}
+
 		val startEpoch = start.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
 		val endEpoch = end.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
 

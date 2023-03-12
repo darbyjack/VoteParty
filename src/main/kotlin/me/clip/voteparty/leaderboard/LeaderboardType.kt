@@ -14,7 +14,7 @@ enum class LeaderboardType(val start: () -> LocalDateTime, val end: () -> LocalD
         { LocalDateTime.MIN }
     ),
     LASTMONTH(
-        { LocalDate.now().with(ChronoField.DAY_OF_MONTH, 1).minusMonths(1).atStartOfDay() },
+        { LocalDate.now().minusMonths(1).with(ChronoField.DAY_OF_MONTH, 1).atStartOfDay() },
         { LocalDate.now().with(ChronoField.DAY_OF_MONTH, 1).atStartOfDay() }
     ),
     MONTHLY(
@@ -29,10 +29,12 @@ enum class LeaderboardType(val start: () -> LocalDateTime, val end: () -> LocalD
         { LocalDateTime.MIN }
     );
 
-    companion object {
+    companion object
+    {
         internal val values = values()
 
-        internal fun find(name: String): LeaderboardType? {
+        internal fun find(name: String): LeaderboardType?
+        {
             return values.find { it.name.equals(name, true) }
         }
     }
