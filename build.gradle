@@ -28,7 +28,7 @@ allprojects {
 		implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 
 		// spigot
-		compileOnly "org.spigotmc:spigot-api:1.19.3-R0.1-SNAPSHOT"
+		compileOnly "org.spigotmc:spigot-api:1.19.4-R0.1-SNAPSHOT"
 	}
 
 	sourceCompatibility = JavaVersion.VERSION_1_8
@@ -83,9 +83,9 @@ dependencies {
 	implementation 'org.bstats:bstats-bukkit:3.0.1'
 
 	// json stuff
-	implementation 'net.kyori:adventure-platform-bukkit:4.2.0'
-	implementation 'net.kyori:adventure-api:4.12.0'
-	implementation 'net.kyori:adventure-text-minimessage:4.12.0'
+	implementation 'net.kyori:adventure-platform-bukkit:4.3.0'
+	implementation 'net.kyori:adventure-api:4.13.0'
+	implementation 'net.kyori:adventure-text-minimessage:4.13.0'
 
 	implementation project(":version")
 	implementation project(":version_old")
