@@ -28,6 +28,10 @@ internal object VoteSettings : SettingsHolder
 	val NAME_REGEX: Property<String> = newProperty("voting.name_regex", "^[a-zA-Z0-9_]{2,16}$")
 
 	@JvmField
+	@Comment("Enable or disable the voting reminder.")
+	val REMINDER_ENABLED: Property<Boolean> = newProperty("voting.reminder_enabled", true)
+
+	@JvmField
 	@Comment("This is how long (in hours) the plugin should check that it has been since a user has voted before reminding them to vote.")
 	val REMINDER_INTERVAL: Property<Int> = newProperty("voting.reminder_interval", 24)
 
