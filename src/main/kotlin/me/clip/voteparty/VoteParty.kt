@@ -123,9 +123,11 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 			partiesCache.save()
 		}
 
-		plugin.runTaskTimer(conf().getProperty(VoteSettings.REMINDER_INTERVAL_SECONDS).toLong() * 20L)
-		{
-			votesHandler.sendVoteReminders()
+		if (conf().getProperty(VoteSettings.REMINDER_ENABLED)) {
+			plugin.runTaskTimer(conf().getProperty(VoteSettings.REMINDER_INTERVAL_SECONDS).toLong() * 20L)
+			{
+				votesHandler.sendVoteReminders()
+			}
 		}
 	}
 
