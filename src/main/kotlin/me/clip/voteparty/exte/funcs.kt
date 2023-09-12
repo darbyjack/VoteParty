@@ -7,6 +7,7 @@ import me.clip.placeholderapi.PlaceholderAPI
 import me.clip.voteparty.base.Addon
 import me.clip.voteparty.conf.objects.Command
 import me.clip.voteparty.conf.sections.PluginSettings
+import me.clip.voteparty.util.SchedulerUtil
 import net.kyori.adventure.identity.Identity
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
@@ -56,31 +57,27 @@ internal fun msgAsString(issuer: CommandIssuer, key: MessageKeyProvider): String
 }
 
 
-internal fun Plugin.runTaskTimer(period: Long, task: BukkitRunnable.() -> Unit)
-{
-	object : BukkitRunnable()
-	{
-		override fun run()
-		{
+internal fun Plugin.runTaskTimer(period: Long, task: BukkitRunnable.() -> Unit) {
+	SchedulerUtil.runTask(this, object : BukkitRunnable() {
+		override fun run() {
 			task.invoke(this)
 		}
-	}.runTaskTimer(this, 0L, period)
+	})
 }
 
-internal fun Plugin.runTaskTimerAsync(period: Long, task: BukkitRunnable.() -> Unit)
-{
-	object : BukkitRunnable()
-	{
-		override fun run()
-		{
+
+
+internal fun Plugin.runTaskTimerAsync(period: Long, task: BukkitRunnable.() -> Unit) {
+	SchedulerUtil.runTaskTimerAsynchronously(this, object : BukkitRunnable() {
+		override fun run() {
 			task.invoke(this)
 		}
-	}.runTaskTimerAsynchronously(this, 0L, period)
+	}, 0L, period)
 }
 
 internal fun Plugin.runTaskLater(delay: Long, task: () -> Unit)
 {
-	server.scheduler.runTaskLater(this, task, delay)
+	SchedulerUtil.runTaskLater(this, task, delay)
 }
 
 

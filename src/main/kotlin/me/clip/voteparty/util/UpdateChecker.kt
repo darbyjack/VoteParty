@@ -2,6 +2,7 @@ package me.clip.voteparty.util
 
 import org.bukkit.plugin.Plugin
 import java.net.URL
+import java.lang.Runnable
 
 object UpdateChecker
 {
@@ -11,7 +12,7 @@ object UpdateChecker
 	
 	fun check(plugin: Plugin, id: Int, complete: (result: UpdateResult) -> Unit)
 	{
-		plugin.server.scheduler.runTaskAsynchronously(plugin, Runnable
+		SchedulerUtil.runTaskAsynchronously(plugin, Runnable
 		{
 			complete.invoke(check(plugin.description.version, id))
 		})

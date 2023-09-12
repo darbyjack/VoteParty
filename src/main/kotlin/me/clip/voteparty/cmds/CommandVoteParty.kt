@@ -26,6 +26,7 @@ import me.clip.voteparty.exte.sendMessage
 import me.clip.voteparty.leaderboard.LeaderboardType
 import me.clip.voteparty.messages.Messages
 import me.clip.voteparty.plugin.VotePartyPlugin
+import me.clip.voteparty.util.SchedulerUtil
 import net.kyori.adventure.identity.Identity
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
@@ -34,57 +35,58 @@ import java.util.concurrent.TimeUnit
 import kotlin.text.StringBuilder
 
 @CommandAlias("%vp")
-internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseCommand(), Addon
-{
+internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseCommand(), Addon {
 
 	@Subcommand("addvote")
 	@Syntax("<player> <silent> [amount]")
 	@Description("Add a vote to a player with the ability to trigger or not the rewards.")
 	@CommandPermission(ADMIN_PERM)
+	@CommandCompletion("@players false 1")
 	fun addVote(
 		issuer: CommandIssuer,
 		@Name("target") target: String,
 		@Name("silent") @Default("false") silent: Boolean,
 		@Name("amount") @Optional @Default("1") amount: Int
-    ) {
+	)
 
-        if (amount <= 0)
-        {
-            return sendMessage(issuer, Messages.ERROR__INVALID_NUMBER)
-        }
-
-        val user = party.usersHandler[target] ?: return sendMessage(issuer, Messages.ERROR__USER_NOT_FOUND)
-
-		if (silent)
-		{
-            repeat(amount) {
-                user.voted()
-            }
-
-            return sendMessage(issuer, Messages.VOTES__ADDED_TO_PLAYER, user.player(), "{count}", amount)
+	{
+		if (amount <= 0) {
+			return sendMessage(issuer, Messages.ERROR__INVALID_NUMBER)
 		}
 
-        repeat(amount) {
-            plugin.server.pluginManager.callEvent(VoteReceivedEvent(user.player(), ""))
-        }
+		val user = party.usersHandler[target] ?: return sendMessage(issuer, Messages.ERROR__USER_NOT_FOUND)
 
-        return sendMessage(issuer, Messages.VOTES__ADDED_TO_PLAYER, user.player(), "{count}", amount)
+		if (silent) {
+			repeat(amount) {
+				SchedulerUtil.runTask(plugin) {  // Utilisation de runTask au lieu de runTaskAsynchronously
+					user.voted()
+				}
+			}
+			return sendMessage(issuer, Messages.VOTES__ADDED_TO_PLAYER, user.player(), "{count}", amount)
+		}
+
+		repeat(amount) {
+			SchedulerUtil.runTask(plugin) {  // Utilisation de runTask au lieu de runTaskAsynchronously
+				plugin.server.pluginManager.callEvent(VoteReceivedEvent(user.player(), ""))
+			}
+		}
+		return sendMessage(issuer, Messages.VOTES__ADDED_TO_PLAYER, user.player(), "{count}", amount)
 	}
+
 
 	@Subcommand("addpartyvote")
 	@Syntax("<amount>")
 	@Description("Add a Vote to the party")
 	@CommandPermission(ADMIN_PERM)
-	fun addPartyVote(issuer: CommandIssuer, @Default("1") amount: Int)
-	{
-
-		if (amount <= 0)
-		{
+	fun addPartyVote(issuer: CommandIssuer, @Default("1") amount: Int) {
+		if (amount <= 0) {
 			return sendMessage(issuer, Messages.ERROR__INVALID_NUMBER)
 		}
 
-		party.votesHandler.addVotes(amount)
-		sendMessage(issuer, Messages.VOTES__VOTE_COUNTER_UPDATED)
+		SchedulerUtil.runTaskAsynchronously(plugin) {
+			party.votesHandler.addVotes(amount)
+			sendMessage(issuer, Messages.VOTES__VOTE_COUNTER_UPDATED)
+		}
 	}
 
 	@Subcommand("givecrate")
@@ -92,17 +94,17 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 	@Syntax("<player> <amount>")
 	@Description("Give Crate")
 	@CommandPermission(ADMIN_PERM)
-	fun giveCrate(issuer: CommandIssuer, @Values("@online") target: OnlinePlayer, @Default("1") amount: Int)
-	{
-		if (amount <= 0)
-		{
+	fun giveCrate(issuer: CommandIssuer, @Values("@online") target: OnlinePlayer, @Default("1") amount: Int) {
+		if (amount <= 0) {
 			return sendMessage(issuer, Messages.ERROR__INVALID_NUMBER)
 		}
 
-		sendMessage(issuer, Messages.CRATE__CRATE_GIVEN, target.player)
-		sendMessage(currentCommandManager.getCommandIssuer(target.player), Messages.CRATE__CRATE_RECEIVED)
+		SchedulerUtil.runTask(plugin){
+			sendMessage(issuer, Messages.CRATE__CRATE_GIVEN, target.player)
+			sendMessage(currentCommandManager.getCommandIssuer(target.player), Messages.CRATE__CRATE_RECEIVED)
 
-		target.player.inventory.addItem(party.partyHandler.buildCrate(amount))
+			target.player.inventory.addItem(party.partyHandler.buildCrate(amount))
+		}
 	}
 
 	@Subcommand("setcounter")
@@ -111,15 +113,16 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 	@CommandPermission(ADMIN_PERM)
 	fun setCounter(issuer: CommandIssuer, amount: Int)
 	{
-		if (amount < 0)
-		{
+		if (amount < 0) {
 			return sendMessage(issuer, Messages.ERROR__INVALID_NUMBER)
 		}
 
-		party.conf().setProperty(PartySettings.VOTES_NEEDED, amount)
-		party.conf().save()
+		SchedulerUtil.runTask(plugin) {
+			party.conf().setProperty(PartySettings.VOTES_NEEDED, amount)
+			party.conf().save()
 
-		sendMessage(issuer, Messages.VOTES__VOTES_NEEDED_UPDATED)
+			sendMessage(issuer, Messages.VOTES__VOTES_NEEDED_UPDATED)
+		}
 	}
 
 	@Subcommand("top")
@@ -128,59 +131,55 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 	@CommandPermission("voteparty.top")
 	fun top(issuer: CommandIssuer, type: LeaderboardType, @Default("1") page: Int)
 	{
-		if (page <= 0)
-		{
+		if (page <= 0) {
 			return sendMessage(issuer, Messages.ERROR__INVALID_NUMBER)
 		}
 
+		SchedulerUtil.runTaskAsynchronously(plugin) {
+			val leaderboard = party.leaderboardHandler.getLeaderboard(type)
+				?: return@runTaskAsynchronously sendMessage(issuer, Messages.ERROR__LEADERBOARD_NOT_FOUND, null, "{type}", type.displayName)
 
-		val leaderboard = party.leaderboardHandler.getLeaderboard(type)
-			?: return sendMessage(issuer, Messages.ERROR__LEADERBOARD_NOT_FOUND, null, "{type}", type.displayName)
+			val pages = leaderboard.data.chunked(10)
+			if (page > pages.size) {
+				return@runTaskAsynchronously sendMessage(issuer, Messages.ERROR__INVALID_PAGE_NUMBER, null, "{max}", pages.size.toString())
+			}
 
-		val pages = leaderboard.data.chunked(10)
-		if (page > pages.size)
-		{
-			return sendMessage(issuer, Messages.ERROR__INVALID_PAGE_NUMBER, null, "{max}", pages.size.toString())
-		}
+			val actualPage = pages[page - 1]
+			if (actualPage.isEmpty()) {
+				return@runTaskAsynchronously sendMessage(issuer, Messages.ERROR__INVALID_PAGE_NUMBER, null, "{max}", pages.size.toString())
+			}
 
-		val actualPage = pages[page - 1]
-		if (actualPage.isEmpty())
-		{
-			return sendMessage(issuer, Messages.ERROR__INVALID_PAGE_NUMBER, null, "{max}", pages.size.toString())
-		}
-
-
-
-		val message = StringBuilder()
-		message.appendLine(
-			msgAsString(issuer, Messages.TOP__HEADER)
-				.replace("{type}", type.displayName)
-				.replace("{page}", page.toString())
-				.replace("{total}", pages.size.toString())
-		)
-
-		message.appendLine()
-
-		for ((index, leaderboardUser) in actualPage.withIndex()) {
+			val message = StringBuilder()
 			message.appendLine(
-				msgAsString(issuer, Messages.TOP__LINE)
-					.replace("{position}", (index + 1).toString())
-					.replace("{player}", leaderboardUser.user.name)
-					.replace("{uuid}", leaderboardUser.user.uuid.toString())
-					.replace("{votes}", leaderboardUser.votes.toString())
+				msgAsString(issuer, Messages.TOP__HEADER)
+					.replace("{type}", type.displayName)
+					.replace("{page}", page.toString())
+					.replace("{total}", pages.size.toString())
 			)
+
+			message.appendLine()
+
+			for ((index, leaderboardUser) in actualPage.withIndex()) {
+				message.appendLine(
+					msgAsString(issuer, Messages.TOP__LINE)
+						.replace("{position}", (index + 1).toString())
+						.replace("{player}", leaderboardUser.user.name)
+						.replace("{uuid}", leaderboardUser.user.uuid.toString())
+						.replace("{votes}", leaderboardUser.votes.toString())
+				)
+			}
+
+			message.appendLine()
+
+			message.append(
+				msgAsString(issuer, Messages.TOP__FOOTER)
+					.replace("{type}", type.displayName)
+					.replace("{page}", page.toString())
+					.replace("{total}", pages.size.toString())
+			)
+
+			party.audiences().sender(issuer.getIssuer()).sendMessage(Identity.nil(), deserialize(message.toString()))
 		}
-
-		message.appendLine()
-
-		message.append(
-			msgAsString(issuer, Messages.TOP__FOOTER)
-				.replace("{type}", type.displayName)
-				.replace("{page}", page.toString())
-				.replace("{total}", pages.size.toString())
-		)
-
-		party.audiences().sender(issuer.getIssuer()).sendMessage(Identity.nil(), deserialize(message.toString()))
 	}
 
 	@Subcommand("checkvotes")
@@ -190,6 +189,7 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 	@CommandPermission(ADMIN_PERM)
 	fun checkVotes(issuer: CommandIssuer, offlinePlayer: OfflinePlayer, amount: Long, unit: TimeUnit)
 	{
+		SchedulerUtil.runTaskAsynchronously(plugin) {
 		val count = party.usersHandler.getVoteCountSince(offlinePlayer, amount, unit)
 		sendMessage(
 			issuer,
@@ -201,7 +201,8 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 			amount,
 			"{unit}",
 			unit.toString().lowercase(Locale.getDefault())
-		)
+		  )
+		}
 	}
 
 	@Subcommand("totalvotes")
@@ -209,9 +210,10 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 	@CommandCompletion("@online")
 	@Description("Total Votes")
 	@CommandPermission(ADMIN_PERM)
-	fun totalVotes(issuer: CommandIssuer, offlinePlayer: OfflinePlayer)
-	{
-		sendMessage(issuer, Messages.INFO__PLAYER_TOTAL_VOTES, offlinePlayer)
+	fun totalVotes(issuer: CommandIssuer, offlinePlayer: OfflinePlayer) {
+		SchedulerUtil.runTaskAsynchronously(plugin) {
+			sendMessage(issuer, Messages.INFO__PLAYER_TOTAL_VOTES, offlinePlayer)
+		}
 	}
 
 	@Subcommand("resetvotes")
@@ -221,8 +223,10 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 	@CommandPermission(ADMIN_PERM)
 	fun resetVotes(issuer: CommandIssuer, offlinePlayer: OfflinePlayer)
 	{
-		party.usersHandler.reset(offlinePlayer)
-		sendMessage(issuer, Messages.INFO__VOTE_COUNT_RESET, offlinePlayer)
+		SchedulerUtil.runTaskAsynchronously(plugin) {
+			party.usersHandler.reset(offlinePlayer)
+			sendMessage(issuer, Messages.INFO__VOTE_COUNT_RESET, offlinePlayer)
+		}
 	}
 
 	@Subcommand("startparty")
@@ -230,8 +234,10 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 	@CommandPermission(ADMIN_PERM)
 	fun startParty(issuer: CommandIssuer)
 	{
-		party.partyHandler.startParty()
-		sendMessage(issuer, Messages.PARTY__FORCE_START_SUCCESSFUL)
+		SchedulerUtil.runTaskAsynchronously(plugin) {
+			party.partyHandler.startParty()
+			sendMessage(issuer, Messages.PARTY__FORCE_START_SUCCESSFUL)
+		}
 	}
 
 	@Subcommand("giveparty")
@@ -241,22 +247,20 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 	@CommandPermission(ADMIN_PERM)
 	fun giveParty(issuer: CommandIssuer, @Values("@players") target: OnlinePlayer)
 	{
-		if (target.player.world.name in party.conf().getProperty(PartySettings.DISABLED_WORLDS))
-		{
-			return sendMessage(issuer, Messages.ERROR__DISABLED_WORLD)
-		}
+		SchedulerUtil.runTask(plugin) {
+			if (target.player.world.name in party.conf().getProperty(PartySettings.DISABLED_WORLDS)) {
+				return@runTask sendMessage(issuer, Messages.ERROR__DISABLED_WORLD)
+			}
 
-		if (party.conf().getProperty(PartySettings.USE_CRATE))
-		{
-			target.player.inventory.addItem(party.partyHandler.buildCrate(1))
+			if (party.conf().getProperty(PartySettings.USE_CRATE)) {
+				target.player.inventory.addItem(party.partyHandler.buildCrate(1))
+			} else {
+				party.partyHandler.runAll(target.player)
+			}
 		}
-		else
-		{
-			party.partyHandler.runAll(target.player)
-		}
+			sendMessage(issuer, Messages.VOTES__PRIVATE_PARTY_GIVEN, target.player)
+			sendMessage(currentCommandManager.getCommandIssuer(target.player), Messages.VOTES__PRIVATE_PARTY_RECEIVED)
 
-		sendMessage(issuer, Messages.VOTES__PRIVATE_PARTY_GIVEN, target.player)
-		sendMessage(currentCommandManager.getCommandIssuer(target.player), Messages.VOTES__PRIVATE_PARTY_RECEIVED)
 	}
 
 	@Subcommand("reload")
@@ -286,10 +290,13 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 		{
 			return sendMessage(currentCommandIssuer, Messages.CLAIM__FULL)
 		}
+		SchedulerUtil.runTask(plugin) {
+				party.votesHandler.runAll(player)
+				//user.claimable--
 
-		party.votesHandler.runAll(player)
+
+		}
 		user.claimable--
-
 		sendMessage(currentCommandIssuer, Messages.CLAIM__SUCCESS, null, "{claim}", user.claimable)
 	}
 
@@ -311,8 +318,9 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 			{
 				return sendMessage(currentCommandIssuer, Messages.CLAIM__FULL_ALL, null, "{claimed}", i, "{claim}", user.claimable)
 			}
-
-			party.votesHandler.runAll(player)
+			SchedulerUtil.runTask(plugin) {
+				party.votesHandler.runAll(player)
+			}
 			user.claimable--
 		}
 		sendMessage(currentCommandIssuer, Messages.CLAIM__SUCCESS_ALL)

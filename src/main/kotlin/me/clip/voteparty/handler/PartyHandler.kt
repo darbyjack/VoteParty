@@ -19,6 +19,7 @@ import me.clip.voteparty.exte.sendMessage
 import me.clip.voteparty.exte.takeRandomly
 import me.clip.voteparty.messages.Messages
 import me.clip.voteparty.plugin.VotePartyPlugin
+import me.clip.voteparty.util.SchedulerUtil
 import me.clip.voteparty.version.EffectType
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -54,16 +55,14 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 		return parties.count { partyEpoch -> partyEpoch > timeEpoch }
 	}
 
-	fun giveRandomPartyRewards(player: Player)
-	{
+	fun giveRandomPartyRewards(player: Player) {
 		if (player.world.name in party.conf().getProperty(PartySettings.DISABLED_WORLDS)) {
 			return
 		}
 
 		val settings = party.conf().getProperty(PartySettings.REWARD_COMMANDS)
 
-		if (!settings.enabled || settings.max_possible <= 0 || settings.commands.isEmpty())
-		{
+		if (!settings.enabled || settings.max_possible <= 0 || settings.commands.isEmpty()) {
 			return
 		}
 
@@ -73,20 +72,20 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 
 		val iter = settings.commands.takeRandomly(settings.max_possible).iterator()
 
-		plugin.runTaskTimer(party.conf().getProperty(PartySettings.COMMAND_DELAY).toLong() * 20L)
-		{
-			if (!iter.hasNext())
-			{
-				return@runTaskTimer cancel()
+		val taskId = SchedulerUtil.runTaskLater(plugin, Runnable {
+			if (!iter.hasNext()) {
+				return@Runnable
 			}
 
 			runPartyCommandEffects(player)
-			iter.next().command.forEach()
-			{ command ->
-				server.dispatchCommand(server.consoleSender, formMessage (player, command))
+			iter.next().command.forEach { command ->
+				server.dispatchCommand(server.consoleSender, formMessage(player, command))
 			}
-		}
+		}, party.conf().getProperty(PartySettings.COMMAND_DELAY).toLong() * 20L)
 	}
+
+
+
 
 	fun giveGuaranteedPartyRewards(player: Player)
 	{
@@ -174,33 +173,30 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 		}
 	}
 
-	fun startParty()
-	{
+	fun startParty() {
+		// Utilise une tâche Bukkit pour déclencher l'événement depuis le thread principal
+		SchedulerUtil.runTask(plugin, Runnable {
+			val prePartyEvent = PrePartyEvent()
+			Bukkit.getPluginManager().callEvent(prePartyEvent) // Déclenche l'événement de manière synchrone depuis le thread principal
 
-		val prePartyEvent = PrePartyEvent()
-		Bukkit.getPluginManager().callEvent(prePartyEvent)
+			if (prePartyEvent.isCancelled) {
+				return@Runnable
+			}
 
-		if (prePartyEvent.isCancelled) {
-			return
-		}
-
-		runPrePartyCommands()
-
-		plugin.runTaskLater(party.conf().getProperty(PartySettings.START_DELAY) * 20L)
-		{
+			runPrePartyCommands()
 
 			val partyStartEvent = PartyStartEvent()
-			Bukkit.getPluginManager().callEvent(partyStartEvent)
+			Bukkit.getPluginManager().callEvent(partyStartEvent) // Déclenche l'événement de manière synchrone depuis le thread principal
 
 			if (partyStartEvent.isCancelled) {
-				return@runTaskLater
+				return@Runnable
 			}
 
 			addParties(System.currentTimeMillis())
 			runPartyCommands()
 			runPartyStartEffects()
 
-			val targets: Collection<Player> = when(party.conf().getProperty(PartySettings.PARTY_MODE)) {
+			val targets: Collection<Player> = when (party.conf().getProperty(PartySettings.PARTY_MODE)) {
 				"everyone" -> server.onlinePlayers
 				"daily" -> server.onlinePlayers.filter { party.usersHandler.getPlayersWhoVotedSince(1, TimeUnit.DAYS).contains(it.uniqueId) }
 				"party" -> server.onlinePlayers.filter { voted.contains(it.uniqueId) }
@@ -213,13 +209,11 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 
 			if (party.conf().getProperty(PartySettings.USE_CRATE)) {
 				val disabledWorlds = party.conf().getProperty(PartySettings.DISABLED_WORLDS)
-				targets.filterNot { it.world.name in disabledWorlds  }.forEach {
+				targets.filterNot { it.world.name in disabledWorlds }.forEach {
 					it.inventory.addItem(buildCrate(1))
 				}
-			}
-			else {
-				targets.forEach()
-				{
+			} else {
+				targets.forEach {
 					giveGuaranteedPartyRewards(it)
 					giveRandomPartyRewards(it)
 					givePermissionPartyRewards(it)
@@ -228,9 +222,13 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 
 			voted.clear()
 			val partyEndEvent = PartyEndEvent()
-			Bukkit.getPluginManager().callEvent(partyEndEvent)
-		}
+			Bukkit.getPluginManager().callEvent(partyEndEvent) // Déclenche l'événement de manière synchrone depuis le thread principal
+		})
 	}
+
+
+
+
 
 
 	private fun executeCommands(enabled: Boolean, cmds: Collection<String>?, player: Player? = null)

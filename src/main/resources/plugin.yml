@@ -4,7 +4,7 @@ main: me.clip.voteparty.plugin.VotePartyPlugin
 version: '@version@'
 website: 'https://helpch.at/discord'
 authors: ['Glare', 'Clip', 'Sxtanna']
-
+folia-supported: true
 depend:
   - 'PlaceholderAPI'
 softdepend:
