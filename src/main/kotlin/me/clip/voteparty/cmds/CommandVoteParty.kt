@@ -58,7 +58,7 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 
 		if (silent) {
 			repeat(amount) {
-				SchedulerUtil.runTask(plugin) {  // Utilisation de runTask au lieu de runTaskAsynchronously
+				SchedulerUtil.runTask(plugin) {
 					user.voted()
 				}
 			}
@@ -66,7 +66,7 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 		}
 
 		repeat(amount) {
-			SchedulerUtil.runTask(plugin) {  // Utilisation de runTask au lieu de runTaskAsynchronously
+			SchedulerUtil.runTask(plugin) {
 				plugin.server.pluginManager.callEvent(VoteReceivedEvent(user.player(), ""))
 			}
 		}

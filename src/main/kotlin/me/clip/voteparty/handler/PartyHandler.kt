@@ -174,10 +174,9 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 	}
 
 	fun startParty() {
-		// Utilise une tâche Bukkit pour déclencher l'événement depuis le thread principal
 		SchedulerUtil.runTask(plugin, Runnable {
 			val prePartyEvent = PrePartyEvent()
-			Bukkit.getPluginManager().callEvent(prePartyEvent) // Déclenche l'événement de manière synchrone depuis le thread principal
+			Bukkit.getPluginManager().callEvent(prePartyEvent)
 
 			if (prePartyEvent.isCancelled) {
 				return@Runnable
@@ -186,7 +185,7 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 			runPrePartyCommands()
 
 			val partyStartEvent = PartyStartEvent()
-			Bukkit.getPluginManager().callEvent(partyStartEvent) // Déclenche l'événement de manière synchrone depuis le thread principal
+			Bukkit.getPluginManager().callEvent(partyStartEvent)
 
 			if (partyStartEvent.isCancelled) {
 				return@Runnable
@@ -222,7 +221,7 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 
 			voted.clear()
 			val partyEndEvent = PartyEndEvent()
-			Bukkit.getPluginManager().callEvent(partyEndEvent) // Déclenche l'événement de manière synchrone depuis le thread principal
+			Bukkit.getPluginManager().callEvent(partyEndEvent)
 		})
 	}
 
