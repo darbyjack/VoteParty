@@ -5,7 +5,6 @@ import org.bstats.bukkit.Metrics;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
-
 public final class VotePartyPlugin extends JavaPlugin
 {
 	private VoteParty voteParty;
