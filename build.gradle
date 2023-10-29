@@ -81,7 +81,7 @@ dependencies {
 	implementation "ch.jalu:configme:1.3.0"
 
 	// placeholderapi
-	compileOnly "me.clip:placeholderapi:2.11.4"
+	compileOnly "me.clip:placeholderapi:2.11.5"
 
 	// NuVotifier hook
 	compileOnly files("libs/nuvotifier-2.7.3.jar")
