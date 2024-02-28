@@ -143,6 +143,13 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 		executeCommands(settings.enabled, settings.commands)
 	}
 
+	fun runPostPartyCommands()
+	{
+		val settings = party.conf().getProperty(PartySettings.POST_PARTY_COMMANDS)
+
+		executeCommands(settings.enabled, settings.commands)
+	}
+
 	fun runPartyStartEffects()
 	{
 		val settings = party.conf().getProperty(EffectsSettings.PARTY_START)
@@ -229,6 +236,8 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 			voted.clear()
 			val partyEndEvent = PartyEndEvent()
 			Bukkit.getPluginManager().callEvent(partyEndEvent)
+
+			runPostPartyCommands()
 		}
 	}
 
