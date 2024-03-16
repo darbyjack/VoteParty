@@ -24,6 +24,6 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
-          java-version: '21'
+          java-version: '11'
       - name: Gradle Test Build
         run: ./gradlew clean shadowJar
