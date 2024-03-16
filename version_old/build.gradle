@@ -6,13 +6,18 @@ repositories {
 	maven {
 		url = "https://repo.glaremasters.me/repository/public/"
 	}
+	maven {
+		url = "https://hub.spigotmc.org/nexus/content/repositories/snapshots/"
+	}
 }
 
 dependencies {
 	implementation project(":version")
 	implementation "org.inventivetalent:particleapi:+"
-	
-	compileOnly("org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT") {
-		force = true
+
+	compileOnly("org.spigotmc:spigot-api") {
+		version {
+			require("1.8.8-R0.1-SNAPSHOT")
+		}
 	}
 }
