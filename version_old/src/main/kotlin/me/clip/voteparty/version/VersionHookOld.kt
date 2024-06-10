@@ -24,7 +24,7 @@ class VersionHookOld : VersionHook
 	
 	private companion object
 	{
-		private val VALUES = ParticleEffect.values()
+		private val VALUES = ParticleEffect.entries.toTypedArray()
 		
 		
 		private fun resolve(type: EffectType): ParticleEffect?

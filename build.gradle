@@ -30,6 +30,9 @@ allprojects {
 	dependencies {
 		// kotlin
 		implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+
+		// Support for materials across all versions
+		implementation 'com.github.cryptomorin:XSeries:11.0.0'
 	}
 
 	indra {
@@ -88,9 +91,6 @@ dependencies {
 
 	// command handler
 	implementation "co.aikar:acf-paper:0.5.1-SNAPSHOT"
-
-	// Support for materials across all versions
-	implementation 'com.github.cryptomorin:XSeries:11.0.0'
 
 	// bstats
 	implementation 'org.bstats:bstats-bukkit:3.0.2'

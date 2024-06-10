@@ -1,5 +1,6 @@
 package me.clip.voteparty.version
 
+import com.cryptomorin.xseries.particles.XParticle
 import org.bukkit.Color
 import org.bukkit.Location
 import org.bukkit.Particle
@@ -12,18 +13,18 @@ class VersionHookNew : VersionHook
 	{
 		
 		val world = location.world ?: return
-		val particle = Particle.valueOf(type.name)
+		val particle = XParticle.of(type.name)
 		
-		if (particle.dataType == DustOptions::class.java)
+		if (particle.get().dataType == DustOptions::class.java)
 		{
-			return world.spawnParticle(particle, location, 1, if (color == null) OPTION else DustOptions(color, 0.8F))
+			return world.spawnParticle(particle.get(), location, 1, if (color == null) OPTION else DustOptions(color, 0.8F))
 		}
 		
 		when (particle)
 		{
 			in SINGLE     ->
 			{
-				world.spawnParticle(particle, location, count)
+				world.spawnParticle(particle.get(), location, count)
 			}
 			in SPELLS     ->
 			{
@@ -44,9 +45,9 @@ class VersionHookNew : VersionHook
 					b = color.blue / 255.0
 				}
 				
-				world.spawnParticle(particle, location, count, r, g, b, 1)
+				world.spawnParticle(particle.get(), location, count, r, g, b, 1)
 			}
-			Particle.NOTE ->
+			XParticle.NOTE ->
 			{
 				val note = if (color == null)
 				{
@@ -57,11 +58,11 @@ class VersionHookNew : VersionHook
 					color.red / 24.0
 				}
 				
-				world.spawnParticle(particle, location, count, note, offsetY, offsetZ, 1)
+				world.spawnParticle(particle.get(), location, count, note, offsetY, offsetZ, 1)
 			}
 			else          ->
 			{
-				world.spawnParticle(particle, location, count, offsetX, offsetY, offsetZ, 0.001)
+				world.spawnParticle(particle.get(), location, count, offsetX, offsetY, offsetZ, 0.001)
 			}
 		}
 	}
@@ -72,30 +73,29 @@ class VersionHookNew : VersionHook
 		private val OPTION = DustOptions(Color.RED, 0.8F)
 		
 		private val SPELLS = setOf(
-			Particle.SPELL_MOB,
-			Particle.SPELL_MOB_AMBIENT
-		                          )
+			XParticle.ENTITY_EFFECT,
+			)
 		
 		private val SINGLE = setOf(
-			Particle.WATER_BUBBLE,
-			Particle.WATER_WAKE,
-			Particle.CRIT,
-			Particle.CRIT_MAGIC,
-			Particle.SMOKE_NORMAL,
-			Particle.SMOKE_LARGE,
-			Particle.PORTAL,
-			Particle.ENCHANTMENT_TABLE,
-			Particle.FLAME,
-			Particle.CLOUD,
-			Particle.DRAGON_BREATH,
-			Particle.END_ROD,
-			Particle.DAMAGE_INDICATOR,
-			Particle.TOTEM,
-			Particle.SPIT,
-			Particle.SQUID_INK,
-			Particle.BUBBLE_POP,
-			Particle.BUBBLE_COLUMN_UP,
-			Particle.NAUTILUS
+			XParticle.BUBBLE,
+			XParticle.FISHING,
+			XParticle.CRIT,
+			XParticle.ENCHANTED_HIT,
+			XParticle.SMOKE,
+			XParticle.LARGE_SMOKE,
+			XParticle.PORTAL,
+			XParticle.ENCHANT,
+			XParticle.FLAME,
+			XParticle.CLOUD,
+			XParticle.DRAGON_BREATH,
+			XParticle.END_ROD,
+			XParticle.DAMAGE_INDICATOR,
+			XParticle.TOTEM_OF_UNDYING,
+			XParticle.SPIT,
+			XParticle.SQUID_INK,
+			XParticle.BUBBLE_POP,
+			XParticle.BUBBLE_COLUMN_UP,
+			XParticle.NAUTILUS
 		                          )
 		
 	}
