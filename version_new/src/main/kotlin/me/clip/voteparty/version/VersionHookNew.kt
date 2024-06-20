@@ -13,7 +13,14 @@ class VersionHookNew : VersionHook
 	{
 		
 		val world = location.world ?: return
-		val particle = XParticle.of(type.name)
+		val optionalParticle = XParticle.of(type.name)
+
+		if (!optionalParticle.isPresent)
+		{
+			return
+		}
+
+		val particle = optionalParticle.get()
 		
 		if (particle.get().dataType == DustOptions::class.java)
 		{
