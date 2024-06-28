@@ -32,7 +32,7 @@ allprojects {
 		implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 
 		// Support for materials across all versions
-		implementation 'com.github.cryptomorin:XSeries:11.1.0'
+		implementation 'com.github.cryptomorin:XSeries:11.2.0'
 	}
 
 	indra {
