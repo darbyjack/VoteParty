@@ -221,12 +221,28 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 			if (party.conf().getProperty(PartySettings.USE_CRATE)) {
 				val disabledWorlds = party.conf().getProperty(PartySettings.DISABLED_WORLDS)
 				targets.filterNot { it.world.name in disabledWorlds  }.forEach {
+                    if (it.inventory.firstEmpty() == -1 && party.conf().getProperty(PartySettings.CLAIMABLE_IF_FULL))
+                    {
+                        val user = party.usersHandler[it]
+                        user.partyClaimable++
+                        sendMessage(party.manager().getCommandIssuer(it), Messages.PARTY__INVENTORY_FULL)
+                        return@forEach
+                    }
+
 					it.inventory.addItem(buildCrate(1))
 				}
 			}
 			else {
 				targets.forEach()
 				{
+                    if (it.inventory.firstEmpty() == -1 && party.conf().getProperty(PartySettings.CLAIMABLE_IF_FULL))
+                    {
+                        val user = party.usersHandler[it]
+                        user.partyClaimable++
+                        sendMessage(party.manager().getCommandIssuer(it), Messages.PARTY__INVENTORY_FULL)
+                        return@forEach
+                    }
+
 					giveGuaranteedPartyRewards(it)
 					giveRandomPartyRewards(it)
 					givePermissionPartyRewards(it)

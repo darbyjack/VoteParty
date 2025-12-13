@@ -29,6 +29,7 @@ info:
 party:
   force-start-successful: "&fJe hebt een &dVote Party &fvoor alle online spelers gestart!"
   requirements-not-met: "&fSorry, je voldeed niet aan de vereisten om deel te nemen aan deze VoteParty!"
+  inventory-full: "&fYour inventory seems to be full! We've put this party reward in your claimables! Do /vp claimparty once your inventory isn't full!"
 votes:
   votes-needed-updated: "&fNieuwe vereiste stemmen zijn ingesteld! &d%voteparty_votes_required_party% Stemmen &zijn nodig voor de volgende party."
   vote-counter-updated: "&fHuidige stemmen bijgewerkt naar &d%voteparty_votes_recorded%&f!"
@@ -41,6 +42,11 @@ crate:
   crate-given: "&fJe hebt &d%player_name% &fvote crate(s) gegeven!"
   crate-received: "&fJe hebt een vote crate ontvangen!"
 claim:
+  party-none: "&fYou don't have any rewards to claim from parties!"
+  party-full: "&aYour inventory is full! Make some space and try again!"
+  party-full-all: "&aYour inventory is full! Make some space and try again! You have claimed &d{claimed} &aparty rewards. You have &d{claim} &aleft to claim."
+  party-success: "&fYou successfully claimed the rewards from a party! You have &d{claim} &fleft to claim."
+  party-success-all: "&fYou successfully claimed the rewards for all parties!"
   success: "&fJe hebt succesvol de beloningen geclaimd van een offline stem! Je hebt &d{claim} &fover om te claimen."
   success-all: "&fYou successfully claimed the rewards for all offline votes!"
   none: "&fJe hebt geen beloningen die je kunt claimen van offline stemmen!"
