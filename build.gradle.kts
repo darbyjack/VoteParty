@@ -2,6 +2,7 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 // import net.kyori.indra.IndraExtension
 import org.apache.tools.ant.filters.ReplaceTokens
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlin.jvm)
@@ -46,12 +47,12 @@ allprojects {
         }
     }
 
-    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-        kotlinOptions {
-            jvmTarget = "1.8"
-            javaParameters = true
-        }
-    }
+	tasks.withType<KotlinCompile>().configureEach {
+		compilerOptions {
+			jvmTarget.set(JvmTarget.JVM_1_8)
+			javaParameters.set(true)
+		}
+	}
 }
 
 apply(plugin = "com.gradleup.shadow")
