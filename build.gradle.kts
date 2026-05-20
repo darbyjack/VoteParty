@@ -76,7 +76,7 @@ dependencies {
     implementation(libs.kotlin.stdlib.jdk8)
     implementation(libs.xseries)
 
-    compileOnly(libs.spigot.modern)
+    compileOnly(libs.spigot.legacy)
 
     implementation(libs.configme)
 
