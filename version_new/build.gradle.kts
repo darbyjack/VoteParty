@@ -1,6 +1,7 @@
-group 'me.clip'
-version '2.0'
+group = "me.clip"
+version = "2.0"
 
 dependencies {
+    implementation(project(":version"))
     compileOnly("org.spigotmc:spigot-api:1.20.6-R0.1-SNAPSHOT")
 }

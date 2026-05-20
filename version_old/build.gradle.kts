@@ -1,0 +1,18 @@
+group = "me.clip"
+version = "2.0"
+
+repositories {
+    maven("https://repo.glaremasters.me/repository/public/")
+    maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
+}
+
+dependencies {
+    implementation(project(":version"))
+    implementation("org.inventivetalent:particleapi:+")
+
+    compileOnly("org.spigotmc:spigot-api") {
+        version {
+            require("1.8.8-R0.1-SNAPSHOT")
+        }
+    }
+}
