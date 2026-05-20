@@ -1,7 +1,7 @@
 [versions]
 kotlin = "2.3.21"
 shadow = "9.4.1"
-benManesVersions = "0.51.0"
+benManesVersions = "0.54.0"
 particleapi = "2.2.0-SNAPSHOT"
 
 spigotModern = "1.20.6-R0.1-SNAPSHOT"
