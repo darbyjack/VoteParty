@@ -54,7 +54,7 @@ allprojects {
     }
 }
 
-apply(plugin = "io.github.goooler.shadow")
+apply(plugin = "com.gradleup.shadow")
 
 tasks.named<ShadowJar>("shadowJar") {
     minimize()

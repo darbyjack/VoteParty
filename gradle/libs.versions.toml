@@ -1,6 +1,6 @@
 [versions]
 kotlin = "2.0.0"
-shadow = "8.1.7"
+shadow = "8.3.9"
 benManesVersions = "0.51.0"
 particleapi = "2.2.0-SNAPSHOT"
 
@@ -34,5 +34,5 @@ particleapi = { module = "org.inventivetalent:particleapi", version.ref = "parti
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-shadow = { id = "io.github.goooler.shadow", version.ref = "shadow" }
+shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
 versions = { id = "com.github.ben-manes.versions", version.ref = "benManesVersions" }
