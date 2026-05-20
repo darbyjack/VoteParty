@@ -1,0 +1,30 @@
+name: Dependency Review
+
+on:
+  pull_request:
+    branches:
+      - master
+      - main
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: dependency-review-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  dependency-review:
+    name: Review dependency changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v5
+        with:
+          fail-on-severity: high
