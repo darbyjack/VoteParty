@@ -10,11 +10,7 @@ dependencies {
     implementation(project(":version"))
 
     implementation(libs.kotlin.stdlib.jdk8)
-    implementation(libs.particleapi) {
-        version {
-            require("+")
-        }
-    }
+	implementation(libs.particleapi)
 
     compileOnly(libs.spigot.legacy)
 }

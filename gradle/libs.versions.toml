@@ -2,6 +2,7 @@
 kotlin = "2.0.0"
 shadow = "8.1.7"
 benManesVersions = "0.51.0"
+particleapi = "2.2.0-SNAPSHOT"
 
 spigotModern = "1.20.6-R0.1-SNAPSHOT"
 spigotLegacy = "1.8.8-R0.1-SNAPSHOT"
@@ -29,7 +30,7 @@ adventure-platform-bukkit = { module = "net.kyori:adventure-platform-bukkit", ve
 adventure-api = { module = "net.kyori:adventure-api", version.ref = "adventure" }
 adventure-text-minimessage = { module = "net.kyori:adventure-text-minimessage", version.ref = "adventure" }
 
-particleapi = { module = "org.inventivetalent:particleapi" }
+particleapi = { module = "org.inventivetalent:particleapi", version.ref = "particleapi" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
