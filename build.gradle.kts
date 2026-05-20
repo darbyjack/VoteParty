@@ -90,9 +90,9 @@ dependencies {
     implementation(libs.adventure.api)
     implementation(libs.adventure.text.minimessage)
 
-    implementation(project(":version"))
-    implementation(project(":version_old"))
-    implementation(project(":version_new"))
+	implementation(project(":particle-api"))
+	implementation(project(":particle-legacy"))
+	implementation(project(":particle-modern"))
 }
 
 tasks.processResources {

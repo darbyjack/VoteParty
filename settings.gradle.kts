@@ -1,5 +1,5 @@
 rootProject.name = "VP"
 
-include("version")
-include("version_old")
-include("version_new")
+include("particle-api")
+include("particle-legacy")
+include("particle-modern")

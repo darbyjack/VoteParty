@@ -7,7 +7,7 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":version"))
+    implementation(project(":particle-api"))
 
     implementation(libs.kotlin.stdlib.jdk8)
 	implementation(libs.particleapi)
