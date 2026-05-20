@@ -3,6 +3,8 @@ kotlin = "2.3.21"
 shadow = "9.4.1"
 benManesVersions = "0.54.0"
 particleapi = "2.2.0-SNAPSHOT"
+runPaper = "3.0.2"
+xseriesCommit = "6da269dc0b7abd3e65026137cfed931b9a8d7515"
 
 spigotModern = "1.20.6-R0.1-SNAPSHOT"
 spigotLegacy = "1.8.8-R0.1-SNAPSHOT"
@@ -23,7 +25,7 @@ placeholderapi = { module = "me.clip:placeholderapi", version.ref = "placeholder
 
 configme = { module = "ch.jalu:configme", version.ref = "configme" }
 acf-paper = { module = "co.aikar:acf-paper", version.ref = "acf" }
-xseries = { module = "com.github.cryptomorin:XSeries", version.ref = "xseries" }
+xseries = { module = "com.github.CryptoMorin:XSeries", version.ref = "xseriesCommit" }
 bstats-bukkit = { module = "org.bstats:bstats-bukkit", version.ref = "bstats" }
 
 adventure-platform-bukkit = { module = "net.kyori:adventure-platform-bukkit", version.ref = "adventurePlatformBukkit" }
@@ -36,3 +38,4 @@ particleapi = { module = "org.inventivetalent:particleapi", version.ref = "parti
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
 versions = { id = "com.github.ben-manes.versions", version.ref = "benManesVersions" }
+run-paper = { id = "xyz.jpenilla.run-paper", version.ref = "runPaper" }
