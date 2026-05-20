@@ -2,5 +2,6 @@ group = "me.clip"
 version = "2.0"
 
 dependencies {
-    compileOnly("org.spigotmc:spigot-api:1.20.6-R0.1-SNAPSHOT")
+    implementation(libs.kotlin.stdlib.jdk8)
+    compileOnly(libs.spigot.modern)
 }

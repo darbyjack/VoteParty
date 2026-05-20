@@ -8,11 +8,13 @@ repositories {
 
 dependencies {
     implementation(project(":version"))
-    implementation("org.inventivetalent:particleapi:+")
 
-    compileOnly("org.spigotmc:spigot-api") {
+    implementation(libs.kotlin.stdlib.jdk8)
+    implementation(libs.particleapi) {
         version {
-            require("1.8.8-R0.1-SNAPSHOT")
+            require("+")
         }
     }
+
+    compileOnly(libs.spigot.legacy)
 }

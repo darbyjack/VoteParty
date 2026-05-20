@@ -4,11 +4,9 @@ import org.apache.tools.ant.filters.ReplaceTokens
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "2.0.0"
-    id("io.github.goooler.shadow") version "8.1.7" apply false
-    id("com.github.ben-manes.versions") version "0.51.0"
-    // id("net.kyori.indra") version "3.1.3"
-    // id("net.kyori.indra.publishing") version "3.1.3"
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.shadow) apply false
+    alias(libs.plugins.versions)
 }
 
 allprojects {
@@ -29,11 +27,6 @@ allprojects {
         maven("https://papermc.io/repo/repository/maven-public/")
         maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
         maven("https://repo.glaremasters.me/repository/public/")
-    }
-
-    dependencies {
-        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-        implementation("com.github.cryptomorin:XSeries:11.1.0")
     }
 
     plugins.withId("java") {
@@ -79,28 +72,22 @@ tasks.named<ShadowJar>("shadowJar") {
 }
 
 dependencies {
-    // spigot
-    compileOnly("org.spigotmc:spigot-api:1.20.6-R0.1-SNAPSHOT")
+    implementation(libs.kotlin.stdlib.jdk8)
+    implementation(libs.xseries)
 
-    // config
-    implementation("ch.jalu:configme:1.3.0")
+    compileOnly(libs.spigot.modern)
 
-    // placeholderapi
-    compileOnly("me.clip:placeholderapi:2.11.6")
+    implementation(libs.configme)
 
-    // NuVotifier hook
+    compileOnly(libs.placeholderapi)
     compileOnly(files("libs/nuvotifier-2.7.3.jar"))
 
-    // command handler
-    implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
+    implementation(libs.acf.paper)
+    implementation(libs.bstats.bukkit)
 
-    // bstats
-    implementation("org.bstats:bstats-bukkit:3.0.2")
-
-    // json stuff
-    implementation("net.kyori:adventure-platform-bukkit:4.3.3")
-    implementation("net.kyori:adventure-api:4.17.0")
-    implementation("net.kyori:adventure-text-minimessage:4.17.0")
+    implementation(libs.adventure.platform.bukkit)
+    implementation(libs.adventure.api)
+    implementation(libs.adventure.text.minimessage)
 
     implementation(project(":version"))
     implementation(project(":version_old"))
