@@ -3,15 +3,14 @@ package me.clip.voteparty.version
 import com.cryptomorin.xseries.particles.XParticle
 import org.bukkit.Color
 import org.bukkit.Location
-import org.bukkit.Particle
 import org.bukkit.Particle.DustOptions
 
 class VersionHookNew : VersionHook
 {
-	
+
 	override fun display(type: EffectType, location: Location, offsetX: Double, offsetY: Double, offsetZ: Double, speed: Double, count: Int, color: Color?)
 	{
-		
+
 		val world = location.world ?: return
 		val optionalParticle = XParticle.of(type.name)
 
@@ -21,24 +20,31 @@ class VersionHookNew : VersionHook
 		}
 
 		val particle = optionalParticle.get()
-		
-		if (particle.get().dataType == DustOptions::class.java)
+		val bukkitParticle = particle.get() ?: return
+
+		if (bukkitParticle.dataType == DustOptions::class.java)
 		{
-			return world.spawnParticle(particle.get(), location, 1, if (color == null) OPTION else DustOptions(color, 0.8F))
+			return world.spawnParticle(
+				bukkitParticle,
+				location,
+				1,
+				if (color == null) OPTION else DustOptions(color, 0.8F)
+			)
 		}
-		
+
 		when (particle)
 		{
 			in SINGLE     ->
 			{
-				world.spawnParticle(particle.get(), location, count)
+				world.spawnParticle(bukkitParticle, location, count)
 			}
+
 			in SPELLS     ->
 			{
 				val r: Double
 				val g: Double
 				val b: Double
-				
+
 				if (color == null)
 				{
 					r = 0.0
@@ -51,9 +57,10 @@ class VersionHookNew : VersionHook
 					g = color.green / 255.0
 					b = color.blue / 255.0
 				}
-				
-				world.spawnParticle(particle.get(), location, count, r, g, b, 1)
+
+				world.spawnParticle(bukkitParticle, location, count, r, g, b, 1)
 			}
+
 			XParticle.NOTE ->
 			{
 				val note = if (color == null)
@@ -64,25 +71,26 @@ class VersionHookNew : VersionHook
 				{
 					color.red / 24.0
 				}
-				
-				world.spawnParticle(particle.get(), location, count, note, offsetY, offsetZ, 1)
+
+				world.spawnParticle(bukkitParticle, location, count, note, offsetY, offsetZ, 1)
 			}
+
 			else          ->
 			{
-				world.spawnParticle(particle.get(), location, count, offsetX, offsetY, offsetZ, 0.001)
+				world.spawnParticle(bukkitParticle, location, count, offsetX, offsetY, offsetZ, 0.001)
 			}
 		}
 	}
-	
+
 	private companion object
 	{
-		
+
 		private val OPTION = DustOptions(Color.RED, 0.8F)
-		
+
 		private val SPELLS = setOf(
 			XParticle.ENTITY_EFFECT,
-			)
-		
+		)
+
 		private val SINGLE = setOf(
 			XParticle.BUBBLE,
 			XParticle.FISHING,
@@ -103,8 +111,8 @@ class VersionHookNew : VersionHook
 			XParticle.BUBBLE_POP,
 			XParticle.BUBBLE_COLUMN_UP,
 			XParticle.NAUTILUS
-		                          )
-		
+		)
+
 	}
-	
+
 }

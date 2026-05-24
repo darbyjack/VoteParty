@@ -8,3 +8,6 @@ build
 .idea
 
 out
+
+# Test Servers
+run/

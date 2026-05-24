@@ -30,10 +30,8 @@ import me.clip.voteparty.user.UsersHandler
 import me.clip.voteparty.util.JarFileWalker
 import me.clip.voteparty.util.UpdateChecker
 import me.clip.voteparty.version.VersionHook
-import me.clip.voteparty.version.VersionHookNew
-import me.clip.voteparty.version.VersionHookOld
+import me.clip.voteparty.version.VersionHookFactory
 import net.kyori.adventure.platform.bukkit.BukkitAudiences
-import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.command.ConsoleCommandSender
 import org.bukkit.configuration.file.YamlConfiguration
@@ -237,14 +235,7 @@ class VoteParty internal constructor(internal val plugin: VotePartyPlugin) : Sta
 
 	private fun loadHook()
 	{
-		this.hook = if (Bukkit.getBukkitVersion().substringBefore('-').substringAfter('.').substringBefore('.').toInt() >= 13)
-		{
-			VersionHookNew()
-		}
-		else
-		{
-			VersionHookOld()
-		}
+		this.hook = VersionHookFactory.create()
 	}
 
 	private fun loadPapi()
