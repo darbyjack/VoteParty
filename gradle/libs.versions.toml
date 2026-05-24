@@ -14,7 +14,7 @@ acf = "0.5.1-SNAPSHOT"
 xseries = "13.7.0"
 bstats = "3.2.1"
 adventurePlatformBukkit = "4.4.1"
-adventure = "4.17.0"
+adventure = "4.26.1"
 
 [libraries]
 kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8" }
