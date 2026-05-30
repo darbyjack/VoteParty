@@ -23,7 +23,7 @@ allprojects {
 	}
 
 	group = "me.clip"
-	version = "2.40-SNAPSHOT"
+	version = "2.40"
 
 	repositories {
 		mavenCentral()
