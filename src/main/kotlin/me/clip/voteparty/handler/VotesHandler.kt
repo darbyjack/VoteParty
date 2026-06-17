@@ -7,7 +7,10 @@ import me.clip.voteparty.conf.sections.PartySettings
 import me.clip.voteparty.conf.sections.VoteData
 import me.clip.voteparty.conf.sections.VoteSettings
 import me.clip.voteparty.exte.formMessage
+import me.clip.voteparty.exte.sendActionBar
+import me.clip.voteparty.exte.sendBossBar
 import me.clip.voteparty.exte.sendMessage
+import me.clip.voteparty.exte.sendTitle
 import me.clip.voteparty.exte.takeRandomly
 import me.clip.voteparty.leaderboard.LeaderboardType
 import me.clip.voteparty.messages.Messages
@@ -274,7 +277,12 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon, State
 		}
 
 		players.forEach {
-			sendMessage(party.manager().getCommandIssuer(it), Messages.VOTES__REMINDER)
+			when(party.conf().getProperty(VoteSettings.REMINDER_MESSAGE_TYPE)) {
+				"actionbar" -> sendActionBar(party.manager().getCommandIssuer(it), Messages.VOTES__REMINDER)
+				"bossbar" -> sendBossBar(party.manager().getCommandIssuer(it), Messages.VOTES__REMINDER)
+				"title" -> sendTitle(party.manager().getCommandIssuer(it), Messages.VOTES__REMINDER, Messages.VOTES__REMINDER_SUBTITLE)
+				else -> sendMessage(party.manager().getCommandIssuer(it), Messages.VOTES__REMINDER)
+			}
 		}
 	}
 	
