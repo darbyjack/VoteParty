@@ -31,6 +31,10 @@ internal object PartySettings : SettingsHolder
 	@Comment("Choose to allow offline votes count towards the party")
 	val OFFLINE_VOTES: Property<Boolean> = newProperty("party.offline_votes", true)
 
+    @JvmField
+    @Comment("If a player's inventory is full when a party is triggered, do you want to send the vote to a /vote claimparty?")
+    val CLAIMABLE_IF_FULL: Property<Boolean> = newProperty("party.claim_if_full", true)
+
 	@JvmField
 	@Comment(
 		"There are 3 different ways that a party can work.",

@@ -29,6 +29,7 @@ info:
 party:
   force-start-successful: "&fDu tvingade igång ett &dVote Party &fför alla onlinespelare!"
   requirements-not-met: "&fSorry, but you did not meet the requirements to join this party!"
+  inventory-full: "&fYour inventory seems to be full! We've put this party reward in your claimables! Do /vp claimparty once your inventory isn't full!"
 votes:
   votes-needed-updated: "&fNya nödvändiga röster har ändrats! &d%voteparty_votes_required_party% Röster &fbehövda för nästa party."
   vote-counter-updated: "&fNuvarande röster uppdaterades till &d%voteparty_votes_recorded%&f!"
@@ -41,6 +42,11 @@ crate:
   crate-given: "&fDu har gett &d%player_name% röstlådor!"
   crate-received: "&fDu har fått en röstlåda!"
 claim:
+  party-none: "&fYou don't have any rewards to claim from parties!"
+  party-full: "&aYour inventory is full! Make some space and try again!"
+  party-full-all: "&aYour inventory is full! Make some space and try again! You have claimed &d{claimed} &aparty rewards. You have &d{claim} &aleft to claim."
+  party-success: "&fYou successfully claimed the rewards from a party! You have &d{claim} &fleft to claim."
+  party-success-all: "&fYou successfully claimed the rewards for all parties!"
   success: "&fDu har lyckats hämtat belöningarna från en offlineröst! Du har &d{claim} &fkvar att hämta."
   success-all: "&fYou successfully claimed the rewards for all offline votes!"
   none: "&fDu har inga belöningar från offlineröster att hämta!"

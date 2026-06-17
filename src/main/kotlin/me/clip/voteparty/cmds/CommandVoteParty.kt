@@ -318,6 +318,60 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 		sendMessage(currentCommandIssuer, Messages.CLAIM__SUCCESS_ALL)
 	}
 
+    @Subcommand("claimparty")
+    @Description("Claim Party Rewards")
+    @CommandPermission(CLAIM_PERM)
+    fun claimParty(player: Player)
+    {
+        val user = party.usersHandler[player]
+
+        if (user.partyClaimable <= 0)
+        {
+            return sendMessage(currentCommandIssuer, Messages.CLAIM__PARTY_NONE)
+        }
+
+        if (player.inventory.firstEmpty() == -1 && party.conf().getProperty(PartySettings.CLAIMABLE_IF_FULL))
+        {
+            return sendMessage(currentCommandIssuer, Messages.CLAIM__PARTY_FULL)
+        }
+
+        party.partyHandler.runAll(player)
+        user.partyClaimable--
+
+        sendMessage(currentCommandIssuer, Messages.CLAIM__PARTY_SUCCESS, null, "{claim}", user.partyClaimable)
+    }
+
+
+    @Subcommand("claimallparty")
+    @Description("Claim All Party Rewards")
+    @CommandPermission(CLAIM_PERM)
+    fun claimAllParty(player: Player)
+    {
+        val user = party.usersHandler[player]
+
+        if (user.partyClaimable <= 0)
+        {
+            return sendMessage(currentCommandIssuer, Messages.CLAIM__PARTY_NONE)
+        }
+
+        for (i in 1..user.partyClaimable)
+        {
+            if (player.inventory.firstEmpty() == -1 && party.conf().getProperty(PartySettings.CLAIMABLE_IF_FULL))
+            {
+                return sendMessage(currentCommandIssuer, Messages.CLAIM__PARTY_FULL_ALL, null, "{claimed}", i, "{claim}", user.partyClaimable)
+            }
+
+            if (party.conf().getProperty(PartySettings.USE_CRATE)) {
+                player.inventory.addItem(party.partyHandler.buildCrate(1))
+            } else {
+                party.partyHandler.runAll(player)
+            }
+
+            user.partyClaimable--
+        }
+        sendMessage(currentCommandIssuer, Messages.CLAIM__PARTY_SUCCESS_ALL)
+    }
+
 	@Subcommand("help")
 	@Description("Help")
 	@CommandPermission("voteparty.help")
