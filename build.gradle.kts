@@ -23,14 +23,14 @@ allprojects {
 	}
 
 	group = "me.clip"
-	version = "2.40"
+	version = "2.41-SNAPSHOT"
 
 	repositories {
 		mavenCentral()
 
 		maven("https://oss.sonatype.org/content/repositories/snapshots/")
 		maven("https://repo.aikar.co/content/groups/aikar/")
-		maven("https://papermc.io/repo/repository/maven-public/")
+		maven("https://repo.papermc.io/repository/maven-public/")
 		maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
 		maven("https://repo.glaremasters.me/repository/public/")
 
@@ -115,7 +115,7 @@ fun RunServer.configureVotePartyRun(
 	pluginJars(shadowJarTask.flatMap { it.archiveFile })
 
 	downloadPlugins {
-		hangar("PlaceholderAPI", "2.11.6")
+		url("https://ci.helpch.at/view/Plugins/job/PlaceholderAPI/266/artifact/build/libs/PlaceholderAPI-2.12.3-DEV-266.jar")
 	}
 }
 
@@ -165,10 +165,19 @@ tasks {
 		)
 	}
 
-	register<RunServer>("runPaperLatest") {
+	register<RunServer>("runPaper2612") {
 		configureVotePartyRun(
 			minecraftVersion = "26.1.2",
 			runDirectoryName = "paper-26.1.2",
+			javaVersion = 25,
+			descriptionText = "Run the latest stable Paper test server with the shaded VoteParty jar.",
+		)
+	}
+
+	register<RunServer>("runPaperLatest") {
+		configureVotePartyRun(
+			minecraftVersion = "26.2",
+			runDirectoryName = "paper-26.2",
 			javaVersion = 25,
 			descriptionText = "Run the latest stable Paper test server with the shaded VoteParty jar.",
 		)
