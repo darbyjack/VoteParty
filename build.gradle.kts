@@ -76,7 +76,6 @@ tasks.named<ShadowJar>("shadowJar") {
 		exclude(dependency("co.aikar:.*:.*"))
 		exclude(dependency("ch.jalu:.*:.*"))
 		exclude(dependency("org.inventivetalent:.*:.*"))
-		exclude(dependency("com.github.CryptoMorin:.*:.*"))
 		exclude(dependency("com.github.cryptomorin:.*:.*"))
 		exclude(dependency("net.kyori:.*:.*"))
 	}
