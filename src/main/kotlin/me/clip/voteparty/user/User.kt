@@ -9,11 +9,14 @@ import java.util.UUID
 /**
  * A cumulative reward threshold a player has reached and has not been handed over yet.
  *
- * Which period it was reached in and which threshold it was are both recorded rather than the
- * commands, so the reward still goes out after the period has ended and after the commands behind
- * it have been reconfigured.
+ * [periodStart] is what makes a threshold in one run of a period a different thing from the same
+ * threshold in the next: three daily votes on Monday are owed whatever happens on Tuesday, and a
+ * Monday reward still waiting must not stand in the way of Tuesday's.
+ *
+ * Which period and which threshold are recorded rather than the commands, so the reward still goes
+ * out after the period has ended and after the commands behind it have been reconfigured.
  */
-data class PendingCumulativeReward(val period: LeaderboardType, val votes: Int)
+data class PendingCumulativeReward(val period: LeaderboardType, val periodStart: Long, val votes: Int)
 
 data class User(val uuid: UUID, var name: String, private val data: MutableList<Long>, var claimable: Int, private var pending: MutableList<PendingCumulativeReward>? = null)
 {
@@ -63,8 +66,9 @@ data class User(val uuid: UUID, var name: String, private val data: MutableList<
 	 *
 	 * Recording is kept apart from paying because most votes cannot be paid where they are cast.
 	 * The player may be offline, or have no room for the rewards, and the count moves on either
-	 * way. A threshold already waiting is not recorded twice, so one crossing is one payout however
-	 * many times the payout path runs before it succeeds.
+	 * way. A threshold already waiting for this same run of the period is not recorded twice, so one
+	 * crossing is one payout however many times the payout path runs before it succeeds. A run of
+	 * the period that has not been paid yet counts as its own threshold.
 	 */
 	internal fun queueCrossedCumulativeRewards(period: LeaderboardType, since: Long, entries: List<CumulativeVoteCommands>)
 	{
@@ -72,9 +76,9 @@ data class User(val uuid: UUID, var name: String, private val data: MutableList<
 		
 		for (entry in entries)
 		{
-			if (entry.votes == count && !isPending(period, entry.votes))
+			if (entry.votes == count && !isPending(period, since, entry.votes))
 			{
-				queue(PendingCumulativeReward(period, entry.votes))
+				queue(PendingCumulativeReward(period, since, entry.votes))
 			}
 		}
 	}
@@ -89,28 +93,27 @@ data class User(val uuid: UUID, var name: String, private val data: MutableList<
 	
 	/**
 	 * Hands every waiting reward whose period is in [periods] to [deliver], and drops it once
-	 * [deliver] has returned.
+	 * [deliver] reports it was handed over.
 	 *
-	 * Dropping last is deliberate, and it makes this at-least-once rather than transactional. A
-	 * [deliver] that throws leaves its reward waiting for the next run, so any commands that
-	 * already went out before the throw go out again. Repeating a reward is a better failure than
-	 * losing one, but this cannot promise a reward arrives exactly once.
+	 * A [deliver] that returns false, or that throws, leaves its reward waiting for the next run, so
+	 * a reward is only ever dropped when every command behind it was accepted. Dropping last is
+	 * what makes the payout at-least-once rather than transactional: a command that did run before
+	 * a later one failed runs again on the retry. Repeating a reward is the better failure of the
+	 * two, but this cannot promise a reward arrives exactly once.
 	 *
-	 * @return How many rewards were handed over.
+	 * @return How many rewards were handed over and dropped.
 	 */
-	internal fun drainCumulativeRewards(periods: Set<LeaderboardType>, deliver: (PendingCumulativeReward) -> Unit): Int
+	internal fun drainCumulativeRewards(periods: Set<LeaderboardType>, deliver: (PendingCumulativeReward) -> Boolean): Int
 	{
 		var drained = 0
 		
 		// Over a copy, since handing a reward over drops it from the list being walked.
 		for (reward in pendingCumulativeRewards().toList())
 		{
-			if (reward.period !in periods)
+			if (reward.period !in periods || !deliver(reward))
 			{
 				continue
 			}
-			
-			deliver(reward)
 			
 			pending?.remove(reward)
 			drained++
@@ -119,9 +122,9 @@ data class User(val uuid: UUID, var name: String, private val data: MutableList<
 		return drained
 	}
 	
-	private fun isPending(period: LeaderboardType, votes: Int): Boolean
+	private fun isPending(period: LeaderboardType, periodStart: Long, votes: Int): Boolean
 	{
-		return pending?.any { it.period == period && it.votes == votes } ?: false
+		return pending?.any { it.period == period && it.periodStart == periodStart && it.votes == votes } ?: false
 	}
 	
 	private fun queue(reward: PendingCumulativeReward)

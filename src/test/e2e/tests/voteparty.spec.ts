@@ -511,6 +511,12 @@ test('/vp givecrate rejects a player who is not online', async ({ server }) => {
 /** The vote threshold the fixture pays `CUMULATIVE_DAILY_3` at. */
 const DAILY_3 = /CUMULATIVE_DAILY_3/g;
 
+/**
+ * A second entry at the same three-vote threshold. Both entries have to run, and this marker shares
+ * no prefix with the one above so that counting one cannot stand in for the other.
+ */
+const SECOND_ENTRY_AT_3 = /CUMULATIVE_SECOND_ENTRY_AT_3/g;
+
 test('a cumulative reward is paid as soon as its daily vote threshold is reached', async ({ player, server }) => {
     const target = player.username;
     // A party threshold well out of reach, so the votes below accumulate and never fire one.
@@ -521,6 +527,7 @@ test('a cumulative reward is paid as soon as its daily vote threshold is reached
     await server.execute(`vp addvote ${target} false 2`);
     await sleep(3000);
     assert.doesNotMatch(logSince(mark), /CUMULATIVE_DAILY_3/);
+    assert.doesNotMatch(logSince(mark), /CUMULATIVE_SECOND_ENTRY_AT_3/);
 
     mark = logMark();
     await server.execute(`vp addvote ${target} false 1`);
@@ -532,6 +539,13 @@ test('a cumulative reward is paid as soon as its daily vote threshold is reached
     });
     // Only the threshold that was crossed. The other one is two votes away.
     assert.doesNotMatch(logSince(mark), /CUMULATIVE_DAILY_5/);
+
+    // Both entries configured at that threshold are honoured, not just one of them.
+    await waitUntil(() => occurrences(logSince(mark), SECOND_ENTRY_AT_3) === 1, {
+        timeout: 15000,
+        interval: 250,
+        message: `the second entry at the same threshold never ran, saw it ${occurrences(logSince(mark), SECOND_ENTRY_AT_3)} time(s)`,
+    });
 
     // The vote's own rewards still land alongside it.
     await expect(player).toContainItem('beef');

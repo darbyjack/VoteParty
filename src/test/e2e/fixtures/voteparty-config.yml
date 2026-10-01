@@ -226,16 +226,23 @@ voting:
         notify: false
     # Configuration for extra commands to be executed on players who have voted a specific amount of times in the past day, week, month, year, and all time.
     cumulative-rewards:
-        # Daily is on, at two thresholds, and pays with `say` rather than an item or an economy
-        # amount. That keeps the payout observable through the server log without moving a
-        # balance or filling a slot, both of which other specs assert on exactly. Weekly and up
-        # stay off so only the daily path is in play.
+        # Daily is on, and pays with `say` rather than an item or an economy amount. That keeps the
+        # payout observable through the server log without moving a balance or filling a slot, both
+        # of which other specs assert on exactly. Weekly and up stay off so only the daily path is in
+        # play.
         daily:
             enabled: true
             entries: 
             - votes: 3
               commands:
               - say CUMULATIVE_DAILY_3
+            # A second entry at the same threshold, on purpose. Both have to run: VoteParty has
+            # always honoured every entry at a threshold, and taking only the first of them drops
+            # the other's commands without a word. The marker deliberately does not share a prefix
+            # with CUMULATIVE_DAILY_3, so counting one cannot count the other.
+            - votes: 3
+              commands:
+              - say CUMULATIVE_SECOND_ENTRY_AT_3
             - votes: 5
               commands:
               - say CUMULATIVE_DAILY_5

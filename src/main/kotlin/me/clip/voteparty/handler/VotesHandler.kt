@@ -114,6 +114,11 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon, State
 		
 		for ((period, rewards) in enabledPeriods(settings))
 		{
+			if (rewards.entries.isEmpty())
+			{
+				continue
+			}
+			
 			user.queueCrossedCumulativeRewards(period, periodStart(period), rewards.entries)
 		}
 	}
@@ -126,11 +131,11 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon, State
 	 * rewards defer, and for the same reason: the commands run from the console either way, so a
 	 * `give` would only put the items on the floor.
 	 *
-	 * A waiting reward is dropped once its commands have gone to the server, so a threshold reached
-	 * once is handed over once on each run that gets to it. That is not a transactional promise:
-	 * a command that throws leaves its reward waiting and is tried again next time, repeating the
-	 * commands that already ran, and so does a crash between the dispatch and the save. A reward
-	 * arriving twice is the cheaper of the two failures, which is why the drop is last.
+	 * A waiting reward is dropped once the server has taken its commands, so a threshold reached
+	 * once is handed over once on each run that gets to it. That is not a transactional promise. A
+	 * command the server refuses, or one that throws, leaves its reward waiting and is tried again,
+	 * repeating the commands that already ran, and so does a crash between the dispatch and the
+	 * save. A reward arriving twice is the cheaper of the failures, which is why the drop is last.
 	 */
 	fun giveCumulativeRewards(player: Player)
 	{
@@ -178,15 +183,12 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon, State
 		val sections = enabledPeriods(settings)
 		val user = party.usersHandler[player]
 
-		// Only the periods currently switched on are drained, so a reward reached while its period
-		// was off is still there to go out if the period is turned back on. One whose threshold has
-		// been taken out of the config has nothing left to give, and goes with the rest.
+		// Only the periods currently switched on are drained, so a reward reached before one was
+		// switched off is still there to go out if it is switched back on. One whose threshold has
+		// been taken out of the config has no commands left, and goes with the rest.
 		val drained = user.drainCumulativeRewards(periods intersect sections.keys)
 		{ reward ->
-			sections[reward.period]?.entries?.firstOrNull { it.votes == reward.votes }?.commands?.forEach()
-			{ command ->
-				server.dispatchCommand(server.consoleSender, formMessage(player, command))
-			}
+			handOver(player, sections.getValue(reward.period).entries.filter { it.votes == reward.votes }.flatMap { it.commands })
 		}
 		
 		if (drained == 0)
@@ -203,8 +205,37 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon, State
 	}
 	
 	/**
-	 * The cumulative periods that are switched on and have something in them, against the section
-	 * each one reads.
+	 * Runs the commands behind a waiting reward, and reports whether the server took them all.
+	 *
+	 * Every entry configured at the reward's threshold runs, not just the first of them. Two entries
+	 * at the same vote count is a configuration the plugin has always honoured in full, and taking
+	 * one of the two dropped the other's commands without a word.
+	 *
+	 * A false from [Server.dispatchCommand] means nothing handled the command, so nothing was
+	 * given, and the reward stays waiting to be tried again. Whether a command ran is not knowable
+	 * from here, which is why a false is only ever a refusal and never a failure part way through:
+	 * the server reports those by throwing, and that leaves the reward waiting too.
+	 */
+	private fun handOver(player: Player, commands: List<String>): Boolean
+	{
+		var handedOver = true
+		
+		for (command in commands)
+		{
+			if (server.dispatchCommand(server.consoleSender, formMessage(player, command)))
+			{
+				continue
+			}
+			
+			handedOver = false
+			logger.warning("a cumulative reward command was not handled for ${player.name}: $command")
+		}
+		
+		return handedOver
+	}
+	
+	/**
+	 * The cumulative periods that are switched on, against the section each one reads.
 	 */
 	private fun enabledPeriods(settings: CumulativeVoting): Map<LeaderboardType, CumulativeVoteRewards>
 	{
@@ -214,7 +245,7 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon, State
 			LeaderboardType.MONTHLY to settings.monthly,
 			LeaderboardType.ANNUALLY to settings.yearly,
 			LeaderboardType.ALLTIME to settings.total
-		).filterValues { it.enabled && it.entries.isNotEmpty() }
+		).filterValues { it.enabled }
 	}
 	
 	private fun periodStart(period: LeaderboardType): Long

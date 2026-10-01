@@ -64,7 +64,7 @@ class UserPersistenceTest
 		repeat(3) { user.voted(epoch + 100 + it) }
 		user.queueCrossedCumulativeRewards(LeaderboardType.DAILY, epoch, listOf(entry(8)))
 		
-		assertEquals(listOf(PendingCumulativeReward(LeaderboardType.DAILY, 8)), user.pendingCumulativeRewards())
+		assertEquals(listOf(PendingCumulativeReward(LeaderboardType.DAILY, epoch, 8)), user.pendingCumulativeRewards())
 	}
 	
 	@Test
@@ -75,7 +75,7 @@ class UserPersistenceTest
 		
 		val loaded = gson.fromJson(gson.toJson(user, User::class.java), User::class.java)
 		
-		assertEquals(listOf(PendingCumulativeReward(LeaderboardType.DAILY, 3)), loaded.pendingCumulativeRewards())
+		assertEquals(listOf(PendingCumulativeReward(LeaderboardType.DAILY, epoch, 3)), loaded.pendingCumulativeRewards())
 	}
 	
 	@Test
@@ -83,7 +83,7 @@ class UserPersistenceTest
 		val user = User(UUID.randomUUID(), "Tester", mutableListOf(epoch, epoch + 1, epoch + 2), 0)
 		
 		user.queueCrossedCumulativeRewards(LeaderboardType.DAILY, epoch, listOf(entry(3)))
-		user.drainCumulativeRewards(LeaderboardType.values.toSet()) { }
+		user.drainCumulativeRewards(LeaderboardType.values.toSet()) { true }
 		
 		val loaded = gson.fromJson(gson.toJson(user, User::class.java), User::class.java)
 		
@@ -100,6 +100,6 @@ class UserPersistenceTest
 		
 		val loaded = gson.fromJson(gson.toJson(user, User::class.java), User::class.java)
 		
-		assertEquals(listOf(PendingCumulativeReward(LeaderboardType.DAILY, 3)), loaded.pendingCumulativeRewards())
+		assertEquals(listOf(PendingCumulativeReward(LeaderboardType.DAILY, epoch, 3)), loaded.pendingCumulativeRewards())
 	}
 }

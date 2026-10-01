@@ -37,7 +37,7 @@ class UserCumulativeRewardsTest
 		assertTrue(pending(user).isEmpty(), "queued before the threshold was reached")
 		
 		vote(user, monday, 1)
-		assertEquals(listOf(PendingCumulativeReward(LeaderboardType.DAILY, 3)), pending(user))
+		assertEquals(listOf(PendingCumulativeReward(LeaderboardType.DAILY, monday, 3)), pending(user))
 	}
 	
 	@Test
@@ -49,7 +49,7 @@ class UserCumulativeRewardsTest
 		val delivered = drain(user)
 		drain(user)
 		
-		assertEquals(listOf(PendingCumulativeReward(LeaderboardType.DAILY, 3)), delivered, "handed over more than once")
+		assertEquals(listOf(PendingCumulativeReward(LeaderboardType.DAILY, monday, 3)), delivered, "handed over more than once")
 		assertTrue(pending(user).isEmpty())
 	}
 	
@@ -59,7 +59,7 @@ class UserCumulativeRewardsTest
 		
 		vote(user, monday, 6)
 		
-		assertEquals(listOf(PendingCumulativeReward(LeaderboardType.DAILY, 3)), pending(user))
+		assertEquals(listOf(PendingCumulativeReward(LeaderboardType.DAILY, monday, 3)), pending(user))
 	}
 	
 	@Test
@@ -70,7 +70,7 @@ class UserCumulativeRewardsTest
 		vote(user, monday, 6, entries)
 		
 		assertEquals(
-			listOf(2, 4, 6).map { PendingCumulativeReward(LeaderboardType.DAILY, it) },
+			listOf(2, 4, 6).map { PendingCumulativeReward(LeaderboardType.DAILY, monday, it) },
 			pending(user),
 		)
 	}
@@ -90,8 +90,8 @@ class UserCumulativeRewardsTest
 		
 		assertEquals(
 			listOf(
-				PendingCumulativeReward(LeaderboardType.DAILY, 3),
-				PendingCumulativeReward(LeaderboardType.WEEKLY, 1)
+				PendingCumulativeReward(LeaderboardType.DAILY, monday, 3),
+				PendingCumulativeReward(LeaderboardType.WEEKLY, tuesday, 1)
 			),
 			pending(user),
 		)
@@ -103,30 +103,66 @@ class UserCumulativeRewardsTest
 		val user = user()
 		
 		vote(user, monday, 3)
-		assertEquals(listOf(PendingCumulativeReward(LeaderboardType.DAILY, 3)), pending(user))
+		assertEquals(listOf(PendingCumulativeReward(LeaderboardType.DAILY, monday, 3)), pending(user))
 		
 		// 00:01 on Tuesday. The Monday count is gone, and the new day's is empty.
 		vote(user, tuesday, 1)
 		assertEquals(1, votesSince(user, tuesday), "the fixture did not actually roll the period over")
-		assertEquals(listOf(PendingCumulativeReward(LeaderboardType.DAILY, 3)), pending(user), "lost a reward when its period ended")
+		assertEquals(listOf(PendingCumulativeReward(LeaderboardType.DAILY, monday, 3)), pending(user), "lost a reward when its period ended")
 		
 		// Logging back in is what pays it, and Tuesday's own vote is a short way from any threshold.
-		assertEquals(listOf(PendingCumulativeReward(LeaderboardType.DAILY, 3)), drain(user))
+		assertEquals(listOf(PendingCumulativeReward(LeaderboardType.DAILY, monday, 3)), drain(user))
 		assertTrue(pending(user).isEmpty())
 	}
 	
-	@Test
+@Test
 	fun `a period queues again after rolling over`() {
 		val user = user()
-		
+
 		vote(user, monday, 3)
 		drain(user)
 		assertTrue(pending(user).isEmpty())
-		
+
 		// The same three votes the next day are a second crossing, and a second payout.
 		vote(user, tuesday, 3)
-		
-		assertEquals(listOf(PendingCumulativeReward(LeaderboardType.DAILY, 3)), pending(user))
+
+		assertEquals(listOf(PendingCumulativeReward(LeaderboardType.DAILY, tuesday, 3)), pending(user))
+	}
+
+	@Test
+	fun `a reward still waiting does not stand in the way of the next period's`() {
+		// Monday's is never handed over, so Tuesday's three votes have to queue as their own reward
+		// rather than looking like the same threshold again.
+		val user = user()
+
+		vote(user, monday, 3)
+		vote(user, tuesday, 3)
+
+		val expected = listOf(
+			PendingCumulativeReward(LeaderboardType.DAILY, monday, 3),
+			PendingCumulativeReward(LeaderboardType.DAILY, tuesday, 3)
+		)
+
+		assertEquals(expected, pending(user), "Tuesday's reward was swallowed by Monday's")
+		assertEquals(expected, drain(user), "only one of the two reached the player")
+		assertTrue(pending(user).isEmpty())
+	}
+
+	@Test
+	fun `a command the server refuses leaves the reward waiting`() {
+		val user = user()
+		val attempts = mutableListOf<PendingCumulativeReward>()
+
+		vote(user, monday, 3)
+
+		// Nothing handled the command, so nothing was given and the reward has to be tried again.
+		assertEquals(0, user.drainCumulativeRewards(periods) { attempts.add(it); false })
+		assertEquals(listOf(PendingCumulativeReward(LeaderboardType.DAILY, monday, 3)), pending(user))
+
+		assertEquals(1, user.drainCumulativeRewards(periods) { attempts.add(it); true })
+
+		assertEquals(2, attempts.size, "the reward was not tried again")
+		assertTrue(pending(user).isEmpty())
 	}
 	
 	@Test
@@ -136,10 +172,10 @@ class UserCumulativeRewardsTest
 		
 		vote(user, monday, 5)
 		
-		assertEquals(1, user.drainCumulativeRewards(periods) { delivered.add(it) })
-		assertEquals(0, user.drainCumulativeRewards(periods) { delivered.add(it) }, "handed the same reward over twice")
+		assertEquals(1, user.drainCumulativeRewards(periods) { delivered.add(it); true })
+		assertEquals(0, user.drainCumulativeRewards(periods) { delivered.add(it); true }, "handed the same reward over twice")
 		
-		assertEquals(listOf(PendingCumulativeReward(LeaderboardType.DAILY, 3)), delivered)
+		assertEquals(listOf(PendingCumulativeReward(LeaderboardType.DAILY, monday, 3)), delivered)
 		assertTrue(pending(user).isEmpty())
 	}
 	
@@ -155,8 +191,8 @@ class UserCumulativeRewardsTest
 		}
 		
 		// Paying it again is the point: a lost reward is worse than a repeated command.
-		assertEquals(listOf(PendingCumulativeReward(LeaderboardType.DAILY, 3)), pending(user))
-		assertEquals(listOf(PendingCumulativeReward(LeaderboardType.DAILY, 3)), drain(user))
+		assertEquals(listOf(PendingCumulativeReward(LeaderboardType.DAILY, monday, 3)), pending(user))
+		assertEquals(listOf(PendingCumulativeReward(LeaderboardType.DAILY, monday, 3)), drain(user))
 	}
 	
 	@Test
@@ -166,8 +202,8 @@ class UserCumulativeRewardsTest
 		vote(user, monday, 3)
 		
 		// Paying the weekly period, as the compatibility entry points do, leaves the daily one.
-		assertEquals(0, user.drainCumulativeRewards(setOf(LeaderboardType.WEEKLY)) { })
-		assertEquals(listOf(PendingCumulativeReward(LeaderboardType.DAILY, 3)), pending(user))
+		assertEquals(0, user.drainCumulativeRewards(setOf(LeaderboardType.WEEKLY)) { true })
+		assertEquals(listOf(PendingCumulativeReward(LeaderboardType.DAILY, monday, 3)), pending(user))
 	}
 	
 	@Test
@@ -219,7 +255,7 @@ class UserCumulativeRewardsTest
 	{
 		val delivered = mutableListOf<PendingCumulativeReward>()
 		
-		user.drainCumulativeRewards(periods) { delivered.add(it) }
+		user.drainCumulativeRewards(periods) { delivered.add(it); true }
 		
 		return delivered
 	}
