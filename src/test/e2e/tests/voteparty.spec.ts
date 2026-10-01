@@ -439,19 +439,6 @@ test('the NuVotifier hook registers its listener', async () => {
     assert.doesNotMatch(log, /Failed to register events for class .*HooksListenerNuVotifier/);
     assert.match(log, /\[Votifier\] Enabling Votifier/);
 });
-
-test('no plugin exception was logged for the whole session, including the plugin-backed specs', async () => {
-    const log = serverLog();
-
-    // The NuVotifier listener error is expected on a server without Votifier: VoteParty
-    // soft-depends on it, and the listener class cannot resolve its event type.
-    assert.doesNotMatch(log, /Exception in server tick loop/);
-    assert.doesNotMatch(log, /Could not pass event .* to VoteParty/);
-    assert.doesNotMatch(log, /\[VoteParty\]\[ACF\] Exception in command/);
-    assert.doesNotMatch(log, /\[VoteParty\].*Task #\d+ for VoteParty .* generated an exception/);
-    assert.doesNotMatch(log, /java\.lang\.(NoSuchMethod|NoClassDef|NoField)Error/);
-});
-
 /**
  * `/vp givecrate <player> <amount>` used to reject every input, including an exact online player
  * name, with `Please specify one of (@online)` — while tab completing to that same name. The
@@ -473,16 +460,21 @@ test('/vp givecrate delivers the requested number of crates to an online player'
 test('/vp givecrate still tab completes through the registered @online completion', async ({ player, server }) => {
     await opAndPrep(server, player.username);
 
-    // mineflayer types this as string[], but the server sends entries and mineflayer hands back
-    // { match, tooltip } objects for them.
-    const completions = await player.bot.tabComplete('/vp givecrate ', false);
-
-    assert.deepEqual(
-        completions.map((entry: unknown) => (typeof entry === 'string' ? entry : (entry as { match: string }).match)),
-        [player.username],
+    // Whatever is online at the instant of the request, so only membership is asserted — a
+    // previous bot can still be leaving the player list, and demanding exclusivity made this
+    // flake. Polled, because the first request can also outrun the server's reply.
+    await waitUntil(
+        async () => {
+            // mineflayer types this as string[], but sends entries back as { match, tooltip }.
+            const entries = await player.bot.tabComplete('/vp givecrate ', false);
+            const matches = entries.map((entry: unknown) =>
+                typeof entry === 'string' ? entry : (entry as { match: string }).match,
+            );
+            return matches.includes(player.username);
+        },
+        { timeout: 15000, interval: 500, message: '@online no longer completes to the online player' },
     );
 });
-
 test('/vp givecrate rejects an amount that is not a number of crates', async ({ player, server }) => {
     await opAndPrep(server, player.username);
 
@@ -497,4 +489,16 @@ test('/vp givecrate rejects a player who is not online', async ({ server }) => {
         plain(await server.execute('vp givecrate NotOnlineAtAll 1')),
         /No player matching NotOnlineAtAll is connected/,
     );
+});
+
+test('no plugin exception was logged for the whole session, including the plugin-backed specs', async () => {
+    const log = serverLog();
+
+    // The NuVotifier listener error is expected on a server without Votifier: VoteParty
+    // soft-depends on it, and the listener class cannot resolve its event type.
+    assert.doesNotMatch(log, /Exception in server tick loop/);
+    assert.doesNotMatch(log, /Could not pass event .* to VoteParty/);
+    assert.doesNotMatch(log, /\[VoteParty\]\[ACF\] Exception in command/);
+    assert.doesNotMatch(log, /\[VoteParty\].*Task #\d+ for VoteParty .* generated an exception/);
+    assert.doesNotMatch(log, /java\.lang\.(NoSuchMethod|NoClassDef|NoField)Error/);
 });
