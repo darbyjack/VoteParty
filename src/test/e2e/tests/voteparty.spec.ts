@@ -119,11 +119,6 @@ async function grant(server: Console, player: string, permission: string): Promi
     await sleep(2000);
 }
 
-async function revoke(server: Console, player: string, permission: string): Promise<void> {
-    await server.execute(`lp user ${player} permission set ${permission} false`);
-    await server.execute('lp save');
-    await sleep(2000);
-}
 
 async function opAndPrep(server: Console, username: string, partyAfterVotes = 5): Promise<void> {
     await server.execute(`op ${username}`);
@@ -339,19 +334,6 @@ test('the config reloads cleanly', async ({ player, server }) => {
     player.chat('/vp reload');
     await expect(player).toHaveReceivedMessage(/The config has been reloaded/);
 });
-
-test('no plugin exception was logged for the whole session', async () => {
-    const log = serverLog();
-
-    // The NuVotifier listener error is expected on a server without Votifier: VoteParty
-    // soft-depends on it, and the listener class cannot resolve its event type.
-    assert.doesNotMatch(log, /Exception in server tick loop/);
-    assert.doesNotMatch(log, /Could not pass event .* to VoteParty/);
-    assert.doesNotMatch(log, /\[VoteParty\]\[ACF\] Exception in command/);
-    assert.doesNotMatch(log, /\[VoteParty\].*Task #\d+ for VoteParty .* generated an exception/);
-    assert.doesNotMatch(log, /java\.lang\.(NoSuchMethod|NoClassDef|NoField)Error/);
-});
-
 /**
  * The shipped party reward is `eco give %player_name% 100`, which needs Vault and an economy
  * provider. Both are installed for this suite, so the assertion is on the balance moving by an
@@ -371,46 +353,67 @@ test('a party pays an economy reward through Vault', async ({ player, server }) 
     });
 });
 
-test('a permission-gated vote reward fires for a player who holds the permission', async ({ player, server }) => {
-    await opAndPrep(server, player.username);
-    await grant(server, player.username, 'my.special.permission');
+/**
+ * One player, one test, differing only in what LuckPerms says it holds.
+ *
+ * opAndPrep makes the bot op, and an op holds every permission by default, so a granted
+ * assertion on top of that proves nothing — it would pass with LuckPerms doing nothing at all.
+ * The bot is de-op'd first, which establishes a genuine denied baseline, and the votes come from
+ * the console so the de-op does not stop the vote from being cast.
+ */
+test('a permission-gated vote reward follows the permission LuckPerms grants', async ({ player, server }) => {
+    const target = player.username;
+    await opAndPrep(server, target);
+    await server.execute(`deop ${target}`);
 
-    const mark = logMark();
-    await server.execute(`vp addvote ${player.username} false 1`);
+    // Baseline: no permission held, so the gated reward must not run.
+    let mark = logMark();
+    await server.execute(`vp addvote ${target} false 1`);
+    await sleep(3000);
+
+    // The vote itself has to have gone through, or the absence proves nothing.
+    assert.match(plain(await server.execute(`vp totalvotes ${target}`)), /has a total of 1 vote/);
+    assert.match(logSince(mark), /just voted!/);
+    assert.doesNotMatch(logSince(mark), /PERMISSION_VOTE_REWARD/);
+
+    // Now the only difference is the permission, granted through LuckPerms.
+    await grant(server, target, 'my.special.permission');
+    await server.execute(`vp resetvotes ${target}`);
+
+    mark = logMark();
+    await server.execute(`vp addvote ${target} false 1`);
 
     await waitUntil(() => /PERMISSION_VOTE_REWARD/.test(logSince(mark)), {
         timeout: 10000,
         interval: 250,
-        message: 'the permission-gated vote reward never ran',
+        message: 'the permission-gated vote reward never ran once LuckPerms granted the permission',
     });
 });
 
-test('a permission-gated vote reward is skipped without the permission', async ({ player, server }) => {
-    await opAndPrep(server, player.username);
-    await revoke(server, player.username, 'my.special.permission');
+/** The same denied-baseline-then-grant shape as the vote reward above, on the party path. */
+test('a permission-gated party reward follows the permission LuckPerms grants', async ({ player, server }) => {
+    const target = player.username;
+    await opAndPrep(server, target, 5);
+    await server.execute(`deop ${target}`);
 
-    const mark = logMark();
-    await server.execute(`vp addvote ${player.username} false 1`);
-    await sleep(3000);
+    let mark = logMark();
+    await server.execute('vp startparty');
+    await waitUntil(() => /POST_PARTY_COMMAND/.test(logSince(mark)), {
+        timeout: 15000,
+        interval: 250,
+        message: 'the party itself never ran, so the absence would prove nothing',
+    });
+    assert.doesNotMatch(logSince(mark), /PERMISSION_PARTY_REWARD/);
 
-    // The vote itself has to have gone through, or the absence proves nothing. LuckPerms has to
-    // have recalculated too, or this would pass for the wrong reason.
-    assert.match(plain(await server.execute(`vp totalvotes ${player.username}`)), /has a total of 1 vote/);
-    assert.match(logSince(mark), /just voted!/);
-    assert.doesNotMatch(logSince(mark), /PERMISSION_VOTE_REWARD/);
-});
+    await grant(server, target, 'my.special.permission');
 
-test('a permission-gated party reward fires for a player who holds the permission', async ({ player, server }) => {
-    await opAndPrep(server, player.username, 5);
-    await grant(server, player.username, 'my.special.permission');
-
-    const mark = logMark();
-    await server.execute(`vp startparty`);
+    mark = logMark();
+    await server.execute('vp startparty');
 
     await waitUntil(() => /PERMISSION_PARTY_REWARD/.test(logSince(mark)), {
-        timeout: 10000,
+        timeout: 15000,
         interval: 250,
-        message: 'the permission-gated party reward never ran',
+        message: 'the permission-gated party reward never ran once LuckPerms granted the permission',
     });
 });
 
@@ -435,4 +438,16 @@ test('the NuVotifier hook registers its listener', async () => {
 
     assert.doesNotMatch(log, /Failed to register events for class .*HooksListenerNuVotifier/);
     assert.match(log, /\[Votifier\] Enabling Votifier/);
+});
+
+test('no plugin exception was logged for the whole session, including the plugin-backed specs', async () => {
+    const log = serverLog();
+
+    // The NuVotifier listener error is expected on a server without Votifier: VoteParty
+    // soft-depends on it, and the listener class cannot resolve its event type.
+    assert.doesNotMatch(log, /Exception in server tick loop/);
+    assert.doesNotMatch(log, /Could not pass event .* to VoteParty/);
+    assert.doesNotMatch(log, /\[VoteParty\]\[ACF\] Exception in command/);
+    assert.doesNotMatch(log, /\[VoteParty\].*Task #\d+ for VoteParty .* generated an exception/);
+    assert.doesNotMatch(log, /java\.lang\.(NoSuchMethod|NoClassDef|NoField)Error/);
 });
