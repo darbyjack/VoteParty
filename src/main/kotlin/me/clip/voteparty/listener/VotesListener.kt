@@ -31,7 +31,7 @@ internal class VotesListener(override val plugin: VotePartyPlugin) : VotePartyLi
 		// One clock reading, taken here and carried through, so the cumulative periods this vote
 		// falls in are worked out from its own timestamp rather than from whatever the clock says by
 		// the time the work gets done.
-		val voteEpoch = user.voted()
+		val voteEpoch = user.votedNow()
 
 		// Ahead of every return below, and of the save, because a threshold this vote reaches has
 		// to be waiting for later whether or not there is anyone here to hand it to right now.

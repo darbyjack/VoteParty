@@ -70,12 +70,49 @@ class UserPersistenceTest
 	@Test
 	fun `a queued reward survives a save and a load`() {
 		val user = User(UUID.randomUUID(), "Tester", mutableListOf(epoch, epoch + 1, epoch + 2), 0)
-		
+
 		user.queueCrossedCumulativeRewards(LeaderboardType.DAILY, epoch, listOf(entry(3)))
-		
+
 		val loaded = gson.fromJson(gson.toJson(user, User::class.java), User::class.java)
-		
+
 		assertEquals(listOf(PendingCumulativeReward(LeaderboardType.DAILY, epoch, 3)), loaded.pendingCumulativeRewards())
+	}
+
+	/**
+	 * The waiting rewards are held in a field in the class body rather than a constructor property,
+	 * so that the constructor keeps its four arguments. Gson writes and reads body fields exactly as
+	 * it does constructor ones, and this is what says so.
+	 */
+	@Test
+	fun `the waiting rewards are written into the player file`() {
+		val user = User(UUID.randomUUID(), "Tester", mutableListOf(epoch, epoch + 1, epoch + 2), 0)
+
+		user.queueCrossedCumulativeRewards(LeaderboardType.DAILY, epoch, listOf(entry(3)))
+
+		val json = gson.toJson(user, User::class.java)
+
+		assertTrue(json.contains("\"pending\""), "nothing was written for the waiting rewards: $json")
+		assertTrue(json.contains("DAILY"), "the period is missing from the file: $json")
+		// The four properties the file has always carried, and nothing else alongside them.
+		assertTrue(json.contains("\"uuid\""), "uuid went missing: $json")
+		assertTrue(json.contains("\"name\""), "name went missing: $json")
+		assertTrue(json.contains("\"data\""), "data went missing: $json")
+		assertTrue(json.contains("\"claimable\""), "claimable went missing: $json")
+	}
+
+	@Test
+	fun `a file written before rewards were tracked gains them and reads back`() {
+		val user = readLegacy(2)
+
+		assertTrue(user.pendingCumulativeRewards().isEmpty(), "an old file came back owing something")
+
+		user.voted(epoch + 100)
+		user.queueCrossedCumulativeRewards(LeaderboardType.DAILY, epoch, listOf(entry(3)))
+
+		val loaded = gson.fromJson(gson.toJson(user, User::class.java), User::class.java)
+
+		assertEquals(listOf(PendingCumulativeReward(LeaderboardType.DAILY, epoch, 3)), loaded.pendingCumulativeRewards())
+		assertEquals(3, loaded.votes().size, "the votes in an old file went missing")
 	}
 	
 	@Test

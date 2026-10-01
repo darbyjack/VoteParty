@@ -16,25 +16,41 @@ import java.util.UUID
  * Which period and which threshold are recorded rather than the commands, so the reward still goes
  * out after the period has ended and after the commands behind it have been reconfigured.
  */
-data class PendingCumulativeReward(val period: LeaderboardType, val periodStart: Long, val votes: Int)
+internal data class PendingCumulativeReward(val period: LeaderboardType, val periodStart: Long, val votes: Int)
 
-data class User(val uuid: UUID, var name: String, private val data: MutableList<Long>, var claimable: Int, private var pending: MutableList<PendingCumulativeReward>? = null)
+data class User(val uuid: UUID, var name: String, private val data: MutableList<Long>, var claimable: Int)
 {
 	
 	/**
-	 * Records a vote and returns the timestamp it was recorded at.
+	 * The cumulative reward thresholds this player has reached and not been handed over yet.
 	 *
-	 * The caller needs that same reading to work out which cumulative periods the vote falls in.
-	 * Reading the clock a second time, after midnight has passed, puts a vote cast at 23:59:59.999
-	 * into the day that midnight started.
+	 * Kept out of the constructor so the four properties this has always had stay the four it has,
+	 * and so a player file written before rewards were tracked needs nothing added to it: the field
+	 * is absent, Gson leaves it at null, and null is read as nothing waiting. Gson writes and reads
+	 * body fields exactly as it does constructor ones, which is all that is needed here.
 	 */
-	fun voted(): Long
+	private var pending: MutableList<PendingCumulativeReward>? = null
+	
+	fun voted()
+	{
+		votedNow()
+	}
+	
+	/**
+	 * Records a vote at the current time and returns the timestamp it recorded it at.
+	 *
+	 * Separate from [voted] so that stays as it has always been, and separate from reading the clock
+	 * in the listener, because the listener needs the timestamp back: the cumulative periods a vote
+	 * falls in are worked out from the same reading that stamped it. Reading the clock a second
+	 * time, once midnight has passed, puts a vote cast at 23:59:59.999 into the day midnight started.
+	 */
+	internal fun votedNow(): Long
 	{
 		return voted(System.currentTimeMillis())
 	}
 	
 	/**
-	 * Records a vote at a given time. [voted] is the entry point everything else uses; this takes
+	 * Records a vote at a given time. [votedNow] is the entry point everything else uses; this takes
 	 * the time so a vote can be placed in a period without waiting for one to come round.
 	 */
 	internal fun voted(epoch: Long): Long
