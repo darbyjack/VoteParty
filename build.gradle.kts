@@ -266,6 +266,22 @@ dependencies {
 	implementation(project(":particle-api"))
 	implementation(project(":particle-legacy"))
 	implementation(project(":particle-modern"))
+
+	// The cumulative reward bookkeeping is the part of the plugin with no Bukkit in it, so it is
+	// unit tested. User still names OfflinePlayer on one method, which is all the test classpath
+	// needs the api for. Gson is pinned rather than picked up transitively because one test reads
+	// a real player file back, and that file's shape is what the tracking is built on.
+	testImplementation(libs.junit.jupiter)
+	testImplementation(libs.gson)
+	testImplementation(libs.spigot.modern)
+	testRuntimeOnly(libs.junit.platform.launcher)
+}
+
+tasks.test {
+	useJUnitPlatform()
+	testLogging {
+		events("passed", "skipped", "failed")
+	}
 }
 
 tasks.processResources {

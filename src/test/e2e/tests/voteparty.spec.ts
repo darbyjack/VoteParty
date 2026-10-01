@@ -64,6 +64,11 @@ function plain(text: string): string {
     return text.replace(/\u00a7[0-9a-fk-or]/gi, '');
 }
 
+/** How many times a marker was logged, which is what tells a payout from a repeat of one. */
+function occurrences(text: string, pattern: RegExp): number {
+    return [...text.matchAll(pattern)].length;
+}
+
 interface Console {
     execute(cmd: string): Promise<string>;
 }
@@ -489,6 +494,146 @@ test('/vp givecrate rejects a player who is not online', async ({ server }) => {
         plain(await server.execute('vp givecrate NotOnlineAtAll 1')),
         /No player matching NotOnlineAtAll is connected/,
     );
+});
+
+/**
+ * Cumulative rewards are keyed to a vote count rather than to a vote, so each threshold comes due
+ * once and has to be paid the moment the count reaches it. The fixture pays `say CUMULATIVE_DAILY_N`
+ * at 3 and 5 daily votes, which is visible in the server log without touching a balance or an
+ * inventory slot — both of which other specs here assert on exactly.
+ *
+ * The bug these cover: the payout used to be looked for only where a vote was cast with room to
+ * hand something over, and only by matching the count exactly. A threshold crossed by a vote that
+ * could not be paid where it was cast — an offline vote, or one taken with a full inventory — was
+ * therefore never paid at all, and the count moved on past it.
+ */
+
+/** The vote threshold the fixture pays `CUMULATIVE_DAILY_3` at. */
+const DAILY_3 = /CUMULATIVE_DAILY_3/g;
+
+/**
+ * A second entry at the same three-vote threshold. Both entries have to run, and this marker shares
+ * no prefix with the one above so that counting one cannot stand in for the other.
+ */
+const SECOND_ENTRY_AT_3 = /CUMULATIVE_SECOND_ENTRY_AT_3/g;
+
+test('a cumulative reward is paid as soon as its daily vote threshold is reached', async ({ player, server }) => {
+    const target = player.username;
+    // A party threshold well out of reach, so the votes below accumulate and never fire one.
+    await opAndPrep(server, target, 50);
+
+    // Two votes is short of the threshold, so nothing is due.
+    let mark = logMark();
+    await server.execute(`vp addvote ${target} false 2`);
+    await sleep(3000);
+    assert.doesNotMatch(logSince(mark), /CUMULATIVE_DAILY_3/);
+    assert.doesNotMatch(logSince(mark), /CUMULATIVE_SECOND_ENTRY_AT_3/);
+
+    mark = logMark();
+    await server.execute(`vp addvote ${target} false 1`);
+
+    await waitUntil(() => occurrences(logSince(mark), DAILY_3) === 1, {
+        timeout: 15000,
+        interval: 250,
+        message: `the cumulative reward never arrived, saw it ${occurrences(logSince(mark), DAILY_3)} time(s)`,
+    });
+    // Only the threshold that was crossed. The other one is two votes away.
+    assert.doesNotMatch(logSince(mark), /CUMULATIVE_DAILY_5/);
+
+    // Both entries configured at that threshold are honoured, not just one of them.
+    await waitUntil(() => occurrences(logSince(mark), SECOND_ENTRY_AT_3) === 1, {
+        timeout: 15000,
+        interval: 250,
+        message: `the second entry at the same threshold never ran, saw it ${occurrences(logSince(mark), SECOND_ENTRY_AT_3)} time(s)`,
+    });
+
+    // The vote's own rewards still land alongside it.
+    await expect(player).toContainItem('beef');
+    await expect(player).toContainItem('golden_apple');
+});
+
+test('a cumulative reward is paid once, not again on every later vote', async ({ player, server }) => {
+    const target = player.username;
+    await opAndPrep(server, target, 50);
+
+    let mark = logMark();
+    await server.execute(`vp addvote ${target} false 3`);
+    await waitUntil(() => occurrences(logSince(mark), DAILY_3) === 1, {
+        timeout: 15000,
+        interval: 250,
+        message: `the cumulative reward never arrived, saw it ${occurrences(logSince(mark), DAILY_3)} time(s)`,
+    });
+
+    // Voting past the threshold is the case an exact match got wrong: the count is no longer the
+    // threshold, and nothing further is owed either.
+    mark = logMark();
+    await server.execute(`vp addvote ${target} false 2`);
+    await waitUntil(async () => /has a total of 5 vote/.test(plain(await server.execute(`vp totalvotes ${target}`))), {
+        timeout: 15000,
+        interval: 250,
+        message: 'the votes past the threshold were never recorded',
+    });
+    assert.doesNotMatch(logSince(mark), /CUMULATIVE_DAILY_3/);
+});
+
+test('a cumulative threshold crossed with a full inventory is handed over on claim', async ({ player, server }) => {
+    const target = player.username;
+    await opAndPrep(server, target, 50);
+    await player.clearInventory();
+
+    // A full main inventory, so the vote cannot pay anything out where it is cast.
+    await player.giveItem('stone', 2304);
+
+    // The third of these crosses the threshold, so it is the one the old code lost: the vote
+    // became claimable and the threshold was never looked at again.
+    const mark = logMark();
+    await server.execute(`vp addvote ${target} false 3`);
+
+    await expect(player).toHaveReceivedMessage(/inventory seems to be full/);
+    assert.doesNotMatch(logSince(mark), /CUMULATIVE_DAILY_3/);
+
+    // Making room and claiming is the point at which the rewards can be handed over.
+    await player.clearInventory();
+
+    const claimMark = logMark();
+    player.chat('/vp claimall');
+
+    await waitUntil(() => occurrences(logSince(claimMark), DAILY_3) === 1, {
+        timeout: 15000,
+        interval: 250,
+        message: `claiming did not hand the cumulative reward over, saw it ${occurrences(logSince(claimMark), DAILY_3)} time(s)`,
+    });
+    // The claim's own rewards still land alongside it.
+    await expect(player).toContainItem('beef');
+});
+
+test('a cumulative threshold crossed while offline is handed over when the player comes back', async ({ player, server }) => {
+    const target = player.username;
+    await opAndPrep(server, target, 50);
+
+    // Two votes is short of the threshold the fixture pays at.
+    await server.execute(`vp addvote ${target} false 2`);
+
+    // The third vote is cast with the player disconnected, which is the case the old code dropped:
+    // there was no player to hand anything to, so the count moved past the threshold unseen.
+    await player.bot.quit();
+    await waitUntil(async () => !plain(await server.execute('list')).includes(target), {
+        timeout: 15000,
+        interval: 250,
+        message: `${target} was never actually seen going offline`,
+    });
+
+    const mark = logMark();
+    await server.execute(`vp addvote ${target} false 1`);
+    assert.doesNotMatch(logSince(mark), /CUMULATIVE_DAILY_3/);
+
+    await player.rejoin();
+
+    await waitUntil(() => occurrences(logSince(mark), DAILY_3) === 1, {
+        timeout: 20000,
+        interval: 250,
+        message: `coming back did not hand the cumulative reward over, saw it ${occurrences(logSince(mark), DAILY_3)} time(s)`,
+    });
 });
 
 test('no plugin exception was logged for the whole session, including the plugin-backed specs', async () => {

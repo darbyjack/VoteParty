@@ -290,6 +290,10 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 		party.votesHandler.runAll(player)
 		user.claimable--
 
+		// A threshold crossed by a vote this claim is settling — one taken while the inventory was
+		// full, say — is still owed, and this is the first moment there is room to hand it over.
+		party.votesHandler.giveCumulativeRewards(player)
+
 		sendMessage(currentCommandIssuer, Messages.CLAIM__SUCCESS, null, "{claim}", user.claimable)
 	}
 
@@ -315,6 +319,9 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 			party.votesHandler.runAll(player)
 			user.claimable--
 		}
+
+		party.votesHandler.giveCumulativeRewards(player)
+
 		sendMessage(currentCommandIssuer, Messages.CLAIM__SUCCESS_ALL)
 	}
 

@@ -38,4 +38,4 @@ jobs:
         uses: gradle/actions/setup-gradle@v6
 
       - name: Build shaded plugin jar
-        run: ./gradlew clean shadowJar --stacktrace
+        run: ./gradlew clean shadowJar test --stacktrace

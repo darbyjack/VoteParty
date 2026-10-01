@@ -2,8 +2,12 @@ package me.clip.voteparty.handler
 
 import me.clip.voteparty.base.Addon
 import me.clip.voteparty.base.State
+import me.clip.voteparty.conf.objects.CumulativeVoteCommands
+import me.clip.voteparty.conf.objects.CumulativeVoteRewards
+import me.clip.voteparty.conf.objects.CumulativeVoting
 import me.clip.voteparty.conf.sections.EffectsSettings
 import me.clip.voteparty.conf.sections.PartySettings
+import me.clip.voteparty.conf.sections.PluginSettings
 import me.clip.voteparty.conf.sections.VoteData
 import me.clip.voteparty.conf.sections.VoteSettings
 import me.clip.voteparty.exte.formMessage
@@ -12,6 +16,7 @@ import me.clip.voteparty.exte.takeRandomly
 import me.clip.voteparty.leaderboard.LeaderboardType
 import me.clip.voteparty.messages.Messages
 import me.clip.voteparty.plugin.VotePartyPlugin
+import me.clip.voteparty.user.User
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import java.util.concurrent.TimeUnit
@@ -96,89 +101,143 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon, State
 		}
 	}
 
+	/**
+	 * Records the cumulative reward thresholds the vote stamped [voteEpoch] reached.
+	 *
+	 * Called for every vote, whether or not the player is online or has room for anything, because
+	 * a threshold reached by a vote that cannot be paid where it was cast still has to go out later.
+	 * A player who crosses a daily threshold at 23:59:59.999 has it waiting at 00:00.
+	 */
+	fun queueCrossedCumulativeRewards(user: User, voteEpoch: Long)
+	{
+		val settings = party.conf().getProperty(VoteSettings.CUMULATIVE_VOTE_REWARDS)
+		
+		recordCrossedCumulativeRewards(user, voteEpoch, enabledPeriods(settings).mapValues { it.value.entries })
+	}
+	
+	/**
+	 * Hands over every cumulative reward [player] has reached and has not been handed over yet.
+	 *
+	 * Runs on the vote, on login and on a claim, which are the three points at which there is
+	 * somebody there to receive something. A full inventory defers, the same way the vote's own
+	 * rewards defer, and for the same reason: the commands run from the console either way, so a
+	 * `give` would only put the items on the floor.
+	 *
+	 * A waiting reward is dropped once the server has taken its commands, so a threshold reached
+	 * once is handed over once on each run that gets to it. That is not a transactional promise. A
+	 * command the server refuses, or one that throws, leaves its reward waiting and is tried again,
+	 * repeating the commands that already ran, and so does a crash between the dispatch and the
+	 * save. A reward arriving twice is the cheaper of the failures, which is why the drop is last.
+	 */
+	fun giveCumulativeRewards(player: Player)
+	{
+		giveCumulativeRewards(player, LeaderboardType.values.toSet())
+	}
+	
+	@Deprecated("Pays everything the player is owed. Kept working for anything still calling it; use giveCumulativeRewards.", ReplaceWith("giveCumulativeRewards(player)"))
 	fun checkDailyCumulative(player: Player)
 	{
-		val settings = party.conf().getProperty(VoteSettings.CUMULATIVE_VOTE_REWARDS)
-
-		if (!settings.daily.enabled || settings.daily.entries.isEmpty())
-		{
-			return
-		}
-
-		settings.daily.entries.filter { entry -> entry.votes == party.usersHandler.getVoteCountSince(player, LeaderboardType.DAILY.start.invoke()) }.forEach { entry ->
-			entry.commands.forEach()
-			{ command ->
-				server.dispatchCommand(server.consoleSender, formMessage(player, command))
-			}
-		}
+		giveCumulativeRewards(player, setOf(LeaderboardType.DAILY))
 	}
-
+	
+	@Deprecated("Pays everything the player is owed. Kept working for anything still calling it; use giveCumulativeRewards.", ReplaceWith("giveCumulativeRewards(player)"))
 	fun checkWeeklyCumulative(player: Player)
 	{
-		val settings = party.conf().getProperty(VoteSettings.CUMULATIVE_VOTE_REWARDS)
-
-		if (!settings.weekly.enabled || settings.weekly.entries.isEmpty())
-		{
-			return
-		}
-
-		settings.weekly.entries.filter { entry -> entry.votes == party.usersHandler.getVoteCountSince(player, LeaderboardType.WEEKLY.start.invoke()) }.forEach { entry ->
-			entry.commands.forEach()
-			{ command ->
-				server.dispatchCommand(server.consoleSender, formMessage(player, command))
-			}
-		}
+		giveCumulativeRewards(player, setOf(LeaderboardType.WEEKLY))
 	}
-
+	
+	@Deprecated("Pays everything the player is owed. Kept working for anything still calling it; use giveCumulativeRewards.", ReplaceWith("giveCumulativeRewards(player)"))
 	fun checkMonthlyCumulative(player: Player)
 	{
-		val settings = party.conf().getProperty(VoteSettings.CUMULATIVE_VOTE_REWARDS)
-
-		if (!settings.monthly.enabled || settings.monthly.entries.isEmpty())
-		{
-			return
-		}
-
-		settings.monthly.entries.filter { entry -> entry.votes == party.usersHandler.getVoteCountSince(player, LeaderboardType.MONTHLY.start.invoke()) }.forEach { entry ->
-			entry.commands.forEach()
-			{ command ->
-				server.dispatchCommand(server.consoleSender, formMessage(player, command))
-			}
-		}
+		giveCumulativeRewards(player, setOf(LeaderboardType.MONTHLY))
 	}
-
+	
+	@Deprecated("Pays everything the player is owed. Kept working for anything still calling it; use giveCumulativeRewards.", ReplaceWith("giveCumulativeRewards(player)"))
 	fun checkYearlyCumulative(player: Player)
 	{
-		val settings = party.conf().getProperty(VoteSettings.CUMULATIVE_VOTE_REWARDS)
-
-		if (!settings.yearly.enabled || settings.yearly.entries.isEmpty())
-		{
-			return
-		}
-
-		settings.yearly.entries.filter { entry -> entry.votes == party.usersHandler.getVoteCountSince(player, LeaderboardType.ANNUALLY.start.invoke()) }.forEach { entry ->
-			entry.commands.forEach()
-			{ command ->
-				server.dispatchCommand(server.consoleSender, formMessage(player, command))
-			}
-		}
+		giveCumulativeRewards(player, setOf(LeaderboardType.ANNUALLY))
 	}
-
+	
+	@Deprecated("Pays everything the player is owed. Kept working for anything still calling it; use giveCumulativeRewards.", ReplaceWith("giveCumulativeRewards(player)"))
 	fun checkTotalCumulative(player: Player)
 	{
-		val settings = party.conf().getProperty(VoteSettings.CUMULATIVE_VOTE_REWARDS)
-
-		if (!settings.total.enabled || settings.total.entries.isEmpty())
+		giveCumulativeRewards(player, setOf(LeaderboardType.ALLTIME))
+	}
+	
+	private fun giveCumulativeRewards(player: Player, periods: Set<LeaderboardType>)
+	{
+		if (player.inventory.firstEmpty() == -1 && party.conf().getProperty(VoteSettings.CLAIMABLE_IF_FULL))
 		{
 			return
 		}
+		
+		val settings = party.conf().getProperty(VoteSettings.CUMULATIVE_VOTE_REWARDS)
+		val sections = enabledPeriods(settings)
+		val user = party.usersHandler[player]
 
-		settings.total.entries.filter { entry -> entry.votes == party.usersHandler.getVoteCountSince(player, LeaderboardType.ALLTIME.start.invoke()) }.forEach { entry ->
-			entry.commands.forEach()
-			{ command ->
-				server.dispatchCommand(server.consoleSender, formMessage(player, command))
-			}
+		// Only the periods currently switched on are drained, so a reward reached before one was
+		// switched off is still there to go out if it is switched back on. One whose threshold has
+		// been taken out of the config has no commands left, and goes with the rest.
+		val drained = user.drainCumulativeRewards(periods intersect sections.keys)
+		{ reward ->
+			handOver(player, sections.getValue(reward.period).entries.filter { it.votes == reward.votes }.flatMap { it.commands })
 		}
+		
+		if (drained == 0)
+		{
+			return
+		}
+		
+		// The vote listener saves before it reaches here, so a payout not saved on its own would be
+		// handed over again after a restart whenever saving on vote is on.
+		if (party.conf().getProperty(PluginSettings.SAVE_ON_VOTE))
+		{
+			party.usersHandler.save(user)
+		}
+	}
+	
+	/**
+	 * Runs the commands behind a waiting reward, and reports whether the server took them all.
+	 *
+	 * Every entry configured at the reward's threshold runs, not just the first of them. Two entries
+	 * at the same vote count is a configuration the plugin has always honoured in full, and taking
+	 * one of the two dropped the other's commands without a word.
+	 *
+	 * A false from [Server.dispatchCommand] means nothing handled the command, so nothing was
+	 * given, and the reward stays waiting to be tried again. Whether a command ran is not knowable
+	 * from here, which is why a false is only ever a refusal and never a failure part way through:
+	 * the server reports those by throwing, and that leaves the reward waiting too.
+	 */
+	private fun handOver(player: Player, commands: List<String>): Boolean
+	{
+		var handedOver = true
+		
+		for (command in commands)
+		{
+			if (server.dispatchCommand(server.consoleSender, formMessage(player, command)))
+			{
+				continue
+			}
+			
+			handedOver = false
+			logger.warning("a cumulative reward command was not handled for ${player.name}: $command")
+		}
+		
+		return handedOver
+	}
+	
+	/**
+	 * The cumulative periods that are switched on, against the section each one reads.
+	 */
+	private fun enabledPeriods(settings: CumulativeVoting): Map<LeaderboardType, CumulativeVoteRewards>
+	{
+		return mapOf(
+			LeaderboardType.DAILY to settings.daily,
+			LeaderboardType.WEEKLY to settings.weekly,
+			LeaderboardType.MONTHLY to settings.monthly,
+			LeaderboardType.ANNUALLY to settings.yearly,
+			LeaderboardType.ALLTIME to settings.total
+		).filterValues { it.enabled }
 	}
 	
 	fun giveVotesiteVoteRewards(player: Player, serviceName: String)
@@ -277,4 +336,28 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon, State
 		}
 	}
 	
+}
+
+/**
+ * Records every threshold in [periods] that the vote stamped [voteEpoch] has reached.
+ *
+ * The periods are worked out from the vote's own timestamp rather than from the clock now, because
+ * a vote is stamped and then processed and the two can fall either side of midnight. A vote cast a
+ * millisecond before midnight, worked out a millisecond after, would be measured against a period
+ * that does not contain it, and the threshold it reached would never be seen by anyone.
+ *
+ * Separate from the handler so it can be driven with a fixed timestamp: there is no way to test the
+ * midnight case against a clock that will not sit still for it.
+ */
+internal fun recordCrossedCumulativeRewards(user: User, voteEpoch: Long, periods: Map<LeaderboardType, List<CumulativeVoteCommands>>)
+{
+	for ((period, entries) in periods)
+	{
+		if (entries.isEmpty())
+		{
+			continue
+		}
+		
+		user.queueCrossedCumulativeRewards(period, period.startAt(voteEpoch), entries)
+	}
 }
