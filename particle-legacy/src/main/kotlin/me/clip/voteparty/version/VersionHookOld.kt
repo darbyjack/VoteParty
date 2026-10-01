@@ -7,7 +7,7 @@ import org.inventivetalent.particle.ParticleEffect
 class VersionHookOld : VersionHook
 {
 	
-	override fun display(type: EffectType, location: Location, offsetX: Double, offsetY: Double, offsetZ: Double, speed: Double, count: Int, color: Color?)
+	override fun display(type: String, location: Location, offsetX: Double, offsetY: Double, offsetZ: Double, speed: Double, count: Int, color: Color?)
 	{
 		val effect = resolve(type) ?: return
 		
@@ -27,9 +27,9 @@ class VersionHookOld : VersionHook
 		private val VALUES = ParticleEffect.entries.toTypedArray()
 		
 		
-		private fun resolve(type: EffectType): ParticleEffect?
+		private fun resolve(type: String): ParticleEffect?
 		{
-			return VALUES.find { it.name.equals(type.name, true) }
+			return VALUES.find { it.name.equals(type, true) }
 		}
 		
 	}

@@ -49,13 +49,12 @@ crate:
 # Configuration for particle effects you can play
 # throughout different parts of the plugin
 effects:
-    # All three effect groups are switched off in this fixture. The shipped defaults name the
-    # particles SMOKE and HEART, neither of which exists in particle-api's EffectType enum
-    # (which has SMOKE_NORMAL, SMOKE_LARGE, ...), so a default-config party dies on
-    # `IllegalArgumentException: No enum constant EffectType.SMOKE` before it reaches rewards.
-    # Leaving the effects on would abort every party test on that unrelated crash.
+    # All three groups stay enabled, with the shipped SMOKE and HEART. These are not decorative:
+    # party_commands_execute runs inside the delayed party task, so an unresolvable particle name
+    # there used to throw and abort the party before it reached rewards or post_party_commands.
+    # The specs below assert the party completes with these on.
     party_commands_execute:
-        enable: false
+        enable: true
         effects: 
         - SMOKE
         - HEART
@@ -66,7 +65,7 @@ effects:
         count: 2
     # Configuration for particles when a party starts
     party_start:
-        enable: false
+        enable: true
         effects: 
         - SMOKE
         - HEART
@@ -75,12 +74,15 @@ effects:
         offsetZ: 0.0
         speed: 0.1
         count: 2
-    # Configuration for particles when a player votes
+    # Configuration for particles when a player votes. NOT_A_REAL_PARTICLE is added on purpose:
+    # a name no Minecraft version has must be skipped rather than thrown, and this group runs on
+    # the vote path where a throw would abort the rest of the vote for that player.
     vote:
-        enable: false
+        enable: true
         effects: 
         - SMOKE
         - HEART
+        - NOT_A_REAL_PARTICLE
         offsetX: 0.0
         offsetY: 0.0
         offsetZ: 0.0

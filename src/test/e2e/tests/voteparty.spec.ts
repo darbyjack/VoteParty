@@ -137,6 +137,44 @@ test('an unknown player is rejected rather than crashing', async ({ server }) =>
     );
 });
 
+/**
+ * The shipped effects are enabled in the fixture and name SMOKE and HEART, neither of which the
+ * removed EffectType enum had a constant for. Asserting the particles actually arrive is what
+ * proves the names resolved to real particles on this server, rather than merely not throwing:
+ * a silently skipped particle would pass a "no exception" check too.
+ *
+ * The vote group also names NOT_A_REAL_PARTICLE, which no version has. It must be skipped
+ * without taking the rest of the vote down with it.
+ */
+test('the configured particles spawn on a vote, and an unknown name is skipped', async ({ player, server }) => {
+    await opAndPrep(server, player.username);
+
+    // mineflayer's Particle type does not declare `name`, although the runtime object carries it
+    // from the particle registry, so the handler takes the value untyped and narrows itself.
+    const seen = new Set<string>();
+    const listener = (particle: unknown) => {
+        const name = (particle as { name?: string }).name;
+        if (name) seen.add(name.toLowerCase());
+    };
+    player.bot.on('particle', listener);
+
+    try {
+        assert.match(plain(await server.execute(`vp addvote ${player.username} false 1`)), /You've given 1 votes/);
+
+        await waitUntil(() => [...seen].some((name) => name.includes('smoke')) && [...seen].some((name) => name.includes('heart')), {
+            timeout: 15000,
+            interval: 250,
+            message: `expected smoke and heart particles, saw: ${[...seen].join(', ') || 'nothing'}`,
+        });
+    } finally {
+        player.bot.removeListener('particle', listener);
+    }
+
+    // Reaching here with the unknown name still in the list means nothing above threw; the log
+    // assertion at the end of the suite is what actually checks that.
+    assert.ok(seen.size > 0);
+});
+
 test('the party vote counter moves in both directions', async ({ server }) => {
     assert.match(plain(await server.execute('vp addpartyvote 1')), /Current votes updated to \d+/);
     assert.match(plain(await server.execute('vp setcounter 5')), /New required votes has been set/);
