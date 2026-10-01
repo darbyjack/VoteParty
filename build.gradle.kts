@@ -1,4 +1,5 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import me.drownek.plugwright.local.LocalMode
 import org.apache.tools.ant.filters.ReplaceTokens
 import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.gradle.jvm.toolchain.JavaToolchainService
@@ -11,6 +12,7 @@ plugins {
 	alias(libs.plugins.shadow) apply false
 	alias(libs.plugins.versions)
 	alias(libs.plugins.run.paper)
+	id("io.github.drownek.plugwright") version "3.0.0"
 }
 
 val javaToolchainsService = extensions.getByType<JavaToolchainService>()
@@ -90,6 +92,84 @@ tasks.named<ShadowJar>("shadowJar") {
 	relocate("org.bstats", "me.clip.voteparty.libs.bstats")
 
 	archiveFileName.set("VoteParty-${project.version}.jar")
+}
+
+val plugwrightModernVersion: String =
+	providers.environmentVariable("PLUGWRIGHT_MODERN_MC_VERSION").getOrElse("1.21.11")
+val plugwrightLatestVersion: String =
+	providers.environmentVariable("PLUGWRIGHT_LATEST_MC_VERSION").getOrElse("26.1.2")
+
+plugwright {
+	testsDir.set(file("src/test/e2e"))
+	primaryEnvironment.set("modern")
+
+	// Mineflayer has protocol data for 1.21.11 and 26.1.2 but none for 26.2 and later, so the
+	// newest versions stay on the run-paper tasks above instead of this suite.
+	environments {
+		create("modern", LocalMode) {
+			minecraftVersion.set(plugwrightModernVersion)
+			acceptEula.set(true)
+			jvmArgs.set(listOf("-Xms1G", "-Xmx2G"))
+
+			// EssentialsX is not optional here. It overrides /give with its own item database,
+			// which is what maps the upper case legacy item names the shipped reward config uses
+			// (STEAK, GOLDEN_APPLE, DIAMOND, IRON_INGOT), and it supplies /broadcast, which the
+			// shipped global_commands entry uses. On a server without it those commands fail.
+			downloadPlugins {
+				url("https://ci.helpch.at/view/Plugins/job/PlaceholderAPI/266/artifact/build/libs/PlaceholderAPI-2.12.3-DEV-266.jar")
+				url("https://cdn.modrinth.com/data/hXiIvTyT/versions/nY6VN1XH/EssentialsX-2.22.0.jar")
+			}
+
+			writeFiles {
+				file("plugins/VoteParty/config.yml", projectDir.resolve("src/test/e2e/fixtures/voteparty-config.yml"))
+				file("server.properties", """
+					level-type=minecraft\:flat
+					generate-structures=false
+					spawn-npcs=false
+					spawn-animals=false
+					spawn-monsters=false
+					view-distance=4
+					simulation-distance=4
+				""".trimIndent())
+			}
+		}
+
+		create("latest", LocalMode) {
+			minecraftVersion.set(plugwrightLatestVersion)
+			acceptEula.set(true)
+			jvmArgs.set(listOf("-Xms1G", "-Xmx2G"))
+
+			// EssentialsX is not optional here. It overrides /give with its own item database,
+			// which is what maps the upper case legacy item names the shipped reward config uses
+			// (STEAK, GOLDEN_APPLE, DIAMOND, IRON_INGOT), and it supplies /broadcast, which the
+			// shipped global_commands entry uses. On a server without it those commands fail.
+			downloadPlugins {
+				url("https://ci.helpch.at/view/Plugins/job/PlaceholderAPI/266/artifact/build/libs/PlaceholderAPI-2.12.3-DEV-266.jar")
+				url("https://cdn.modrinth.com/data/hXiIvTyT/versions/nY6VN1XH/EssentialsX-2.22.0.jar")
+			}
+
+			writeFiles {
+				file("plugins/VoteParty/config.yml", projectDir.resolve("src/test/e2e/fixtures/voteparty-config.yml"))
+				file("server.properties", """
+					level-type=minecraft\:flat
+					generate-structures=false
+					spawn-npcs=false
+					spawn-animals=false
+					spawn-monsters=false
+					view-distance=4
+					simulation-distance=4
+				""".trimIndent())
+			}
+		}
+	}
+}
+
+// The Plugwright tasks are not yet configuration cache compatible, so a graph that contains
+// them has to be allowed to skip the cache instead of failing to store an entry.
+tasks.configureEach {
+	if (name.startsWith("plugwright")) {
+		notCompatibleWithConfigurationCache("Plugwright tasks do not support the configuration cache yet")
+	}
 }
 
 fun RunServer.configureVotePartyRun(
