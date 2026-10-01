@@ -451,3 +451,50 @@ test('no plugin exception was logged for the whole session, including the plugin
     assert.doesNotMatch(log, /\[VoteParty\].*Task #\d+ for VoteParty .* generated an exception/);
     assert.doesNotMatch(log, /java\.lang\.(NoSuchMethod|NoClassDef|NoField)Error/);
 });
+
+/**
+ * `/vp givecrate <player> <amount>` used to reject every input, including an exact online player
+ * name, with `Please specify one of (@online)` — while tab completing to that same name. The
+ * parameter-level `@Values("@online")` was validating the argument against a completion it could
+ * not consume; `@CommandCompletion("@online")` is what drives completion and is untouched.
+ */
+test('/vp givecrate delivers the requested number of crates to an online player', async ({ player, server }) => {
+    await opAndPrep(server, player.username);
+    await server.execute('lp user ' + player.username + ' clear');
+    await sleep(1500);
+
+    player.chat(`/vp givecrate ${player.username} 2`);
+
+    await expect(player).toHaveReceivedMessage(/You've received a vote crate/);
+    // buildCrate sets the stack amount rather than stacking two crates, so the count matters.
+    await expect(player).toContainItem('chest', { count: 2 });
+});
+
+test('/vp givecrate still tab completes through the registered @online completion', async ({ player, server }) => {
+    await opAndPrep(server, player.username);
+
+    // mineflayer types this as string[], but the server sends entries and mineflayer hands back
+    // { match, tooltip } objects for them.
+    const completions = await player.bot.tabComplete('/vp givecrate ', false);
+
+    assert.deepEqual(
+        completions.map((entry: unknown) => (typeof entry === 'string' ? entry : (entry as { match: string }).match)),
+        [player.username],
+    );
+});
+
+test('/vp givecrate rejects an amount that is not a number of crates', async ({ player, server }) => {
+    await opAndPrep(server, player.username);
+
+    player.chat(`/vp givecrate ${player.username} 0`);
+    await expect(player).toHaveReceivedMessage(/this number must be positive/);
+});
+
+test('/vp givecrate rejects a player who is not online', async ({ server }) => {
+    // Bukkit's own message for an OfflinePlayer argument that is not online, which is what proves
+    // the parameter is resolved as an online player rather than accepted as a free-form name.
+    assert.match(
+        plain(await server.execute('vp givecrate NotOnlineAtAll 1')),
+        /No player matching NotOnlineAtAll is connected/,
+    );
+});
