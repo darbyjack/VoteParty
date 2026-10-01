@@ -45,12 +45,36 @@ function plain(text: string): string {
     return text.replace(/\u00a7[0-9a-fk-or]/gi, '');
 }
 
-async function opAndPrep(server: { execute: (cmd: string) => Promise<string> }, username: string) {
+interface Console {
+    execute(cmd: string): Promise<string>;
+}
+
+/**
+ * Puts the party counter back to zero.
+ *
+ * The counter is server-wide state that outlives any single test, and `vp setcounter` only moves
+ * the threshold it is measured against, not the count itself. Driving the count up to a threshold
+ * of one is the only way back to zero, because that is the path that resets it — and it fires a
+ * party on the way, which is harmless but is why the fixture's party commands show up in the
+ * console log from here on.
+ */
+async function resetPartyCounter(server: Console): Promise<void> {
+    await server.execute('vp setcounter 1');
+    await server.execute('vp addpartyvote 1');
+}
+
+/**
+ * Everything a test needs to be able to rely on, established rather than inherited: an op'd
+ * player whose VoteParty vote count is zero, and a party counter of zero against a known
+ * threshold.
+ */
+async function opAndPrep(server: Console, username: string, partyAt = 5): Promise<void> {
     await server.execute(`op ${username}`);
     // VoteParty only knows a player once they have joined, so the bot has to be online before
     // any vote command will accept its name.
     await server.execute(`vp resetvotes ${username}`);
-    await server.execute('vp setcounter 5');
+    await resetPartyCounter(server);
+    await server.execute(`vp setcounter ${partyAt}`);
 }
 
 test('the plugin enables and registers its PlaceholderAPI expansion', async () => {
@@ -176,12 +200,20 @@ test('the configured particles spawn on a vote, and an unknown name is skipped',
 });
 
 test('the party vote counter moves in both directions', async ({ server }) => {
-    assert.match(plain(await server.execute('vp addpartyvote 1')), /Current votes updated to \d+/);
+    await resetPartyCounter(server);
+    // Starting from zero is the point: the counter is server-wide and would otherwise still hold
+    // whatever the previous test left in it. The threshold goes up first so these additions do
+    // not reach it and reset themselves.
+    await server.execute('vp setcounter 50');
+
+    assert.match(plain(await server.execute('vp addpartyvote 1')), /Current votes updated to 1/);
+    assert.match(plain(await server.execute('vp addpartyvote 2')), /Current votes updated to 3/);
     assert.match(plain(await server.execute('vp setcounter 5')), /New required votes has been set/);
     assert.match(plain(await server.execute('vp setcounter -1')), /must be positive/);
 });
 
 test('a party runs its pre, main and post commands in order', async ({ server }) => {
+    await resetPartyCounter(server);
     await server.execute('vp setcounter 5');
 
     assert.match(await server.execute('vp startparty'), /force started a .*Vote Party/);
@@ -192,7 +224,7 @@ test('a party runs its pre, main and post commands in order', async ({ server })
 });
 
 test('reaching the vote threshold by voting triggers a party', async ({ player, server }) => {
-    await opAndPrep(server, player.username);
+    await opAndPrep(server, player.username, 5);
 
     // Not silent: this fires VoteReceivedEvent, which is what moves the party counter.
     assert.match(plain(await server.execute(`vp addvote ${player.username} false 5`)), /You've given 5 votes/);
@@ -202,8 +234,7 @@ test('reaching the vote threshold by voting triggers a party', async ({ player, 
 });
 
 test('a party started from votes pays every online player', async ({ player, server }) => {
-    await opAndPrep(server, player.username);
-    await server.execute('vp setcounter 5');
+    await opAndPrep(server, player.username, 5);
     await server.execute(`vp addvote ${player.username} false 5`);
 
     await expect(player).toContainItem('golden_apple');
