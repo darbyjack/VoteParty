@@ -2,6 +2,7 @@ package me.clip.voteparty.handler
 
 import me.clip.voteparty.base.Addon
 import me.clip.voteparty.base.State
+import me.clip.voteparty.conf.objects.CumulativeVoteCommands
 import me.clip.voteparty.conf.objects.CumulativeVoteRewards
 import me.clip.voteparty.conf.objects.CumulativeVoting
 import me.clip.voteparty.conf.sections.EffectsSettings
@@ -18,7 +19,6 @@ import me.clip.voteparty.plugin.VotePartyPlugin
 import me.clip.voteparty.user.User
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
-import java.time.ZoneId
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -102,25 +102,17 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon, State
 	}
 
 	/**
-	 * Records the cumulative reward thresholds the vote just now recorded has reached.
+	 * Records the cumulative reward thresholds the vote stamped [voteEpoch] reached.
 	 *
 	 * Called for every vote, whether or not the player is online or has room for anything, because
 	 * a threshold reached by a vote that cannot be paid where it was cast still has to go out later.
-	 * A player who crosses a daily threshold at 23:59 while offline has it waiting at 00:01.
+	 * A player who crosses a daily threshold at 23:59:59.999 has it waiting at 00:00.
 	 */
-	fun queueCrossedCumulativeRewards(user: User)
+	fun queueCrossedCumulativeRewards(user: User, voteEpoch: Long)
 	{
 		val settings = party.conf().getProperty(VoteSettings.CUMULATIVE_VOTE_REWARDS)
 		
-		for ((period, rewards) in enabledPeriods(settings))
-		{
-			if (rewards.entries.isEmpty())
-			{
-				continue
-			}
-			
-			user.queueCrossedCumulativeRewards(period, periodStart(period), rewards.entries)
-		}
+		recordCrossedCumulativeRewards(user, voteEpoch, enabledPeriods(settings).mapValues { it.value.entries })
 	}
 	
 	/**
@@ -248,11 +240,6 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon, State
 		).filterValues { it.enabled }
 	}
 	
-	private fun periodStart(period: LeaderboardType): Long
-	{
-		return period.start.invoke().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
-	}
-	
 	fun giveVotesiteVoteRewards(player: Player, serviceName: String)
 	{
 		val settings = party.conf().getProperty(VoteSettings.VOTESITE_VOTE_REWARDS)
@@ -349,4 +336,28 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon, State
 		}
 	}
 	
+}
+
+/**
+ * Records every threshold in [periods] that the vote stamped [voteEpoch] has reached.
+ *
+ * The periods are worked out from the vote's own timestamp rather than from the clock now, because
+ * a vote is stamped and then processed and the two can fall either side of midnight. A vote cast a
+ * millisecond before midnight, worked out a millisecond after, would be measured against a period
+ * that does not contain it, and the threshold it reached would never be seen by anyone.
+ *
+ * Separate from the handler so it can be driven with a fixed timestamp: there is no way to test the
+ * midnight case against a clock that will not sit still for it.
+ */
+internal fun recordCrossedCumulativeRewards(user: User, voteEpoch: Long, periods: Map<LeaderboardType, List<CumulativeVoteCommands>>)
+{
+	for ((period, entries) in periods)
+	{
+		if (entries.isEmpty())
+		{
+			continue
+		}
+		
+		user.queueCrossedCumulativeRewards(period, period.startAt(voteEpoch), entries)
+	}
 }

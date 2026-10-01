@@ -21,18 +21,27 @@ data class PendingCumulativeReward(val period: LeaderboardType, val periodStart:
 data class User(val uuid: UUID, var name: String, private val data: MutableList<Long>, var claimable: Int, private var pending: MutableList<PendingCumulativeReward>? = null)
 {
 	
-	fun voted()
+	/**
+	 * Records a vote and returns the timestamp it was recorded at.
+	 *
+	 * The caller needs that same reading to work out which cumulative periods the vote falls in.
+	 * Reading the clock a second time, after midnight has passed, puts a vote cast at 23:59:59.999
+	 * into the day that midnight started.
+	 */
+	fun voted(): Long
 	{
-		voted(System.currentTimeMillis())
+		return voted(System.currentTimeMillis())
 	}
 	
 	/**
 	 * Records a vote at a given time. [voted] is the entry point everything else uses; this takes
 	 * the time so a vote can be placed in a period without waiting for one to come round.
 	 */
-	internal fun voted(epoch: Long)
+	internal fun voted(epoch: Long): Long
 	{
 		data += epoch
+		
+		return epoch
 	}
 	
 	fun votes(): List<Long>
