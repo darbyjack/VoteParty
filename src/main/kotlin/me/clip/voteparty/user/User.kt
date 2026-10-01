@@ -4,7 +4,7 @@ import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import java.util.UUID
 
-data class User(val uuid: UUID, var name: String, private val data: MutableList<Long>, var claimable: Int)
+data class User(val uuid: UUID, var name: String, private val data: MutableList<Long>, var claimable: Int, var partyClaimable: Int)
 {
 	
 	fun voted()
