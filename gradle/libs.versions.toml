@@ -14,6 +14,8 @@ xseries = "13.7.1"
 bstats = "3.2.1"
 adventurePlatformBukkit = "4.4.1"
 adventure = "4.17.0"
+junit = "5.11.4"
+gson = "2.14.0"
 
 [libraries]
 kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8" }
@@ -32,6 +34,10 @@ adventure-api = { module = "net.kyori:adventure-api", version.ref = "adventure" 
 adventure-text-minimessage = { module = "net.kyori:adventure-text-minimessage", version.ref = "adventure" }
 
 particleapi = { module = "org.inventivetalent:particleapi", version.ref = "particleapi" }
+
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

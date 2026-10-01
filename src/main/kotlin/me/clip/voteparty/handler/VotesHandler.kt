@@ -4,6 +4,7 @@ import me.clip.voteparty.base.Addon
 import me.clip.voteparty.base.State
 import me.clip.voteparty.conf.sections.EffectsSettings
 import me.clip.voteparty.conf.sections.PartySettings
+import me.clip.voteparty.conf.sections.PluginSettings
 import me.clip.voteparty.conf.sections.VoteData
 import me.clip.voteparty.conf.sections.VoteSettings
 import me.clip.voteparty.exte.formMessage
@@ -14,6 +15,7 @@ import me.clip.voteparty.messages.Messages
 import me.clip.voteparty.plugin.VotePartyPlugin
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
+import java.time.ZoneId
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -96,88 +98,76 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon, State
 		}
 	}
 
-	fun checkDailyCumulative(player: Player)
+	/**
+	 * Hands over every cumulative reward [player] has reached but has not been paid for yet.
+	 *
+	 * A cumulative reward is keyed to a vote count rather than to a vote, so each threshold only
+	 * ever comes due once and has to be paid the moment the count reaches it. That made it easy
+	 * to miss: a vote from a player who was offline, or whose inventory was too full to receive
+	 * anything, never got as far as a check at all, and an exact match on the count then stepped
+	 * over the threshold for good.
+	 *
+	 * Paying everything between the votes already settled and the votes the player has now covers
+	 * all of that — a threshold crossed while they were away, several crossed at once, and a
+	 * period that has rolled over since. Nothing is settled until the rewards have actually been
+	 * handed over, so a caller that cannot pay leaves the thresholds owed for the next call: the
+	 * player's next vote, their next claim, or their next login.
+	 */
+	fun giveCumulativeRewards(player: Player)
 	{
-		val settings = party.conf().getProperty(VoteSettings.CUMULATIVE_VOTE_REWARDS)
-
-		if (!settings.daily.enabled || settings.daily.entries.isEmpty())
+		// Same deferral the vote's own rewards use. Cumulative rewards are console commands, so
+		// they would still run with a full inventory — a `give` would just drop the items at the
+		// player's feet instead.
+		if (player.inventory.firstEmpty() == -1 && party.conf().getProperty(VoteSettings.CLAIMABLE_IF_FULL))
 		{
 			return
 		}
 
-		settings.daily.entries.filter { entry -> entry.votes == party.usersHandler.getVoteCountSince(player, LeaderboardType.DAILY.start.invoke()) }.forEach { entry ->
-			entry.commands.forEach()
-			{ command ->
-				server.dispatchCommand(server.consoleSender, formMessage(player, command))
-			}
-		}
-	}
-
-	fun checkWeeklyCumulative(player: Player)
-	{
 		val settings = party.conf().getProperty(VoteSettings.CUMULATIVE_VOTE_REWARDS)
 
-		if (!settings.weekly.enabled || settings.weekly.entries.isEmpty())
+		val periods = listOf(
+			LeaderboardType.DAILY to settings.daily,
+			LeaderboardType.WEEKLY to settings.weekly,
+			LeaderboardType.MONTHLY to settings.monthly,
+			LeaderboardType.ANNUALLY to settings.yearly,
+			LeaderboardType.ALLTIME to settings.total
+		)
+
+		val user = party.usersHandler[player]
+		var given = false
+
+		for ((period, rewards) in periods)
+		{
+			if (!rewards.enabled || rewards.entries.isEmpty())
+			{
+				continue
+			}
+
+			val since = period.start.invoke().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+
+			for (entry in user.dueCumulativeRewards(since, rewards.entries))
+			{
+				entry.commands.forEach()
+				{ command ->
+					server.dispatchCommand(server.consoleSender, formMessage(player, command))
+				}
+
+				given = true
+			}
+		}
+
+		if (!given)
 		{
 			return
 		}
 
-		settings.weekly.entries.filter { entry -> entry.votes == party.usersHandler.getVoteCountSince(player, LeaderboardType.WEEKLY.start.invoke()) }.forEach { entry ->
-			entry.commands.forEach()
-			{ command ->
-				server.dispatchCommand(server.consoleSender, formMessage(player, command))
-			}
-		}
-	}
+		user.settleVotes()
 
-	fun checkMonthlyCumulative(player: Player)
-	{
-		val settings = party.conf().getProperty(VoteSettings.CUMULATIVE_VOTE_REWARDS)
-
-		if (!settings.monthly.enabled || settings.monthly.entries.isEmpty())
+		// The vote listener saves before it reaches here, so a payout that is not saved on its
+		// own would be paid a second time after a restart whenever saving on vote is enabled.
+		if (party.conf().getProperty(PluginSettings.SAVE_ON_VOTE))
 		{
-			return
-		}
-
-		settings.monthly.entries.filter { entry -> entry.votes == party.usersHandler.getVoteCountSince(player, LeaderboardType.MONTHLY.start.invoke()) }.forEach { entry ->
-			entry.commands.forEach()
-			{ command ->
-				server.dispatchCommand(server.consoleSender, formMessage(player, command))
-			}
-		}
-	}
-
-	fun checkYearlyCumulative(player: Player)
-	{
-		val settings = party.conf().getProperty(VoteSettings.CUMULATIVE_VOTE_REWARDS)
-
-		if (!settings.yearly.enabled || settings.yearly.entries.isEmpty())
-		{
-			return
-		}
-
-		settings.yearly.entries.filter { entry -> entry.votes == party.usersHandler.getVoteCountSince(player, LeaderboardType.ANNUALLY.start.invoke()) }.forEach { entry ->
-			entry.commands.forEach()
-			{ command ->
-				server.dispatchCommand(server.consoleSender, formMessage(player, command))
-			}
-		}
-	}
-
-	fun checkTotalCumulative(player: Player)
-	{
-		val settings = party.conf().getProperty(VoteSettings.CUMULATIVE_VOTE_REWARDS)
-
-		if (!settings.total.enabled || settings.total.entries.isEmpty())
-		{
-			return
-		}
-
-		settings.total.entries.filter { entry -> entry.votes == party.usersHandler.getVoteCountSince(player, LeaderboardType.ALLTIME.start.invoke()) }.forEach { entry ->
-			entry.commands.forEach()
-			{ command ->
-				server.dispatchCommand(server.consoleSender, formMessage(player, command))
-			}
+			party.usersHandler.save(user)
 		}
 	}
 	

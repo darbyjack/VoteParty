@@ -72,11 +72,7 @@ internal class VotesListener(override val plugin: VotePartyPlugin) : VotePartyLi
 			party.votesHandler.giveFirstTimeVoteRewards(online)
 		}
 
-		party.votesHandler.checkDailyCumulative(online)
-		party.votesHandler.checkWeeklyCumulative(online)
-		party.votesHandler.checkMonthlyCumulative(online)
-		party.votesHandler.checkYearlyCumulative(online)
-		party.votesHandler.checkTotalCumulative(online)
+		party.votesHandler.giveCumulativeRewards(online)
 
 		party.votesHandler.playerVoteEffects(online)
 	}
@@ -84,6 +80,13 @@ internal class VotesListener(override val plugin: VotePartyPlugin) : VotePartyLi
 	@EventHandler(priority = EventPriority.HIGH)
 	fun PlayerJoinEvent.onJoin()
 	{
+		// A threshold a player crossed while they were offline never got as far as a check, and
+		// by the time they are back their vote count has moved on past it. Joining is the first
+		// moment those rewards can be handed over. This is deliberately ahead of the "has this
+		// player played before" guard below, because a player who voted from a votesite before
+		// their first login is exactly the player this is for.
+		party.votesHandler.giveCumulativeRewards(player)
+
 		if (!player.hasPlayedBefore())
 		{
 			return
