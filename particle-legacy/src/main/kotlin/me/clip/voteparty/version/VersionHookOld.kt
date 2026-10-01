@@ -12,11 +12,11 @@ class VersionHookOld : VersionHook
 		val effect = resolve(type) ?: return
 		
 		// Two ways a resolved effect still cannot be drawn on this server. ParticleAPI refuses its
-		// parameterless send() for effects that carry block or item data — BLOCK_CRACK, REDSTONE,
-		// ITEM_CRACK and friends all throw ParticleException from it — and this configuration has
-		// offsets, speed and count with no way to supply block or item data. And an effect can sit
-		// in ParticleAPI's enum while still needing a newer server than the one running: TOTEM needs
-		// 1.11. Neither is a failure, they are particles this server has no way to draw.
+		// parameterless send() for the effects that carry block or item data — ITEM_CRACK,
+		// BLOCK_CRACK and BLOCK_DUST all throw ParticleException from it — and this configuration
+		// has offsets, speed and count with no way to supply block or item data. And an effect can
+		// sit in ParticleAPI's enum while still needing a newer server than the one running: TOTEM
+		// needs 1.11. Neither is a failure, they are particles this server has no way to draw.
 		if (effect.hasFeature(ParticleEffect.Feature.DATA) || !effect.isCompatible())
 		{
 			return
