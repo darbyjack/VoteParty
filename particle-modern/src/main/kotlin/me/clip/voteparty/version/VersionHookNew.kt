@@ -8,11 +8,15 @@ import org.bukkit.Particle.DustOptions
 class VersionHookNew : VersionHook
 {
 
-	override fun display(type: EffectType, location: Location, offsetX: Double, offsetY: Double, offsetZ: Double, speed: Double, count: Int, color: Color?)
+	override fun display(type: String, location: Location, offsetX: Double, offsetY: Double, offsetZ: Double, speed: Double, count: Int, color: Color?)
 	{
 
 		val world = location.world ?: return
-		val optionalParticle = XParticle.of(type.name)
+
+		// XParticle owns the name mapping: it knows every spelling a configuration may have used
+		// across versions, and it knows which of them this server actually has. A name it does not
+		// know, or knows but cannot spawn here, simply produces no particle.
+		val optionalParticle = XParticle.of(type)
 
 		if (!optionalParticle.isPresent)
 		{

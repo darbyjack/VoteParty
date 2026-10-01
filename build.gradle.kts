@@ -1,4 +1,6 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import me.drownek.plugwright.local.LocalEnvironmentSpec
+import me.drownek.plugwright.local.LocalMode
 import org.apache.tools.ant.filters.ReplaceTokens
 import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.gradle.jvm.toolchain.JavaToolchainService
@@ -11,6 +13,7 @@ plugins {
 	alias(libs.plugins.shadow) apply false
 	alias(libs.plugins.versions)
 	alias(libs.plugins.run.paper)
+	id("io.github.drownek.plugwright") version "3.0.0"
 }
 
 val javaToolchainsService = extensions.getByType<JavaToolchainService>()
@@ -90,6 +93,65 @@ tasks.named<ShadowJar>("shadowJar") {
 	relocate("org.bstats", "me.clip.voteparty.libs.bstats")
 
 	archiveFileName.set("VoteParty-${project.version}.jar")
+}
+
+val plugwrightModernVersion: String =
+	providers.environmentVariable("PLUGWRIGHT_MODERN_MC_VERSION").getOrElse("1.21.11")
+val plugwrightLatestVersion: String =
+	providers.environmentVariable("PLUGWRIGHT_LATEST_MC_VERSION").getOrElse("26.1.2")
+
+// The two environments differ only in Minecraft version and port.
+fun LocalEnvironmentSpec.votePartyServer(minecraftVersion: String, port: Int)
+{
+	this.minecraftVersion.set(minecraftVersion)
+	// Not the 25565 default, which anything else on the machine may hold. A collision fails as a
+	// bind error rather than as a test failure.
+	this.port.set(port)
+	acceptEula.set(true)
+	jvmArgs.set(listOf("-Xms1G", "-Xmx2G"))
+
+	// EssentialsX owns /give and /broadcast, which the shipped reward commands need. Vault and
+	// EssentialsX's economy back `eco give`, LuckPerms grants the permission-gated rewards, and
+	// NuVotifier is a soft dependency whose listener is dead code without it.
+	downloadPlugins {
+		url("https://ci.helpch.at/view/Plugins/job/PlaceholderAPI/266/artifact/build/libs/PlaceholderAPI-2.12.3-DEV-266.jar")
+		url("https://cdn.modrinth.com/data/hXiIvTyT/versions/nY6VN1XH/EssentialsX-2.22.0.jar")
+		url("https://github.com/MilkBowl/Vault/releases/download/1.7.3/Vault.jar")
+		url("https://cdn.modrinth.com/data/Vebnzrzj/versions/b0mk8uS6/LuckPerms-Bukkit-5.5.71.jar")
+		url("https://github.com/NuVotifier/NuVotifier/releases/download/v2.7.3/nuvotifier.jar")
+	}
+
+	writeFiles {
+		file("plugins/VoteParty/config.yml", projectDir.resolve("src/test/e2e/fixtures/voteparty-config.yml"))
+		file("server.properties", """
+			level-type=minecraft\:flat
+			generate-structures=false
+			spawn-npcs=false
+			spawn-animals=false
+			spawn-monsters=false
+			view-distance=4
+			simulation-distance=4
+		""".trimIndent())
+	}
+}
+
+plugwright {
+	testsDir.set(file("src/test/e2e"))
+	primaryEnvironment.set("modern")
+
+	// Mineflayer has no protocol data for 26.2 and later, so those stay on runPaper* above.
+	environments {
+		create("modern", LocalMode) { votePartyServer(plugwrightModernVersion, 25585) }
+		create("latest", LocalMode) { votePartyServer(plugwrightLatestVersion, 25586) }
+	}
+}
+
+// The Plugwright tasks are not yet configuration cache compatible, so a graph that contains
+// them has to be allowed to skip the cache instead of failing to store an entry.
+tasks.configureEach {
+	if (name.startsWith("plugwright")) {
+		notCompatibleWithConfigurationCache("Plugwright tasks do not support the configuration cache yet")
+	}
 }
 
 fun RunServer.configureVotePartyRun(

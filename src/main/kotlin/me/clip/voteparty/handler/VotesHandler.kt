@@ -12,7 +12,6 @@ import me.clip.voteparty.exte.takeRandomly
 import me.clip.voteparty.leaderboard.LeaderboardType
 import me.clip.voteparty.messages.Messages
 import me.clip.voteparty.plugin.VotePartyPlugin
-import me.clip.voteparty.version.EffectType
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import java.util.concurrent.TimeUnit
@@ -244,7 +243,7 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon, State
 		val location = player.location
 		
 		settings.effects.forEach {
-			party.hook().display(EffectType.valueOf(it), location, settings.offsetX, settings.offsetY, settings.offsetZ, settings.speed, settings.count)
+			party.hook().display(it, location, settings.offsetX, settings.offsetY, settings.offsetZ, settings.speed, settings.count)
 		}
 	}
 	

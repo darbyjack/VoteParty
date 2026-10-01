@@ -92,7 +92,7 @@ internal class CommandVoteParty(override val plugin: VotePartyPlugin) : BaseComm
 	@Syntax("<player> <amount>")
 	@Description("Give Crate")
 	@CommandPermission(ADMIN_PERM)
-	fun giveCrate(issuer: CommandIssuer, @Values("@online") target: OnlinePlayer, @Default("1") amount: Int)
+	fun giveCrate(issuer: CommandIssuer, target: OnlinePlayer, @Default("1") amount: Int)
 	{
 		if (amount <= 0)
 		{

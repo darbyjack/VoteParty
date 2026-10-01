@@ -19,7 +19,6 @@ import me.clip.voteparty.exte.sendMessage
 import me.clip.voteparty.exte.takeRandomly
 import me.clip.voteparty.messages.Messages
 import me.clip.voteparty.plugin.VotePartyPlugin
-import me.clip.voteparty.version.EffectType
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -272,7 +271,7 @@ class PartyHandler(override val plugin: VotePartyPlugin) : Addon
 		{ effect ->
 			targets.forEach()
 			{ player ->
-				party.hook().display(EffectType.valueOf(effect), player.location, offsetX, offsetY, offsetZ, speed, count)
+				party.hook().display(effect, player.location, offsetX, offsetY, offsetZ, speed, count)
 			}
 		}
 	}
