@@ -50,31 +50,45 @@ interface Console {
 }
 
 /**
- * Puts the party counter back to zero.
+ * The party vote counter, as the server currently has it.
  *
- * The counter is server-wide state that outlives any single test, and `vp setcounter` only moves
- * the threshold it is measured against, not the count itself. Driving the count up to a threshold
- * of one is the only way back to zero, because that is the path that resets it — and it fires a
- * party on the way, which is harmless but is why the fixture's party commands show up in the
- * console log from here on.
+ * This is server-wide state that outlives any single test. It has to be read rather than assumed,
+ * because a test that votes without reaching the threshold leaves a non-zero count behind for
+ * whoever runs next.
  */
-async function resetPartyCounter(server: Console): Promise<void> {
-    await server.execute('vp setcounter 1');
-    await server.execute('vp addpartyvote 1');
+async function partyCounter(server: Console, player: string): Promise<number> {
+    const raw = plain(await server.execute(`papi parse ${player} %voteparty_votes_recorded%`));
+    const value = Number(raw.trim());
+
+    assert.ok(Number.isFinite(value), `could not read the party counter, got ${JSON.stringify(raw)}`);
+    return value;
+}
+
+/**
+ * Sets how many further votes should trigger a party, leaving the count itself alone.
+ *
+ * `vp setcounter` only moves the threshold the count is measured against, so reading the count
+ * and moving the threshold relative to it is enough to make a party's timing deterministic.
+ *
+ * Reaching the threshold to drive the count back to zero would also work, but it fires a real
+ * party to do it — and that party's particles and rewards then land in whichever test runs next,
+ * which is exactly the kind of leak this avoids.
+ */
+async function partyAfter(server: Console, player: string, votes: number): Promise<void> {
+    await server.execute(`vp setcounter ${(await partyCounter(server, player)) + votes}`);
 }
 
 /**
  * Everything a test needs to be able to rely on, established rather than inherited: an op'd
- * player whose VoteParty vote count is zero, and a party counter of zero against a known
- * threshold.
+ * player whose VoteParty vote count is zero, and a party that triggers after [partyAfterVotes]
+ * more votes.
  */
-async function opAndPrep(server: Console, username: string, partyAt = 5): Promise<void> {
+async function opAndPrep(server: Console, username: string, partyAfterVotes = 5): Promise<void> {
     await server.execute(`op ${username}`);
     // VoteParty only knows a player once they have joined, so the bot has to be online before
     // any vote command will accept its name.
     await server.execute(`vp resetvotes ${username}`);
-    await resetPartyCounter(server);
-    await server.execute(`vp setcounter ${partyAt}`);
+    await partyAfter(server, username, partyAfterVotes);
 }
 
 test('the plugin enables and registers its PlaceholderAPI expansion', async () => {
@@ -199,23 +213,26 @@ test('the configured particles spawn on a vote, and an unknown name is skipped',
     assert.ok(seen.size > 0);
 });
 
-test('the party vote counter moves in both directions', async ({ server }) => {
-    await resetPartyCounter(server);
-    // Starting from zero is the point: the counter is server-wide and would otherwise still hold
-    // whatever the previous test left in it. The threshold goes up first so these additions do
-    // not reach it and reset themselves.
-    await server.execute('vp setcounter 50');
+test('the party vote counter moves in both directions', async ({ player, server }) => {
+    // The threshold goes well out of reach so these additions accumulate rather than resetting
+    // themselves.
+    await partyAfter(server, player.username, 100);
 
-    assert.match(plain(await server.execute('vp addpartyvote 1')), /Current votes updated to 1/);
-    assert.match(plain(await server.execute('vp addpartyvote 2')), /Current votes updated to 3/);
+    // Put the counter somewhere deliberately non-zero. Everything below is stated against the
+    // count read back, which is the whole point: it has to hold whatever the count was, so the
+    // test is meaningful whether or not an earlier test left something behind.
+    await server.execute('vp addpartyvote 4');
+    const start = await partyCounter(server, player.username);
+    assert.ok(start >= 4, `expected a non-zero counter to work from, got ${start}`);
+
+    assert.match(plain(await server.execute('vp addpartyvote 1')), new RegExp(`Current votes updated to ${start + 1}\\b`));
+    assert.match(plain(await server.execute('vp addpartyvote 2')), new RegExp(`Current votes updated to ${start + 3}\\b`));
     assert.match(plain(await server.execute('vp setcounter 5')), /New required votes has been set/);
     assert.match(plain(await server.execute('vp setcounter -1')), /must be positive/);
 });
 
 test('a party runs its pre, main and post commands in order', async ({ server }) => {
-    await resetPartyCounter(server);
-    await server.execute('vp setcounter 5');
-
+    // startparty is unconditional, so this needs no counter state at all.
     assert.match(await server.execute('vp startparty'), /force started a .*Vote Party/);
 
     await expect(server).toHaveReceivedMessage(/PRE_PARTY_COMMAND/);
@@ -251,11 +268,17 @@ test('a private party pays the player it was given to', async ({ player, server 
 test('the PlaceholderAPI expansion resolves', async ({ player, server }) => {
     await opAndPrep(server, player.username);
 
-    const required = plain(await server.execute(`papi parse ${player.username} %voteparty_votes_required_total%`));
-    assert.match(required, /5/);
+    // An absolute threshold, so the expectation does not depend on whatever the counter holds.
+    await server.execute('vp setcounter 7');
 
-    const recorded = plain(await server.execute(`papi parse ${player.username} %voteparty_votes_recorded%`));
-    assert.match(recorded, /\d+/);
+    const required = plain(await server.execute(`papi parse ${player.username} %voteparty_votes_required_total%`));
+    assert.equal(required.trim(), '7');
+
+    // votes_recorded is the raw party counter, read back through the expansion.
+    assert.equal(
+        plain(await server.execute(`papi parse ${player.username} %voteparty_votes_recorded%`)).trim(),
+        String(await partyCounter(server, player.username)),
+    );
 });
 
 test('the leaderboard command responds', async ({ player, server }) => {
