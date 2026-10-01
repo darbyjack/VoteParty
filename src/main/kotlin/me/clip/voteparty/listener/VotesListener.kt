@@ -29,6 +29,10 @@ internal class VotesListener(override val plugin: VotePartyPlugin) : VotePartyLi
 		}
 		user.voted()
 
+		// Ahead of every return below, and of the save, because a threshold this vote reaches has
+		// to be waiting for later whether or not there is anyone here to hand it to right now.
+		party.votesHandler.queueCrossedCumulativeRewards(user)
+
 		if (!player.isOnline && party.conf().getProperty(VoteSettings.OFFLINE_VOTE_CLAIMING))
 		{
 			user.claimable++
@@ -80,11 +84,10 @@ internal class VotesListener(override val plugin: VotePartyPlugin) : VotePartyLi
 	@EventHandler(priority = EventPriority.HIGH)
 	fun PlayerJoinEvent.onJoin()
 	{
-		// A threshold a player crossed while they were offline never got as far as a check, and
-		// by the time they are back their vote count has moved on past it. Joining is the first
-		// moment those rewards can be handed over. This is deliberately ahead of the "has this
-		// player played before" guard below, because a player who voted from a votesite before
-		// their first login is exactly the player this is for.
+		// A reward whose player was offline when they reached it has been waiting since, and
+		// joining is the first moment there is somebody there to hand it over. This is deliberately
+		// ahead of the "has this player played before" guard below, because a player who voted from
+		// a votesite before their first login is exactly the player this is for.
 		party.votesHandler.giveCumulativeRewards(player)
 
 		if (!player.hasPlayedBefore())

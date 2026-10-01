@@ -1,18 +1,21 @@
 package me.clip.voteparty.user
 
 import me.clip.voteparty.conf.objects.CumulativeVoteCommands
+import me.clip.voteparty.leaderboard.LeaderboardType
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import java.util.UUID
 
 /**
- * A player's votes, and how far into them the cumulative rewards have been handed over.
+ * A cumulative reward threshold a player has reached and has not been handed over yet.
  *
- * [settled] is null for a player file written before VoteParty kept track of that, which is the
- * only way to tell such a file apart from a fresh one — everything they hold predates the
- * tracking, so it all counts as settled.
+ * Which period it was reached in and which threshold it was are both recorded rather than the
+ * commands, so the reward still goes out after the period has ended and after the commands behind
+ * it have been reconfigured.
  */
-data class User(val uuid: UUID, var name: String, private val data: MutableList<Long>, var claimable: Int, private var settled: Int? = 0)
+data class PendingCumulativeReward(val period: LeaderboardType, val votes: Int)
+
+data class User(val uuid: UUID, var name: String, private val data: MutableList<Long>, var claimable: Int, private var pending: MutableList<PendingCumulativeReward>? = null)
 {
 	
 	fun voted()
@@ -42,7 +45,7 @@ data class User(val uuid: UUID, var name: String, private val data: MutableList<
 	fun reset()
 	{
 		data.clear()
-		settled = 0
+		pending = null
 	}
 	
 	fun player() : OfflinePlayer
@@ -51,51 +54,81 @@ data class User(val uuid: UUID, var name: String, private val data: MutableList<
 	}
 	
 	/**
-	 * The cumulative reward entries this player has reached since [epoch] but has not been paid
-	 * for yet.
+	 * Records every threshold in [entries] this player's votes have just reached.
 	 *
-	 * A cumulative reward is keyed to a vote count rather than to a vote, so each threshold only
-	 * ever comes due once. Comparing the count against the votes already settled — rather than
-	 * against the threshold exactly — is what makes it reachable at all: a vote that could not be
-	 * paid out where it was cast (offline, or an inventory too full to receive anything) never got
-	 * as far as a check, and by the time there is one the count has stepped over the threshold.
-	 * Everything between the settled count and the count now is therefore still owed, which also
-	 * covers several thresholds being crossed at once.
+	 * Called once per vote, which is what makes an exact comparison enough. A vote appends one
+	 * entry to [data], so the count since [since] moves up by exactly one and a threshold sits on
+	 * that count for exactly one vote. Checking later, against the count of all the votes, missed
+	 * every threshold that count had already moved past.
 	 *
-	 * Nothing is settled here. The caller settles only once the rewards have really been handed
-	 * over, so a threshold that could not be paid stays owed rather than being lost.
-	 *
-	 * A period that rolls over needs no resetting: the settled votes fall out of the new period's
-	 * window along with everything else, so its thresholds start coming due again.
+	 * Recording is kept apart from paying because most votes cannot be paid where they are cast.
+	 * The player may be offline, or have no room for the rewards, and the count moves on either
+	 * way. A threshold already waiting is not recorded twice, so one crossing is one payout however
+	 * many times the payout path runs before it succeeds.
 	 */
-	internal fun dueCumulativeRewards(epoch: Long, entries: List<CumulativeVoteCommands>): List<CumulativeVoteCommands>
+	internal fun queueCrossedCumulativeRewards(period: LeaderboardType, since: Long, entries: List<CumulativeVoteCommands>)
 	{
-		val settledCount = settledVotes().count { it >= epoch }
-		val count = data.count { it >= epoch }
+		val count = data.count { it >= since }
 		
-		return entries.filter { it.votes > settledCount && it.votes <= count }
+		for (entry in entries)
+		{
+			if (entry.votes == count && !isPending(period, entry.votes))
+			{
+				queue(PendingCumulativeReward(period, entry.votes))
+			}
+		}
 	}
 	
 	/**
-	 * The votes that have already been handed the cumulative rewards they reached.
-	 *
-	 * [data] only ever grows by appending, so counting how far into it the payout has got is
-	 * enough to tell which thresholds are still owed, and stays right across a restart.
+	 * The thresholds this player has reached and has not been handed over yet.
 	 */
-	private fun settledVotes(): List<Long>
+	internal fun pendingCumulativeRewards(): List<PendingCumulativeReward>
 	{
-		val reached = settled ?: data.size
-		
-		return data.subList(0, reached.coerceIn(0, data.size))
+		return pending ?: emptyList()
 	}
 	
 	/**
-	 * Records that every vote cast so far has been handed the cumulative rewards it reached, so
-	 * none of those thresholds are paid out a second time.
+	 * Hands every waiting reward whose period is in [periods] to [deliver], and drops it once
+	 * [deliver] has returned.
+	 *
+	 * Dropping last is deliberate, and it makes this at-least-once rather than transactional. A
+	 * [deliver] that throws leaves its reward waiting for the next run, so any commands that
+	 * already went out before the throw go out again. Repeating a reward is a better failure than
+	 * losing one, but this cannot promise a reward arrives exactly once.
+	 *
+	 * @return How many rewards were handed over.
 	 */
-	internal fun settleVotes()
+	internal fun drainCumulativeRewards(periods: Set<LeaderboardType>, deliver: (PendingCumulativeReward) -> Unit): Int
 	{
-		settled = data.size
+		var drained = 0
+		
+		// Over a copy, since handing a reward over drops it from the list being walked.
+		for (reward in pendingCumulativeRewards().toList())
+		{
+			if (reward.period !in periods)
+			{
+				continue
+			}
+			
+			deliver(reward)
+			
+			pending?.remove(reward)
+			drained++
+		}
+		
+		return drained
+	}
+	
+	private fun isPending(period: LeaderboardType, votes: Int): Boolean
+	{
+		return pending?.any { it.period == period && it.votes == votes } ?: false
+	}
+	
+	private fun queue(reward: PendingCumulativeReward)
+	{
+		val rewards = pending ?: mutableListOf<PendingCumulativeReward>().also { pending = it }
+		
+		rewards.add(reward)
 	}
 	
 }

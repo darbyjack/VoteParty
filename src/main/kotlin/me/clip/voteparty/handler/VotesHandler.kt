@@ -2,6 +2,8 @@ package me.clip.voteparty.handler
 
 import me.clip.voteparty.base.Addon
 import me.clip.voteparty.base.State
+import me.clip.voteparty.conf.objects.CumulativeVoteRewards
+import me.clip.voteparty.conf.objects.CumulativeVoting
 import me.clip.voteparty.conf.sections.EffectsSettings
 import me.clip.voteparty.conf.sections.PartySettings
 import me.clip.voteparty.conf.sections.PluginSettings
@@ -13,6 +15,7 @@ import me.clip.voteparty.exte.takeRandomly
 import me.clip.voteparty.leaderboard.LeaderboardType
 import me.clip.voteparty.messages.Messages
 import me.clip.voteparty.plugin.VotePartyPlugin
+import me.clip.voteparty.user.User
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import java.time.ZoneId
@@ -99,76 +102,124 @@ class VotesHandler(override val plugin: VotePartyPlugin) : Addon, State
 	}
 
 	/**
-	 * Hands over every cumulative reward [player] has reached but has not been paid for yet.
+	 * Records the cumulative reward thresholds the vote just now recorded has reached.
 	 *
-	 * A cumulative reward is keyed to a vote count rather than to a vote, so each threshold only
-	 * ever comes due once and has to be paid the moment the count reaches it. That made it easy
-	 * to miss: a vote from a player who was offline, or whose inventory was too full to receive
-	 * anything, never got as far as a check at all, and an exact match on the count then stepped
-	 * over the threshold for good.
+	 * Called for every vote, whether or not the player is online or has room for anything, because
+	 * a threshold reached by a vote that cannot be paid where it was cast still has to go out later.
+	 * A player who crosses a daily threshold at 23:59 while offline has it waiting at 00:01.
+	 */
+	fun queueCrossedCumulativeRewards(user: User)
+	{
+		val settings = party.conf().getProperty(VoteSettings.CUMULATIVE_VOTE_REWARDS)
+		
+		for ((period, rewards) in enabledPeriods(settings))
+		{
+			user.queueCrossedCumulativeRewards(period, periodStart(period), rewards.entries)
+		}
+	}
+	
+	/**
+	 * Hands over every cumulative reward [player] has reached and has not been handed over yet.
 	 *
-	 * Paying everything between the votes already settled and the votes the player has now covers
-	 * all of that — a threshold crossed while they were away, several crossed at once, and a
-	 * period that has rolled over since. Nothing is settled until the rewards have actually been
-	 * handed over, so a caller that cannot pay leaves the thresholds owed for the next call: the
-	 * player's next vote, their next claim, or their next login.
+	 * Runs on the vote, on login and on a claim, which are the three points at which there is
+	 * somebody there to receive something. A full inventory defers, the same way the vote's own
+	 * rewards defer, and for the same reason: the commands run from the console either way, so a
+	 * `give` would only put the items on the floor.
+	 *
+	 * A waiting reward is dropped once its commands have gone to the server, so a threshold reached
+	 * once is handed over once on each run that gets to it. That is not a transactional promise:
+	 * a command that throws leaves its reward waiting and is tried again next time, repeating the
+	 * commands that already ran, and so does a crash between the dispatch and the save. A reward
+	 * arriving twice is the cheaper of the two failures, which is why the drop is last.
 	 */
 	fun giveCumulativeRewards(player: Player)
 	{
-		// Same deferral the vote's own rewards use. Cumulative rewards are console commands, so
-		// they would still run with a full inventory — a `give` would just drop the items at the
-		// player's feet instead.
+		giveCumulativeRewards(player, LeaderboardType.values.toSet())
+	}
+	
+	@Deprecated("Pays everything the player is owed. Kept working for anything still calling it; use giveCumulativeRewards.", ReplaceWith("giveCumulativeRewards(player)"))
+	fun checkDailyCumulative(player: Player)
+	{
+		giveCumulativeRewards(player, setOf(LeaderboardType.DAILY))
+	}
+	
+	@Deprecated("Pays everything the player is owed. Kept working for anything still calling it; use giveCumulativeRewards.", ReplaceWith("giveCumulativeRewards(player)"))
+	fun checkWeeklyCumulative(player: Player)
+	{
+		giveCumulativeRewards(player, setOf(LeaderboardType.WEEKLY))
+	}
+	
+	@Deprecated("Pays everything the player is owed. Kept working for anything still calling it; use giveCumulativeRewards.", ReplaceWith("giveCumulativeRewards(player)"))
+	fun checkMonthlyCumulative(player: Player)
+	{
+		giveCumulativeRewards(player, setOf(LeaderboardType.MONTHLY))
+	}
+	
+	@Deprecated("Pays everything the player is owed. Kept working for anything still calling it; use giveCumulativeRewards.", ReplaceWith("giveCumulativeRewards(player)"))
+	fun checkYearlyCumulative(player: Player)
+	{
+		giveCumulativeRewards(player, setOf(LeaderboardType.ANNUALLY))
+	}
+	
+	@Deprecated("Pays everything the player is owed. Kept working for anything still calling it; use giveCumulativeRewards.", ReplaceWith("giveCumulativeRewards(player)"))
+	fun checkTotalCumulative(player: Player)
+	{
+		giveCumulativeRewards(player, setOf(LeaderboardType.ALLTIME))
+	}
+	
+	private fun giveCumulativeRewards(player: Player, periods: Set<LeaderboardType>)
+	{
 		if (player.inventory.firstEmpty() == -1 && party.conf().getProperty(VoteSettings.CLAIMABLE_IF_FULL))
 		{
 			return
 		}
-
+		
 		val settings = party.conf().getProperty(VoteSettings.CUMULATIVE_VOTE_REWARDS)
+		val sections = enabledPeriods(settings)
+		val user = party.usersHandler[player]
 
-		val periods = listOf(
+		// Only the periods currently switched on are drained, so a reward reached while its period
+		// was off is still there to go out if the period is turned back on. One whose threshold has
+		// been taken out of the config has nothing left to give, and goes with the rest.
+		val drained = user.drainCumulativeRewards(periods intersect sections.keys)
+		{ reward ->
+			sections[reward.period]?.entries?.firstOrNull { it.votes == reward.votes }?.commands?.forEach()
+			{ command ->
+				server.dispatchCommand(server.consoleSender, formMessage(player, command))
+			}
+		}
+		
+		if (drained == 0)
+		{
+			return
+		}
+		
+		// The vote listener saves before it reaches here, so a payout not saved on its own would be
+		// handed over again after a restart whenever saving on vote is on.
+		if (party.conf().getProperty(PluginSettings.SAVE_ON_VOTE))
+		{
+			party.usersHandler.save(user)
+		}
+	}
+	
+	/**
+	 * The cumulative periods that are switched on and have something in them, against the section
+	 * each one reads.
+	 */
+	private fun enabledPeriods(settings: CumulativeVoting): Map<LeaderboardType, CumulativeVoteRewards>
+	{
+		return mapOf(
 			LeaderboardType.DAILY to settings.daily,
 			LeaderboardType.WEEKLY to settings.weekly,
 			LeaderboardType.MONTHLY to settings.monthly,
 			LeaderboardType.ANNUALLY to settings.yearly,
 			LeaderboardType.ALLTIME to settings.total
-		)
-
-		val user = party.usersHandler[player]
-		var given = false
-
-		for ((period, rewards) in periods)
-		{
-			if (!rewards.enabled || rewards.entries.isEmpty())
-			{
-				continue
-			}
-
-			val since = period.start.invoke().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
-
-			for (entry in user.dueCumulativeRewards(since, rewards.entries))
-			{
-				entry.commands.forEach()
-				{ command ->
-					server.dispatchCommand(server.consoleSender, formMessage(player, command))
-				}
-
-				given = true
-			}
-		}
-
-		if (!given)
-		{
-			return
-		}
-
-		user.settleVotes()
-
-		// The vote listener saves before it reaches here, so a payout that is not saved on its
-		// own would be paid a second time after a restart whenever saving on vote is enabled.
-		if (party.conf().getProperty(PluginSettings.SAVE_ON_VOTE))
-		{
-			party.usersHandler.save(user)
-		}
+		).filterValues { it.enabled && it.entries.isNotEmpty() }
+	}
+	
+	private fun periodStart(period: LeaderboardType): Long
+	{
+		return period.start.invoke().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
 	}
 	
 	fun giveVotesiteVoteRewards(player: Player, serviceName: String)
