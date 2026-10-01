@@ -111,25 +111,24 @@ party:
     # Configuration for chance rewards to be given during a party.
     # Add as many commands as you want, set their chance, and choose the max amount a player can earn!
     reward_commands:
-        enabled: false
+        # Enabled: Vault plus EssentialsX's economy gives `eco give` somewhere to go. One entry at
+        # 100% with max_possible 1, because max_possible picks at random however high the chances
+        # are, and the spec asserts an exact balance change.
+        enabled: true
         max_possible: 1
         commands: 
-        - chance: 50.0
+        - chance: 100.0
           command:
           - eco give %player_name% 100
-        - chance: 50.0
-          command:
-          - give %player_name% DIAMOND 6
-        - chance: 50.0
-          command:
-          - give %player_name% IRON_INGOT 12
     # Configuration for extra commands to be executed on players who have specific permission nodes when a party happens
     permission-rewards:
-        enabled: false
+        # Enabled, and gated on a permission the specs grant through LuckPerms, so the gated path
+        # is covered rather than skipped.
+        enabled: true
         permCommands: 
         - permission: my.special.permission
           commands:
-          - eco give %player_name% 500
+          - say PERMISSION_PARTY_REWARD
     # A list of rewards that will ALWAYS be given to a player during a party
     guaranteed_rewards:
         enabled: true
@@ -182,11 +181,13 @@ voting:
           - give %player_name% STEAK 10
     # Configuration for extra commands to be executed on players who have specific permission nodes
     permission-rewards:
-        enabled: false
+        # Enabled, and gated on a permission the specs grant through LuckPerms, so the gated path
+        # is covered rather than skipped.
+        enabled: true
         permCommands: 
         - permission: my.special.permission
           commands:
-          - eco give %player_name% 500
+          - say PERMISSION_VOTE_REWARD
     # A list of rewards that will ALWAYS be given to a player for voting
     guaranteed_rewards:
         enabled: true

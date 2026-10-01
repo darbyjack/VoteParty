@@ -1,7 +1,7 @@
 import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 import assert from 'node:assert/strict';
-import { test, expect, waitUntil } from '@plugwright/runner';
+import { test, expect, waitUntil, sleep } from '@plugwright/runner';
 
 /**
  * VoteParty end-to-end suite: a real Paper server, a real shaded plugin jar, real bots.
@@ -32,12 +32,31 @@ function serverDir(): string {
     return JSON.parse(readFileSync(process.argv[configFlag + 1], 'utf8')).environment.config.serverDir;
 }
 
+function logPath(): string {
+    return resolve(serverDir(), 'logs/latest.log');
+}
+
 function serverLog(): string {
-    const path = resolve(serverDir(), 'logs/latest.log');
+    const path = logPath();
     if (!existsSync(path)) {
         throw new Error(`server log not found at ${path}`);
     }
     return readFileSync(path, 'utf8');
+}
+
+/**
+ * A marker for "everything the server logs from here on".
+ *
+ * The log file spans the whole session, so an assertion that a sentinel did *not* appear has to
+ * look at what was appended after the marker, not at the whole file — otherwise it sees the copy
+ * an earlier test produced.
+ */
+function logMark(): number {
+    return serverLog().length;
+}
+
+function logSince(mark: number): string {
+    return serverLog().slice(mark);
 }
 
 /** Strips the legacy colour codes a message is interleaved with, so text can be matched on. */
@@ -83,6 +102,29 @@ async function partyAfter(server: Console, player: string, votes: number): Promi
  * player whose VoteParty vote count is zero, and a party that triggers after [partyAfterVotes]
  * more votes.
  */
+/** EssentialsX's balance for a player, read through its own `/bal`, in whole dollars. */
+async function balance(server: Console, player: string): Promise<number> {
+    const raw = plain(await server.execute(`bal ${player}`));
+    const match = /\$(\d+(?:\.\d+)?)/.exec(raw);
+    assert.ok(match, `could not read a balance, got ${JSON.stringify(raw)}`);
+    return Number(match[1]);
+}
+
+/** Grants a permission through LuckPerms, which is what EssentialsX and Vault now defer to. */
+async function grant(server: Console, player: string, permission: string): Promise<void> {
+    await server.execute(`lp user ${player} permission set ${permission} true`);
+    await server.execute('lp save');
+    // LuckPerms is asynchronous, and EssentialsX caches permissions, so give the recalculation a
+    // moment before asserting on what a gated reward did or did not do.
+    await sleep(2000);
+}
+
+async function revoke(server: Console, player: string, permission: string): Promise<void> {
+    await server.execute(`lp user ${player} permission set ${permission} false`);
+    await server.execute('lp save');
+    await sleep(2000);
+}
+
 async function opAndPrep(server: Console, username: string, partyAfterVotes = 5): Promise<void> {
     await server.execute(`op ${username}`);
     // VoteParty only knows a player once they have joined, so the bot has to be online before
@@ -308,4 +350,89 @@ test('no plugin exception was logged for the whole session', async () => {
     assert.doesNotMatch(log, /\[VoteParty\]\[ACF\] Exception in command/);
     assert.doesNotMatch(log, /\[VoteParty\].*Task #\d+ for VoteParty .* generated an exception/);
     assert.doesNotMatch(log, /java\.lang\.(NoSuchMethod|NoClassDef|NoField)Error/);
+});
+
+/**
+ * The shipped party reward is `eco give %player_name% 100`, which needs Vault and an economy
+ * provider. Both are installed for this suite, so the assertion is on the balance moving by an
+ * exact amount rather than on the command being dispatched.
+ */
+test('a party pays an economy reward through Vault', async ({ player, server }) => {
+    await opAndPrep(server, player.username, 5);
+    await server.execute(`eco give ${player.username} 0`);
+
+    const before = await balance(server, player.username);
+    await server.execute(`vp addvote ${player.username} false 5`);
+
+    await waitUntil(async () => (await balance(server, player.username)) === before + 100, {
+        timeout: 15000,
+        interval: 500,
+        message: `expected the balance to go from ${before} to ${before + 100}`,
+    });
+});
+
+test('a permission-gated vote reward fires for a player who holds the permission', async ({ player, server }) => {
+    await opAndPrep(server, player.username);
+    await grant(server, player.username, 'my.special.permission');
+
+    const mark = logMark();
+    await server.execute(`vp addvote ${player.username} false 1`);
+
+    await waitUntil(() => /PERMISSION_VOTE_REWARD/.test(logSince(mark)), {
+        timeout: 10000,
+        interval: 250,
+        message: 'the permission-gated vote reward never ran',
+    });
+});
+
+test('a permission-gated vote reward is skipped without the permission', async ({ player, server }) => {
+    await opAndPrep(server, player.username);
+    await revoke(server, player.username, 'my.special.permission');
+
+    const mark = logMark();
+    await server.execute(`vp addvote ${player.username} false 1`);
+    await sleep(3000);
+
+    // The vote itself has to have gone through, or the absence proves nothing. LuckPerms has to
+    // have recalculated too, or this would pass for the wrong reason.
+    assert.match(plain(await server.execute(`vp totalvotes ${player.username}`)), /has a total of 1 vote/);
+    assert.match(logSince(mark), /just voted!/);
+    assert.doesNotMatch(logSince(mark), /PERMISSION_VOTE_REWARD/);
+});
+
+test('a permission-gated party reward fires for a player who holds the permission', async ({ player, server }) => {
+    await opAndPrep(server, player.username, 5);
+    await grant(server, player.username, 'my.special.permission');
+
+    const mark = logMark();
+    await server.execute(`vp startparty`);
+
+    await waitUntil(() => /PERMISSION_PARTY_REWARD/.test(logSince(mark)), {
+        timeout: 10000,
+        interval: 250,
+        message: 'the permission-gated party reward never ran',
+    });
+});
+
+/**
+ * NuVotifier is a soft dependency, so without it VoteParty logs a listener-registration error on
+ * every startup and its Votifier hook is dead code. With it installed, `/testvote` drives a real
+ * vote through NuVotifier into VoteParty's own listener.
+ */
+test('a vote arriving through NuVotifier is recorded', async ({ player, server }) => {
+    await opAndPrep(server, player.username, 50);
+
+    player.chat(`/testvote ${player.username}`);
+
+    await waitUntil(
+        async () => /has a total of 1 vote/.test(plain(await server.execute(`vp totalvotes ${player.username}`))),
+        { timeout: 15000, interval: 500, message: 'the NuVotifier vote never reached VoteParty' },
+    );
+});
+
+test('the NuVotifier hook registers its listener', async () => {
+    const log = serverLog();
+
+    assert.doesNotMatch(log, /Failed to register events for class .*HooksListenerNuVotifier/);
+    assert.match(log, /\[Votifier\] Enabling Votifier/);
 });
