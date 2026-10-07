@@ -1,4 +1,5 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import com.github.jengelman.gradle.plugins.shadow.transformers.KotlinModuleMetadataTransformer
 import me.drownek.plugwright.local.LocalEnvironmentSpec
 import me.drownek.plugwright.local.LocalMode
 import org.apache.tools.ant.filters.ReplaceTokens
@@ -11,7 +12,6 @@ import xyz.jpenilla.runpaper.task.RunServer
 plugins {
 	alias(libs.plugins.kotlin.jvm)
 	alias(libs.plugins.shadow) apply false
-	alias(libs.plugins.versions)
 	alias(libs.plugins.run.paper)
 	id("io.github.drownek.plugwright") version "3.0.0"
 }
@@ -71,6 +71,17 @@ apply(plugin = "com.gradleup.shadow")
 val shadowJarTask = tasks.named<ShadowJar>("shadowJar")
 
 tasks.named<ShadowJar>("shadowJar") {
+	// Kotlin module metadata and service descriptors need duplicate inputs preserved until
+	// their transformers can merge and relocate their contents. Keep EXCLUDE for other paths.
+	filesMatching("META-INF/*.kotlin_module") {
+		duplicatesStrategy = DuplicatesStrategy.INCLUDE
+	}
+	filesMatching("META-INF/services/**") {
+		duplicatesStrategy = DuplicatesStrategy.INCLUDE
+	}
+	mergeServiceFiles()
+	transform<KotlinModuleMetadataTransformer>()
+
 	minimize {
 		exclude(project(":particle-api"))
 		exclude(project(":particle-legacy"))
@@ -282,6 +293,17 @@ tasks.test {
 	testLogging {
 		events("passed", "skipped", "failed")
 	}
+}
+
+// Tests run on the modern build JVM and do not ship in the Java 8 plugin jar.
+tasks.named<KotlinCompile>("compileTestKotlin") {
+	compilerOptions.jvmTarget.set(JvmTarget.JVM_17)
+}
+
+tasks.named<JavaCompile>("compileTestJava") {
+	sourceCompatibility = JavaVersion.VERSION_17.toString()
+	targetCompatibility = JavaVersion.VERSION_17.toString()
+	options.release.set(17)
 }
 
 tasks.processResources {
