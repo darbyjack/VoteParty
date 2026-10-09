@@ -1,5 +1,5 @@
 [versions]
-kotlin = "2.4.20"
+kotlin = "2.4.21"
 shadow = "9.6.1"
 particleapi = "2.2.0-SNAPSHOT"
 runPaper = "3.1.0"
