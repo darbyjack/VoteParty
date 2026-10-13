@@ -1,15 +1,15 @@
 [versions]
-kotlin = "2.4.20"
+kotlin = "2.4.21"
 shadow = "9.6.1"
 particleapi = "2.2.0-SNAPSHOT"
 runPaper = "3.1.0"
 
-spigotModern = "26.2-R0.1-SNAPSHOT"
+spigotModern = "26.3-R0.1-SNAPSHOT"
 spigotLegacy = "1.8.8-R0.1-SNAPSHOT"
 placeholderapi = "2.12.3"
 configme = "1.3.0"
 acf = "0.5.1-SNAPSHOT"
-xseries = "13.7.1"
+xseries = "13.8.0"
 bstats = "3.2.1"
 adventurePlatformBukkit = "4.4.1"
 adventure = "4.26.1"

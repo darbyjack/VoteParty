@@ -109,7 +109,7 @@ tasks.named<ShadowJar>("shadowJar") {
 val plugwrightModernVersion: String =
 	providers.environmentVariable("PLUGWRIGHT_MODERN_MC_VERSION").getOrElse("1.21.11")
 val plugwrightLatestVersion: String =
-	providers.environmentVariable("PLUGWRIGHT_LATEST_MC_VERSION").getOrElse("26.1.2")
+	providers.environmentVariable("PLUGWRIGHT_LATEST_MC_VERSION").getOrElse("26.3")
 
 // The two environments differ only in Minecraft version and port.
 fun LocalEnvironmentSpec.votePartyServer(minecraftVersion: String, port: Int)
@@ -150,7 +150,7 @@ plugwright {
 	testsDir.set(file("src/test/e2e"))
 	primaryEnvironment.set("modern")
 
-	// Mineflayer has no protocol data for 26.2 and later, so those stay on runPaper* above.
+	// Mineflayer has no protocol data for 26.3, so that environment stays on runPaper* above.
 	environments {
 		create("modern", LocalMode) { votePartyServer(plugwrightModernVersion, 25585) }
 		create("latest", LocalMode) { votePartyServer(plugwrightLatestVersion, 25586) }
@@ -248,10 +248,10 @@ tasks {
 
 	register<RunServer>("runPaperLatest") {
 		configureVotePartyRun(
-			minecraftVersion = "26.2",
-			runDirectoryName = "paper-26.2",
+			minecraftVersion = "26.3",
+			runDirectoryName = "paper-26.3",
 			javaVersion = 25,
-			descriptionText = "Run the latest stable Paper test server with the shaded VoteParty jar.",
+			descriptionText = "Run a Paper 26.3 test server with the shaded VoteParty jar.",
 		)
 	}
 }
