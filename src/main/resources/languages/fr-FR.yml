@@ -37,6 +37,8 @@ votes:
   added-to-player: "&fVous avez donné {count} votes à %player_name%!"
   inventory-full: "&fYour inventory seems to be full! We've put this vote in your claimables! Do /vp claim once your inventory isn't full!"
   reminder: "&fDon't forget to vote for our server!"
+  # The subtitle only works when the reminder message type is set to title.
+  reminder-subtitle: "&fYou can vote by using &d/vote&f!"
 crate:
   crate-given: "&fVous avez donné à &d%player_name% &f une vote crate(s)!"
   crate-received: "&fVous avez reçu une caisse de vote !"

@@ -47,6 +47,46 @@ internal object VoteSettings : SettingsHolder
 	val REMINDER_INTERVAL_SECONDS: Property<Int> = newProperty("voting.reminder_interval_seconds", 600)
 
 	@JvmField
+	@Comment("What message type to send the reminder as? Options are: chat, actionbar, title, bossbar.",
+		"If the value is missing or is invalid, chat is used.")
+	val REMINDER_MESSAGE_TYPE: Property<String> = newProperty("voting.reminder_message_type", "chat")
+
+	@JvmField
+	@Comment("What percentage of the bossbar should be filled? The value should be between 0.0 and 1.0.",
+		"Defaults to 1.0 which represents a full bossbar.", "This is only used if the reminder message type is set to bossbar.")
+	val REMINDER_BOSSBAR_FILL: Property<Double> = newProperty("voting.reminder_bossbar_fill", 1.0)
+
+	@JvmField
+	@Comment("What color should the bossbar be? Options are: pink, blue, red, green, yellow, purple, white.",
+		"Defaults to purple.", "This is only used if the reminder message type is set to bossbar.")
+	val REMINDER_BOSSBAR_COLOR: Property<String> = newProperty("voting.reminder_bossbar_color", "purple")
+
+	@JvmField
+	@Comment("What overlay should the bossbar have? Options are: progress, notched_6, notched_10, notched_12, notched_20.",
+		"Defaults to progress.", "This is only used if the reminder message type is set to bossbar.")
+	val REMINDER_BOSSBAR_OVERLAY: Property<String> = newProperty("voting.reminder_bossbar_overlay", "progress")
+
+	@JvmField
+	@Comment("How long should the bossbar stay on the screen? (in ticks, 1 second = 20 ticks)",
+		"Defaults to 3 seconds.", "This is only used if the reminder message type is set to bossbar.")
+	val REMINDER_BOSSBAR_STAY_TIME: Property<Int> = newProperty("voting.reminder_bossbar_stay_time", 60)
+
+	@JvmField
+	@Comment("How long should the title take to fade in? (in ticks, 1 second = 20 ticks)",
+		"Defaults to half a second.", "This is only used if the reminder message type is set to title.")
+	val REMINDER_TITLE_FADE_IN: Property<Int> = newProperty("voting.reminder_title_fade_in", 10)
+
+	@JvmField
+	@Comment("How long should the title stay on the screen? (in ticks, 1 second = 20 ticks)",
+		"Defaults to 3 and a half seconds.", "This is only used if the reminder message type is set to title.")
+	val REMINDER_TITLE_STAY: Property<Int> = newProperty("voting.reminder_title_stay", 70)
+
+	@JvmField
+	@Comment("How long should the title take to fade out? (in ticks, 1 second = 20 ticks)",
+		"Defaults to a second.", "This is only used if the reminder message type is set to title.")
+	val REMINDER_TITLE_FADE_OUT: Property<Int> = newProperty("voting.reminder_title_fade_out", 20)
+
+	@JvmField
 	@Comment("If a player's inventory is full when voting, do you want to send the vote to a /vote claim?")
 	val CLAIMABLE_IF_FULL: Property<Boolean> = newProperty("voting.claim_if_full", true)
 
